@@ -27,10 +27,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '~/components/ui/dialog';
-import { useMarketList } from '~/lib/context/MarketListProvider';
-import { MarketContext, MarketProvider } from '~/lib/context/MarketProvider';
+import { useFoil } from '~/lib/context/FoilProvider';
+import { PeriodContext, PeriodProvider } from '~/lib/context/PeriodProvider';
 import { useResources } from '~/lib/hooks/useResources';
-import { convertWstEthToGwei } from '~/lib/util/util';
+import { convertWstEthToGwei, foilApi } from '~/lib/utils/util';
 
 const SUBSCRIPTIONS_QUERY = gql`
   query GetSubscriptions($owner: String!) {
@@ -92,7 +92,8 @@ interface Subscription {
 }
 
 const useSubscriptions = (address?: string) => {
-  const { useMarketUnits, stEthPerToken } = useContext(MarketContext);
+  const { useMarketUnits } = useContext(PeriodContext);
+  const { stEthPerToken } = useFoil();
 
   const calculateEntryPrice = (position: any, transactions: any[]) => {
     let entryPrice = 0;
@@ -138,23 +139,13 @@ const useSubscriptions = (address?: string) => {
     }
 
     // First fetch positions
-    const positionsResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_FOIL_API_URL}/graphql`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: print(SUBSCRIPTIONS_QUERY),
-          variables: {
-            owner: address,
-          },
-        }),
-      }
-    );
+    const { data: positionsData, errors } = await foilApi.post('/graphql', {
+      query: print(SUBSCRIPTIONS_QUERY),
+      variables: {
+        owner: address,
+      },
+    });
 
-    const { data: positionsData, errors } = await positionsResponse.json();
     if (errors) {
       throw new Error(errors[0].message);
     }
@@ -171,10 +162,9 @@ const useSubscriptions = (address?: string) => {
     return Promise.all(
       activePositions.map(async (position: any) => {
         const contractId = `${position.epoch.market.chainId}:${position.epoch.market.address}`;
-        const transactionsResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_FOIL_API_URL}/transactions?contractId=${contractId}&positionId=${position.positionId}`
+        const transactions = await foilApi.get(
+          `/transactions?contractId=${contractId}&positionId=${position.positionId}`
         );
-        const transactions = await transactionsResponse.json();
 
         return {
           ...position,
@@ -245,12 +235,12 @@ const SubscriptionsList = () => {
   if (!address) {
     return (
       <div ref={containerRef} className="flex flex-col items-center">
-        <div className="fixed h-screen w-screen top-[66%] md:top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[-1]">
+        <div className="fixed h-screen w-screen top-[66%] md:top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[-1] opacity-50 blur-sm">
           {isInView && (
             <Spline scene="https://prod.spline.design/gyoZ1cjoFk5-20wQ/scene.splinecode" />
           )}
         </div>
-        <div className="fixed z-10 max-w-[280px] md:max-w-[460px] text-white text-xl w-full md:text-4xl font-semibold tracking-wide text-center top-[66%] md:top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-100 bg-white/10 backdrop-blur-lg p-4 rounded-lg border border-accent/20 shadow-lg">
+        <div className="fixed z-10 max-w-[280px] md:max-w-[460px] text-white text-xl w-full md:text-4xl font-semibold tracking-wide text-center top-[66%] md:top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-100 bg-black/40 backdrop-blur-lg p-4 rounded-lg border border-accent/20 shadow-lg">
           Connect your wallet to view your subscriptions
         </div>
       </div>
@@ -376,7 +366,7 @@ const SubscriptionsList = () => {
             </DialogTitle>
           </DialogHeader>
           {selectedPosition && (
-            <MarketProvider
+            <PeriodProvider
               chainId={selectedPosition.epoch.market.chainId}
               address={selectedPosition.epoch.market.address as `0x${string}`}
               epoch={selectedPosition.epoch.id}
@@ -385,7 +375,7 @@ const SubscriptionsList = () => {
                 positionId={selectedPosition.positionId}
                 onClose={() => setSellDialogOpen(false)}
               />
-            </MarketProvider>
+            </PeriodProvider>
           )}
         </DialogContent>
       </Dialog>
@@ -409,7 +399,7 @@ const SubscribeContent = () => {
     }
   }, [address, shouldOpenAfterConnect]);
 
-  const { markets } = useMarketList();
+  const { markets } = useFoil();
   const currentTime = Math.floor(Date.now() / 1000);
 
   // Find all gas markets
@@ -489,7 +479,7 @@ const SubscribeContent = () => {
   }
 
   return (
-    <MarketProvider
+    <PeriodProvider
       chainId={targetEpoch.market.chainId}
       address={targetEpoch.market.address}
       epoch={targetEpoch.epochId}
@@ -542,7 +532,7 @@ const SubscribeContent = () => {
           </DialogContent>
         </Dialog>
       </div>
-    </MarketProvider>
+    </PeriodProvider>
   );
 };
 

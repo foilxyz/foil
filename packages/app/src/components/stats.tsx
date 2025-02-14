@@ -1,7 +1,8 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { formatDistanceToNow } from 'date-fns';
-import { InfoIcon } from 'lucide-react';
+import { BookTextIcon, InfoIcon } from 'lucide-react';
 import { useContext } from 'react';
+import { formatUnits } from 'viem';
 
 import {
   TooltipProvider,
@@ -9,104 +10,189 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '~/components/ui/tooltip';
-import { MarketContext } from '~/lib/context/MarketProvider';
-import { convertGgasPerWstEthToGwei } from '~/lib/util/util';
+import type { Market } from '~/lib/context/FoilProvider';
+import { useFoil } from '~/lib/context/FoilProvider';
+import { PeriodContext } from '~/lib/context/PeriodProvider';
+import { useLatestIndexPrice } from '~/lib/hooks/useResources';
+import { convertGgasPerWstEthToGwei } from '~/lib/utils/util';
 
 import NumberDisplay from './numberDisplay';
 
-const Stats = () => {
-  const {
-    endTime,
-    averagePrice,
-    pool,
-    liquidity,
-    useMarketUnits,
-    stEthPerToken,
-  } = useContext(MarketContext);
+interface StatBoxProps {
+  title: string;
+  tooltipContent?: React.ReactNode;
+  value: React.ReactNode;
+  docsLink?: boolean;
+}
 
-  let relativeTime = '';
-  if (endTime) {
-    const dateMilliseconds = Number(endTime) * 1000;
-    const date = new Date(dateMilliseconds);
-    const now = new Date();
-    relativeTime = date < now ? 'Expired' : formatDistanceToNow(date);
+const StatBox = ({ title, tooltipContent, value, docsLink }: StatBoxProps) => (
+  <div className="rounded-sm border border-border py-3 px-4 md:py-4 md:px-6 shadow-sm text-xs md:text-base">
+    <div>
+      {title}
+      {tooltipContent && (
+        <Tooltip>
+          <TooltipTrigger className="cursor-default">
+            <InfoIcon className="md:ml-1 -translate-y-0.5 inline-block h-3 md:h-4 opacity-60 hover:opacity-80" />
+          </TooltipTrigger>
+          <TooltipContent className="max-w-[240px] text-center p-3">
+            {tooltipContent}
+            {docsLink && (
+              <a
+                href="https://docs.foil.xyz/price-glossary"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block text-blue-500 hover:text-blue-600 ml-1 -translate-y-0.5"
+              >
+                <BookTextIcon className="h-3.5 w-3.5 inline-block" />
+              </a>
+            )}
+          </TooltipContent>
+        </Tooltip>
+      )}
+    </div>
+    <div className="mt-0.5 text-sm md:text-2xl font-bold">{value}</div>
+  </div>
+);
+
+const IndexPriceDisplay = ({
+  isBeforeStart,
+  startTimeRelative,
+  isLoadingIndexPrice,
+  market,
+  latestIndexPrice,
+  useMarketUnits,
+  stEthPerToken,
+}: {
+  isBeforeStart: boolean;
+  startTimeRelative: string;
+  isLoadingIndexPrice: boolean;
+  market: any;
+  latestIndexPrice: any;
+  useMarketUnits: boolean;
+  stEthPerToken: number | undefined;
+}) => {
+  if (isBeforeStart) {
+    return (
+      <>
+        <span className="text-sm">available in</span> {startTimeRelative}
+      </>
+    );
   }
+
+  if (isLoadingIndexPrice || !market) {
+    return <span>Loading...</span>;
+  }
+
+  const value = useMarketUnits
+    ? Number(formatUnits(BigInt(latestIndexPrice?.value || 0), 18)) *
+      (stEthPerToken || 1)
+    : Number(formatUnits(BigInt(latestIndexPrice?.value || 0), 9));
+
+  return (
+    <>
+      <NumberDisplay value={value} />{' '}
+      <span className="text-sm">{useMarketUnits ? 'Ggas/wstETH' : 'gwei'}</span>
+    </>
+  );
+};
+
+const Stats = () => {
+  const { endTime, startTime, pool, liquidity, useMarketUnits, market } =
+    useContext(PeriodContext);
+  const { stEthPerToken, markets } = useFoil();
+  const { data: latestIndexPrice, isLoading: isLoadingIndexPrice } =
+    useLatestIndexPrice(
+      market
+        ? {
+            address: market.address,
+            chainId: market.chainId,
+            epochId: market.epochId,
+          }
+        : {
+            address: '',
+            chainId: 0,
+            epochId: 0,
+          }
+    );
+
+  const resourceName =
+    markets
+      .find(
+        (m: Market) => m.address.toLowerCase() === market?.address.toLowerCase()
+      )
+      ?.resource?.name?.toLowerCase() || 'resource';
+
+  const currentTime = Math.floor(Date.now() / 1000);
+  const isBeforeStart = startTime > currentTime;
+
+  const getRelativeTime = () => {
+    if (!endTime) return '';
+    const dateMilliseconds = Number(endTime) * 1000;
+    const endDate = new Date(dateMilliseconds);
+    const currentDate = new Date();
+    return endDate < currentDate ? 'Expired' : formatDistanceToNow(endDate);
+  };
+
+  const startTimeRelative = isBeforeStart
+    ? formatDistanceToNow(new Date(startTime * 1000))
+    : '';
 
   return (
     <TooltipProvider>
       <div className="flex w-full flex-col items-center pb-5">
         <div className="grid w-full grid-cols-2 gap-4 lg:grid-cols-4">
-          <div className="rounded-lg border border-border p-4 shadow-sm">
-            <div className="text-md">
-              Index Price
-              <Tooltip>
-                <TooltipTrigger>
-                  <InfoIcon className="ml-1.5 -translate-y-0.5 inline-block h-4" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  Expected settlement price based on the current time-weighted
-                  average underlying price for this epoch.
-                </TooltipContent>
-              </Tooltip>
-            </div>
-            <div className="mt-1 text-2xl font-bold">
-              <NumberDisplay
-                value={
-                  useMarketUnits
-                    ? averagePrice
-                    : convertGgasPerWstEthToGwei(averagePrice, stEthPerToken)
-                }
-              />{' '}
-              <span className="text-sm">
-                {useMarketUnits ? 'Ggas/wstETH' : 'gwei'}
-              </span>
-            </div>
-          </div>
+          <StatBox
+            title="Index Price"
+            tooltipContent={`The estimated settlement price based on the average ${resourceName} price for this period`}
+            docsLink
+            value={
+              <IndexPriceDisplay
+                isBeforeStart={isBeforeStart}
+                startTimeRelative={startTimeRelative}
+                isLoadingIndexPrice={isLoadingIndexPrice}
+                market={market}
+                latestIndexPrice={latestIndexPrice}
+                useMarketUnits={useMarketUnits}
+                stEthPerToken={stEthPerToken}
+              />
+            }
+          />
 
-          <div className="rounded-lg border border-border p-4 shadow-sm">
-            <div className="text-md">
-              Market Price
-              <Tooltip>
-                <TooltipTrigger>
-                  <InfoIcon className="ml-1.5 -translate-y-0.5 inline-block h-4" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  Current price in the Foil liquidity pool for this epoch.
-                </TooltipContent>
-              </Tooltip>
-            </div>
-            <div className="mt-1 text-2xl font-bold">
-              <NumberDisplay
-                value={
-                  useMarketUnits
-                    ? pool?.token0Price.toSignificant(18) || 0
-                    : convertGgasPerWstEthToGwei(
-                        Number(pool?.token0Price.toSignificant(18) || 0),
-                        stEthPerToken
-                      )
-                }
-              />{' '}
-              <span className="text-sm">
-                {useMarketUnits ? 'Ggas/wstETH' : 'gwei'}
-              </span>
-            </div>
-          </div>
+          <StatBox
+            title="Market Price"
+            tooltipContent="The current price available from the liquidity pool"
+            docsLink
+            value={
+              <>
+                <NumberDisplay
+                  value={
+                    useMarketUnits
+                      ? pool?.token0Price.toSignificant(18) || 0
+                      : convertGgasPerWstEthToGwei(
+                          Number(pool?.token0Price.toSignificant(18) || 0),
+                          stEthPerToken
+                        )
+                  }
+                />{' '}
+                <span className="text-sm">
+                  {useMarketUnits ? 'Ggas/wstETH' : 'gwei'}
+                </span>
+              </>
+            }
+          />
 
-          <div className="rounded-lg border border-border p-4 shadow-sm">
-            <div className="text-md">
-              Liquidity
-              <InfoIcon className="ml-1.5 -translate-y-0.5 hidden h-4 text-gray-600" />
-            </div>
-            <div className="mt-1 text-2xl font-bold">
-              <NumberDisplay value={liquidity} />{' '}
-              <span className="text-sm">Ggas</span>
-            </div>
-          </div>
+          <StatBox
+            title="Liquidity"
+            tooltipContent="The largest long position that can be opened right now"
+            value={
+              <>
+                <NumberDisplay value={liquidity} />{' '}
+                <span className="text-sm">Ggas</span>
+              </>
+            }
+          />
 
-          <div className="rounded-lg border border-border p-4 shadow-sm">
-            <div className="text-md">Ends In</div>
-            <div className="mt-1 text-2xl font-bold">{relativeTime}</div>
-          </div>
+          <StatBox title="Ends in" value={getRelativeTime()} />
         </div>
       </div>
     </TooltipProvider>

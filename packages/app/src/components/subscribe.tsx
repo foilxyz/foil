@@ -9,15 +9,7 @@ import { type FC, useState, useEffect, useContext, useMemo } from 'react';
 import CountUp from 'react-countup';
 import { useForm } from 'react-hook-form';
 import type { AbiFunction } from 'viem';
-import {
-  decodeEventLog,
-  formatUnits,
-  zeroAddress,
-  isAddress,
-  createPublicClient,
-  http,
-} from 'viem';
-import { mainnet } from 'viem/chains';
+import { decodeEventLog, formatUnits, zeroAddress, isAddress } from 'viem';
 import {
   useWaitForTransactionReceipt,
   useWriteContract,
@@ -47,8 +39,9 @@ import {
   TooltipTrigger,
 } from '~/components/ui/tooltip';
 import { useToast } from '~/hooks/use-toast';
-import { useMarketList } from '~/lib/context/MarketListProvider';
-import { MarketContext } from '~/lib/context/MarketProvider';
+import { useFoil } from '~/lib/context/FoilProvider';
+import { PeriodContext } from '~/lib/context/PeriodProvider';
+import { mainnetClient, foilApi } from '~/lib/utils/util';
 
 import NumberDisplay from './numberDisplay';
 import SimpleBarChart from './SimpleBarChart';
@@ -72,15 +65,6 @@ interface SubscribeProps {
   onClose?: () => void;
 }
 
-const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: process.env.NEXT_PUBLIC_INFURA_API_KEY
-    ? http(
-        `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`
-      )
-    : http('https://ethereum-rpc.publicnode.com'),
-});
-
 const Subscribe: FC<SubscribeProps> = ({
   onAnalyticsClose,
   isAnalyticsMode = false,
@@ -94,13 +78,14 @@ const Subscribe: FC<SubscribeProps> = ({
     epoch: contextEpoch,
     collateralAsset,
     foilData,
-    stEthPerToken,
     collateralAssetDecimals,
     collateralAssetTicker,
     refetchUniswapData,
     startTime,
     endTime,
-  } = useContext(MarketContext);
+  } = useContext(PeriodContext);
+
+  const { stEthPerToken } = useFoil();
 
   // Use prop values if provided, otherwise use context values
   const finalMarketAddress = contextMarketAddress;
@@ -143,7 +128,6 @@ const Subscribe: FC<SubscribeProps> = ({
 
   // Rest of your hooks and effects
   const { toast } = useToast();
-  const { markets } = useMarketList();
 
   const account = useAccount();
   const { isConnected, address } = account;
@@ -477,10 +461,6 @@ const Subscribe: FC<SubscribeProps> = ({
     );
   };
 
-  const marketName =
-    markets.find((m) => m.address === finalMarketAddress)?.name ||
-    'Choose Market';
-
   const handleEstimateUsage = async () => {
     const formWalletAddress = form.getValues('walletAddress');
     if (!formWalletAddress) {
@@ -497,7 +477,7 @@ const Subscribe: FC<SubscribeProps> = ({
       let resolvedAddress = formWalletAddress;
       if (!isAddress(formWalletAddress)) {
         try {
-          const ensAddress = await publicClient.getEnsAddress({
+          const ensAddress = await mainnetClient.getEnsAddress({
             name: formWalletAddress,
           });
           if (!ensAddress) {
@@ -515,30 +495,15 @@ const Subscribe: FC<SubscribeProps> = ({
         }
       }
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_FOIL_API_URL}/estimate`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            walletAddress: resolvedAddress,
-            chainId: finalChainId,
-            marketAddress: finalMarketAddress,
-            epochId: finalEpoch,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch estimate');
-      }
-
-      const data = await response.json();
+      const estimateData = await foilApi.post('/estimate/estimate', {
+        walletAddress: resolvedAddress,
+        chainId: finalChainId,
+        marketAddress: finalMarketAddress,
+        epochId: finalEpoch,
+      });
 
       // Add check for no gas usage
-      if (!data.totalGasUsed || data.totalGasUsed === 0) {
+      if (!estimateData.totalGasUsed || estimateData.totalGasUsed === 0) {
         toast({
           title: 'Recent Data Unavailable',
           description: `This address hasn't used gas in the last ${formattedDuration}.`,
@@ -549,11 +514,11 @@ const Subscribe: FC<SubscribeProps> = ({
 
       // Store the results if there is gas usage
       setEstimationResults({
-        totalGasUsed: data.totalGasUsed,
-        ethPaid: data.ethPaid || 0,
-        avgGasPerTx: data.avgGasPerTx || 0,
-        avgGasPrice: data.avgGasPrice || 0,
-        chartData: data.chartData || [],
+        totalGasUsed: estimateData.totalGasUsed,
+        ethPaid: estimateData.ethPaid || 0,
+        avgGasPerTx: estimateData.avgGasPerTx || 0,
+        avgGasPrice: estimateData.avgGasPrice || 0,
+        chartData: estimateData.chartData || [],
       });
     } catch (error) {
       toast({
@@ -721,6 +686,7 @@ const Subscribe: FC<SubscribeProps> = ({
                           {...field}
                           placeholder="vitalik.eth"
                           autoComplete="off"
+                          data-1p-ignore
                           spellCheck={false}
                           onKeyDown={(e) => {
                             if (e.key === 'Enter') {
@@ -885,7 +851,7 @@ const Subscribe: FC<SubscribeProps> = ({
             <img src="/eth.svg" alt="Ethereum" width="100%" height="100%" />
           </div>
 
-          <h2 className="text-2xl font-semibold">{marketName} Subscription</h2>
+          <h2 className="text-2xl font-semibold">Create Subscription</h2>
         </div>
 
         <p className="mb-3 text-lg">

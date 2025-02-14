@@ -1,23 +1,20 @@
 'use client';
 
-import { ArrowUpDown } from 'lucide-react';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import type { Control, Path, FieldValues } from 'react-hook-form';
-import { Controller, useWatch } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 
-import { Button } from '@/components/ui/button';
 import { FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { MarketContext } from '~/lib/context/MarketProvider';
-import { removeLeadingZeros } from '~/lib/util/util';
+import { PeriodContext } from '~/lib/context/PeriodProvider';
+import { removeLeadingZeros } from '~/lib/utils/util';
 
 interface Props<T extends FieldValues> {
   label: string;
   name: Path<T>;
   control: Control<T>;
   isDisabled?: boolean;
-  minAllowedPrice: number;
-  maxAllowedPrice: number;
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
 }
 
 const LiquidityPriceInput = <T extends FieldValues>({
@@ -25,53 +22,12 @@ const LiquidityPriceInput = <T extends FieldValues>({
   name,
   control,
   isDisabled = false,
-  minAllowedPrice,
-  maxAllowedPrice,
+  onBlur: externalOnBlur,
 }: Props<T>) => {
-  const { collateralAssetTicker, stEthPerToken } = useContext(MarketContext);
-  const [isGgasWstEth, setIsGgasWstEth] = useState(true);
-  const currValue = useWatch({
-    control,
-    name,
-  });
-  const ggasWstEthToGasGwei = 1e9 / (stEthPerToken || 1);
-
-  const handleToggleUnit = (
-    value: string,
-    onChange: (value: string) => void
-  ) => {
-    const newInputValue = isGgasWstEth
-      ? (parseFloat(value) * ggasWstEthToGasGwei).toString()
-      : (parseFloat(value) / ggasWstEthToGasGwei).toString();
-    onChange(newInputValue);
-    setIsGgasWstEth(!isGgasWstEth);
-  };
+  const { collateralAssetTicker, useMarketUnits } = useContext(PeriodContext);
 
   const getCurrentUnit = () => {
-    return isGgasWstEth ? `Ggas/${collateralAssetTicker}` : 'gas/gwei';
-  };
-
-  const convertToCurrentUnit = (value: number) => {
-    return isGgasWstEth ? value : value * ggasWstEthToGasGwei;
-  };
-
-  const getErrorMessage = (value: string) => {
-    if (!value) return 'Price is required';
-    const adjustedMinValue = convertToCurrentUnit(minAllowedPrice);
-    const adjustMaxValue = convertToCurrentUnit(maxAllowedPrice);
-    const outOfRangeMinError = currValue < adjustedMinValue;
-    const outOfRangeMaxError = currValue > adjustMaxValue;
-    if (outOfRangeMinError) {
-      return `Price cannot be less than ${adjustedMinValue.toFixed(
-        2
-      )} ${getCurrentUnit()}`;
-    }
-    if (outOfRangeMaxError) {
-      return `Price cannot exceed ${adjustMaxValue.toFixed(
-        2
-      )} ${getCurrentUnit()}`;
-    }
-    return '';
+    return useMarketUnits ? `Ggas/${collateralAssetTicker}` : 'gwei';
   };
 
   return (
@@ -79,13 +35,6 @@ const LiquidityPriceInput = <T extends FieldValues>({
       <Controller
         name={name}
         control={control}
-        rules={{
-          required: 'Price is required',
-          validate: (value) => {
-            const errorMessage = getErrorMessage(value);
-            return errorMessage || true;
-          },
-        }}
         render={({
           field: { onChange, value, onBlur },
           fieldState: { error },
@@ -96,30 +45,26 @@ const LiquidityPriceInput = <T extends FieldValues>({
               <Input
                 value={value?.toString() || ''}
                 onChange={(e) => onChange(removeLeadingZeros(e.target.value))}
-                onBlur={() => {
+                onBlur={(e) => {
                   if (value === '') {
                     onChange('0');
                   }
                   onBlur();
+                  if (externalOnBlur) {
+                    externalOnBlur(e);
+                  }
                 }}
                 type="number"
                 inputMode="decimal"
                 disabled={isDisabled}
                 onWheel={(e) => e.currentTarget.blur()}
-                className="pr-[120px]"
+                className="pr-[120px] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="absolute right-0 h-full px-3 gap-2 rounded-l-none"
-                onClick={() => handleToggleUnit(value, onChange)}
-              >
+              <div className="absolute inset-y-0 right-0 flex items-center px-3 border border-input bg-muted rounded-r-md">
                 {getCurrentUnit()}
-                <ArrowUpDown className="h-4 w-4" />
-              </Button>
+              </div>
             </div>
-            {error && <FormMessage>{getErrorMessage(value)}</FormMessage>}
+            {error && <FormMessage>{error.message}</FormMessage>}
           </FormItem>
         )}
       />

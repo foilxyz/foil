@@ -1,5 +1,5 @@
-import { Abi } from 'viem';
-import { IResourcePriceIndexer } from './resourcePriceFunctions/IResourcePriceIndexer';
+import type { Abi, PublicClient } from 'viem';
+import type { Resource } from './models/Resource';
 
 export enum EventType {
   LiquidityPositionCreated = 'LiquidityPositionCreated',
@@ -126,6 +126,8 @@ export enum TimeWindow {
 export interface MarketInfo {
   public: boolean;
   deployment: Deployment;
+  vaultAddress: string;
+  isYin: boolean;
   marketChainId: number;
   resource: {
     name: string;
@@ -157,4 +159,13 @@ export interface PositionUpdatedEventLog {
   vGasAmount: string;
   borrowedVEth: string;
   borrowedVGas: string;
+}
+export interface IResourcePriceIndexer {
+  client: PublicClient | undefined;
+  indexBlockPriceFromTimestamp(
+    resource: Resource,
+    timestamp: number
+  ): Promise<boolean>;
+  indexBlocks(resource: Resource, blocks: number[]): Promise<boolean>;
+  watchBlocksForResource(resource: Resource): Promise<void>;
 }

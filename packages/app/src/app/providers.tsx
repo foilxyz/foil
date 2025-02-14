@@ -2,35 +2,26 @@
 
 import { RainbowKitProvider, lightTheme } from '@rainbow-me/rainbowkit';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
-import type { HttpTransport } from 'viem';
-import { defineChain } from 'viem';
-import { sepolia, base, mainnet } from 'viem/chains';
+import type { Chain, HttpTransport } from 'viem';
+import { sepolia, base, cannon } from 'viem/chains';
 import { createConfig, http, WagmiProvider } from 'wagmi';
 import { injected } from 'wagmi/connectors';
 
 import ThemeProvider from '~/components/ThemeProvider';
 import { ConnectWalletProvider } from '~/lib/context/ConnectWalletProvider';
-import { MarketListProvider } from '~/lib/context/MarketListProvider';
+import { FoilProvider } from '~/lib/context/FoilProvider';
 
 const queryClient = new QueryClient();
 
-export const cannon = defineChain({
-  id: 13370,
-  name: 'Cannon',
-  nativeCurrency: {
-    name: 'Ether',
-    symbol: 'ETH',
-    decimals: 18,
+const cannonAtLocalhost = {
+  ...cannon,
+  rpcUrls: {
+    ...cannon.rpcUrls,
+    default: { http: ['http://localhost:8545'] },
   },
-  rpcUrls: { default: { http: ['http://localhost:8545'] } },
-});
+};
 
 const transports: Record<number, HttpTransport> = {
-  [mainnet.id]: http(
-    process.env.NEXT_PUBLIC_INFURA_API_KEY
-      ? `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`
-      : 'https://ethereum-rpc.publicnode.com'
-  ),
   [sepolia.id]: http(
     process.env.NEXT_PUBLIC_INFURA_API_KEY
       ? `https://sepolia.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`
@@ -43,11 +34,11 @@ const transports: Record<number, HttpTransport> = {
   ),
 };
 
-const chains: any = [mainnet, base];
+const chains: any = [base];
 
 if (process.env.NODE_ENV !== 'production') {
-  transports[cannon.id] = http('http://localhost:8545');
-  chains.push(cannon);
+  transports[cannonAtLocalhost.id] = http('http://localhost:8545');
+  chains.push(cannonAtLocalhost);
   chains.push(sepolia);
 }
 
@@ -69,9 +60,14 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
     >
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-          <RainbowKitProvider theme={lightTheme()}>
+          <RainbowKitProvider
+            theme={lightTheme()}
+            initialChain={chains.reduce((a: Chain, b: Chain) =>
+              a.id > b.id ? a : b
+            )}
+          >
             <ConnectWalletProvider>
-              <MarketListProvider>{children}</MarketListProvider>
+              <FoilProvider>{children}</FoilProvider>
             </ConnectWalletProvider>
           </RainbowKitProvider>
         </QueryClientProvider>

@@ -1,5 +1,8 @@
+import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
 import {
   type Dispatch,
   type SetStateAction,
@@ -18,16 +21,18 @@ import {
   YAxis,
 } from 'recharts';
 
+import NumberDisplay from '~/components/numberDisplay';
 import type { VolumeChartData, TimeWindow } from '~/lib/interfaces/interfaces';
-import { formatXAxisTick, getXTicksToShow } from '~/lib/util/chartUtil';
-import { getDisplayTextForVolumeWindow } from '~/lib/util/util';
+import { formatXAxisTick, getXTicksToShow } from '~/lib/utils/chartUtil';
+import { getDisplayTextForVolumeWindow, foilApi } from '~/lib/utils/util';
 
-const barColor = 'hsl(var(--chart-3))';
+const barColor = '#58585A';
 
 dayjs.extend(utc);
 
 export type ChartProps = {
-  data: VolumeChartData[];
+  contractId: string;
+  epochId: string;
   activeWindow: TimeWindow;
   color?: string | undefined;
   height?: number | undefined;
@@ -77,28 +82,58 @@ const CustomTooltip: React.FC<
 
   if (!payload || !payload[0]) return null;
 
-  const fee = payload[0].payload?.fee;
-  if (!fee) return null;
+  const volume = payload[0].payload?.volume;
+  if (!volume) return null;
 
   return (
-    <div
-      style={{
-        backgroundColor: 'white',
-        padding: '8px',
-        border: '1px solid #ccc',
-      }}
-    >
-      <p>{`Fee: ${fee}`}</p>
-    </div>
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="bg-background p-3 border border-border rounded-sm shadow-sm"
+      >
+        <p className="text-xs font-medium text-gray-500 mb-0.5">Volume</p>
+        <p>
+          <NumberDisplay value={volume} /> Ggas
+        </p>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 
-const VolumeChart = ({ data, color = barColor, activeWindow }: ChartProps) => {
+const VolumeChart = ({
+  contractId,
+  epochId,
+  color = barColor,
+  activeWindow,
+}: ChartProps) => {
+  const {
+    data: volumeData,
+    error: volumeError,
+    isLoading,
+  } = useQuery({
+    queryKey: ['volume', contractId, epochId, activeWindow],
+    queryFn: async () => {
+      return foilApi.get(
+        `/volume?contractId=${contractId}&epochId=${epochId}&timeWindow=${activeWindow}`
+      );
+    },
+    enabled: !!contractId && !!epochId && !!activeWindow,
+    retry: 3,
+  });
+
+  useEffect(() => {
+    if (volumeError) {
+      console.error('Volume data fetch error:', volumeError);
+    }
+  }, [volumeError]);
+
   const volumeOverTimeframe = useMemo(() => {
-    return data.reduce((sum, item) => {
-      return sum + item.volume;
+    return (volumeData || []).reduce((sum: number, item: VolumeChartData) => {
+      return sum + (item.volume || 0);
     }, 0);
-  }, [data]);
+  }, [volumeData]);
 
   const timePeriodLabel = useMemo(() => {
     return getDisplayTextForVolumeWindow(activeWindow);
@@ -121,28 +156,45 @@ const VolumeChart = ({ data, color = barColor, activeWindow }: ChartProps) => {
   };
 
   return (
-    <div className="flex flex-1 relative">
-      <div className="min-h-[50px] w-fit absolute top-0 left-0 z-[2] bg-background opacity-80">
-        <p className="text-base">
-          {value ? `${value.toLocaleString()} Ggas` : '0 Ggas'}
+    <div className="flex flex-1 flex-col p-4 relative">
+      {isLoading && (
+        <div className="absolute top-4 right-16 md:top-8 md:right-24 z-10">
+          <Loader2 className="h-12 w-12 animate-spin text-muted-foreground opacity-30" />
+        </div>
+      )}
+      <motion.div
+        className="w-fit pl-2 mb-1"
+        initial={false}
+        animate={{
+          borderLeftWidth: '4px',
+          borderLeftColor: label === timePeriodLabel ? '#8D895E' : '#F1EBDD',
+        }}
+        transition={{ duration: 0.2 }}
+      >
+        <p className="text-xs font-medium text-gray-500 mb-0.5">
+          {label ? `${label}` : ''}
         </p>
-        <p className="text-sm text-gray-500">{label ? `${label}` : ''}</p>
-      </div>
+        <div className="flex items-center">
+          <p>
+            {value ? (
+              <>
+                <NumberDisplay value={value} /> Ggas
+              </>
+            ) : (
+              '0 Ggas'
+            )}
+          </p>
+        </div>
+      </motion.div>
 
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           width={500}
           height={300}
-          data={data}
-          margin={{
-            top: 50,
-            right: 10,
-            left: 10,
-            bottom: 5,
-          }}
+          data={volumeData || []}
           onMouseLeave={() => {
-            if (setLabel) setLabel(timePeriodLabel);
-            if (setValue) setValue(volumeOverTimeframe);
+            setLabel(timePeriodLabel);
+            setValue(volumeOverTimeframe);
           }}
         >
           <YAxis
@@ -152,19 +204,22 @@ const VolumeChart = ({ data, color = barColor, activeWindow }: ChartProps) => {
             tickFormatter={(volume: number) =>
               volume === 0 ? '' : `${volume.toFixed(4)}`
             }
+            tick={{ fontSize: 12, fill: '#000000', opacity: 0.5 }}
           />
           <XAxis
             dataKey="endTimestamp"
-            axisLine={false}
+            axisLine={{ stroke: '#000000', strokeWidth: 1 }}
             tickLine={false}
             tickFormatter={(timestamp) =>
               formatXAxisTick(timestamp, activeWindow)
             }
-            ticks={getXTicksToShow(data, activeWindow)}
+            ticks={getXTicksToShow(volumeData || [], activeWindow)}
             minTickGap={10}
+            height={20}
+            tick={{ fontSize: 12, fill: '#000000', opacity: 0.5 }}
           />
           <Tooltip
-            contentStyle={{}}
+            cursor={{ fill: '#F1EBDD' }}
             content={<CustomTooltip setLabel={setLabel} setValue={setValue} />}
           />
           <Bar dataKey="volume" fill={color} shape={renderCustomBar} />

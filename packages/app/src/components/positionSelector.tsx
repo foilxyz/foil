@@ -11,12 +11,13 @@ import {
   DialogTitle,
 } from '~/components/ui/dialog';
 import { useAddEditPosition } from '~/lib/context/AddEditPositionContext';
-import { MarketContext } from '~/lib/context/MarketProvider';
+import { PeriodContext } from '~/lib/context/PeriodProvider';
+import { positionHasBalance } from '~/lib/utils/util';
 
 const PositionSelector: React.FC = () => {
   const { nftId, positions, setNftId } = useAddEditPosition();
   const [isOpen, setIsOpen] = useState(false);
-  const { chainId, address: marketAddress, epoch } = useContext(MarketContext);
+  const { chainId, address: marketAddress, epoch } = useContext(PeriodContext);
 
   const allPositions = [
     ...(positions?.liquidityPositions?.map((pos) => ({
@@ -36,7 +37,7 @@ const PositionSelector: React.FC = () => {
 
   const getPositionUrl = (position: { type: 'lp' | 'trade'; id: bigint }) => {
     const baseUrl = position.type === 'lp' ? 'pool' : 'trade';
-    return `/${baseUrl}/${chainId}:${marketAddress}/epochs/${epoch}?positionId=${position.id.toString()}`;
+    return `/${baseUrl}/${chainId}:${marketAddress}/periods/${epoch}?positionId=${position.id.toString()}`;
   };
 
   return (
@@ -48,7 +49,7 @@ const PositionSelector: React.FC = () => {
           type="button"
           variant="link"
           size="sm"
-          className="text-blue-500 ml-1 p-0 h-auto"
+          className="text-blue-500 hover:text-blue-600 ml-1 p-0 h-auto"
           onClick={() => setIsOpen(true)}
         >
           <Edit className="h-4 w-4" />
@@ -56,36 +57,58 @@ const PositionSelector: React.FC = () => {
       </p>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="max-w-[300px]">
+        <DialogContent className="max-w-[400px]">
           <DialogHeader>
             <DialogTitle>Select Position</DialogTitle>
           </DialogHeader>
           <div className="flex flex-col space-y-2">
-            {allPositions.map((position) => (
-              <Link
-                key={position.id.toString()}
-                href={getPositionUrl(position)}
-                className="w-full"
-              >
-                <Button
-                  variant="ghost"
-                  className={`flex justify-between items-center py-2 px-4 rounded-md w-full h-auto
+            {[...allPositions]
+              .sort((a, b) => {
+                const aHasBalance = positionHasBalance(a);
+                const bHasBalance = positionHasBalance(b);
+
+                if (aHasBalance && !bHasBalance) return -1;
+                if (!aHasBalance && bHasBalance) return 1;
+
+                // If both have balance or both don't have balance, sort by ID (descending)
+                return Number(b.id) - Number(a.id);
+              })
+              .map((position) => (
+                <Link
+                  key={position.id.toString()}
+                  href={getPositionUrl(position)}
+                  className="w-full"
+                >
+                  <Button
+                    variant="ghost"
+                    className={`flex justify-between items-center py-2 px-4 rounded-md w-full h-auto
                     ${Number(position.id) === nftId ? 'bg-muted' : 'bg-transparent'}
                     hover:bg-muted/50`}
-                  onClick={() => handlePositionSelect(Number(position.id))}
-                >
-                  <div className="flex items-center gap-2 w-full">
-                    <p className="font-bold">#{position.id.toString()}</p>
-                    <span className="text-sm text-muted-foreground ml-auto">
-                      {position.type === 'lp'
-                        ? 'Liquidity Position'
-                        : 'Trader Position'}
-                    </span>
-                  </div>
-                </Button>
-              </Link>
-            ))}
-            <Button className="mt-6" onClick={() => handlePositionSelect(0)}>
+                    onClick={() => handlePositionSelect(Number(position.id))}
+                  >
+                    <div className="flex items-center gap-2 w-full">
+                      <p className="font-bold">#{position.id.toString()}</p>
+                      <span className="text-sm text-muted-foreground">
+                        {position.type === 'lp'
+                          ? 'Liquidity Position'
+                          : 'Trader Position'}
+                      </span>
+                      <span className="text-sm ml-auto">
+                        {position.type === 'lp'
+                          ? `Balance: ${(Number(position.depositedCollateralAmount) / 1e18).toFixed(4)} wstETH`
+                          : `Balance: ${
+                              Number(position.vEthAmount) > 0
+                                ? (Number(position.vEthAmount) / 1e18).toFixed(
+                                    4
+                                  )
+                                : '0'
+                            } wstETH`}
+                      </span>
+                    </div>
+                  </Button>
+                </Link>
+              ))}
+            <Button className="mt-3" onClick={() => handlePositionSelect(0)}>
               <p>Create New Position</p>
             </Button>
           </div>

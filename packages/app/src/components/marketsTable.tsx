@@ -23,11 +23,11 @@ import {
   TableHeader,
   TableRow,
 } from '~/components/ui/table';
-import { useMarketList } from '~/lib/context/MarketListProvider';
+import { useFoil } from '~/lib/context/FoilProvider';
 import { useResources } from '~/lib/hooks/useResources';
 
 const MarketsTable = () => {
-  const { markets } = useMarketList();
+  const { markets } = useFoil();
   const { data: resources } = useResources();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -54,8 +54,6 @@ const MarketsTable = () => {
                 'PPpp'
               )}`,
               startTimestamp: epoch.startTimestamp,
-              settled:
-                epoch.settlementPriceD18 > 0 ? epoch.settlementPriceD18 : 'No',
               chainId: market.chainId,
               marketAddress: market.address,
             };
@@ -182,13 +180,13 @@ const MarketsTable = () => {
                 ))}
                 <TableCell className="text-right">
                   <Link
-                    href={`/trade/${row.original.chainId}:${row.original.marketAddress}/epochs/${row.original.epochId}`}
+                    href={`/markets/${row.original.chainId}:${row.original.marketAddress}/periods/${row.original.epochId}/trade`}
                     className="mr-2"
                   >
                     <Button size="sm">Trade</Button>
                   </Link>
                   <Link
-                    href={`/pool/${row.original.chainId}:${row.original.marketAddress}/epochs/${row.original.epochId}`}
+                    href={`/markets/${row.original.chainId}:${row.original.marketAddress}/periods/${row.original.epochId}/pool`}
                   >
                     <Button size="sm">Pool</Button>
                   </Link>
