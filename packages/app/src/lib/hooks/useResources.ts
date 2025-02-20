@@ -100,6 +100,7 @@ export const useResources = () => {
         'ethereum-blobspace',
         'celestia-blobspace',
         'bitcoin-fees',
+        'solana-fees',
       ];
       const resources = data.resources.sort((a: any, b: any) => {
         const indexA = preferredOrder.indexOf(a.slug);
