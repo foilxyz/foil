@@ -27,10 +27,10 @@ import {
 } from './constants';
 
 import {
-  loadStorageFromFile,
+  restorePersistedStorage,
   maxBigInt,
   minBigInt,
-  saveStorageToFile,
+  persistStorage,
 } from './helper';
 
 export class ResourcePerformance {
@@ -447,13 +447,14 @@ export class ResourcePerformance {
 
     for (const interval of this.intervals) {
       // Interval resource store
-      await saveStorageToFile(
+      await persistStorage(
         storage[interval],
         lastResourceTimestampProcessed,
         lastMarketTimestampProcessed,
         resourceSlug,
         resourceName,
-        interval.toString()
+        interval,
+        'intervalStore'
       );
     }
   }
@@ -472,10 +473,11 @@ export class ResourcePerformance {
     let latestResourceTimestamp = 0;
     let latestMarketTimestamp = 0;
     for (const interval of this.intervals) {
-      const storageInterval = await loadStorageFromFile(
+      const storageInterval = await restorePersistedStorage(
         resourceSlug,
         resourceName,
-        interval.toString()
+        interval,
+        'intervalStore'
       );
       if (!storageInterval) {
         return undefined;
