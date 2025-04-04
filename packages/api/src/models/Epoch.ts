@@ -12,6 +12,7 @@ import { Market } from './Market';
 import { Position } from './Position';
 import { NUMERIC_PRECISION } from '../constants';
 import { MarketParams } from './MarketParams';
+import { Buffer } from 'buffer';
 
 @Entity()
 @Unique(['market', 'epochId'])
@@ -88,4 +89,7 @@ export class Epoch {
 
   @Column({ type: 'boolean', default: true })
   public: boolean;
+
+  @Column({ type: 'text', nullable: true })
+  question: string | null;
 }
