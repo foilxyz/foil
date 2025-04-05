@@ -1,7 +1,9 @@
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from '@foil/ui/components/ui/toggle-group';
 import Image from 'next/image';
 import { useContext } from 'react';
-
-import { ToggleGroup, ToggleGroupItem } from '~/components/ui/toggle-group';
 import { PeriodContext } from '~/lib/context/PeriodProvider';
 
 interface PriceTogglesProps {
