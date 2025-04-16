@@ -7,8 +7,7 @@ import {
   IntervalSelector,
   WindowSelector,
 } from '@foil/ui/components/charts';
-import type { TimeWindow } from '@foil/ui/types/charts';
-import { ChartType, TimeInterval } from '@foil/ui/types/charts';
+import { TimeWindow, ChartType, TimeInterval } from '@foil/ui/types/charts';
 import { useQuery } from '@tanstack/react-query';
 import { print } from 'graphql';
 import { ChevronLeft } from 'lucide-react';
@@ -16,11 +15,11 @@ import dynamic from 'next/dynamic';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ResponsiveContainer } from 'recharts';
+import { foilApi } from '~/lib/utils/util';
 
 import ComingSoonScrim from '~/components/ComingSoonScrim';
 import SimpleLiquidityWrapper from '~/components/SimpleLiquidityWrapper';
 import SimpleTradeWrapper from '~/components/SimpleTradeWrapper';
-import { foilApi } from '~/lib/utils/util';
 
 // Dynamically import LottieLoader
 const LottieLoader = dynamic(() => import('~/components/LottieLoader'), {
@@ -40,6 +39,9 @@ const EPOCH_QUERY = gql`
       baseTokenName
       quoteTokenName
       optionNames
+      resource {
+        slug
+      }
       epochs {
         id
         epochId
@@ -62,7 +64,9 @@ const ForecastingDetailPage = () => {
     string | null
   >(null);
 
-  const [selectedWindow, setSelectedWindow] = useState<TimeWindow | null>(null);
+  const [selectedWindow, setSelectedWindow] = useState<TimeWindow | null>(
+    TimeWindow.D
+  );
   const [selectedInterval, setSelectedInterval] = useState<TimeInterval>(
     TimeInterval.I15M
   );
@@ -253,7 +257,7 @@ const ForecastingDetailPage = () => {
               <ComingSoonScrim className="absolute rounded-lg" />
               <ResponsiveContainer width="100%" height="100%">
                 <Chart
-                  resourceSlug="prediction"
+                  slug={marketData?.resource?.slug}
                   market={{
                     epochId: Number(marketId),
                     chainId: Number(chainId),

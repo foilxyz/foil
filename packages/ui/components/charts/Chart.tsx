@@ -10,9 +10,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../ui/tooltip';
+import { gql } from '@apollo/client';
+import { print } from 'graphql';
 
 interface ChartProps {
-  resourceSlug?: string;
+  slug: string;
   market: {
     epochId: number;
     chainId: number;
@@ -32,7 +34,7 @@ interface ChartProps {
 }
 
 export const Chart = ({
-  resourceSlug,
+  slug,
   market,
   seriesVisibility = {
     candles: true,
@@ -44,31 +46,109 @@ export const Chart = ({
   selectedInterval,
   onHoverChange,
 }: ChartProps) => {
+
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
   const [isLogarithmic, setIsLogarithmic] = useState(false);
 
-  const { data: chartData, isLoading } = useQuery({
-    queryKey: [
-      'chart',
-      market.chainId,
-      market.address,
-      market.epochId,
-      selectedWindow,
-      selectedInterval,
-    ],
-    queryFn: async () => {
-      const params = new URLSearchParams({
-        chainId: market.chainId.toString(),
-        address: market.address,
-        epochId: market.epochId.toString(),
-        window: selectedWindow || '',
-        interval: selectedInterval,
-      });
-      return foilApi.get(`/charts/${resourceSlug}?${params.toString()}`);
-    },
-    enabled: !!resourceSlug && !!selectedWindow && !!selectedInterval,
-  });
+  // Query to get the chart data
+  // const { data: chartData, isLoading: isChartLoading } = useQuery({
+  //   queryKey: [
+  //     'chart',
+  //     market.chainId,
+  //     market.address,
+  //     market.epochId,
+  //     selectedWindow,
+  //     selectedInterval,
+  //     slug,
+  //   ],
+  //   queryFn: async () => {
+  //     if (!slug || !selectedWindow || !selectedInterval) {
+  //       console.log('Missing required data:', { slug, selectedWindow, selectedInterval });
+  //       return null;
+  //     }
+
+  //     const now = Math.floor(Date.now() / 1000);
+  //     let from: number;
+  //     let to: number = now;
+
+  //     // Calculate from timestamp based on TimeWindow
+  //     switch (selectedWindow) {
+  //       case TimeWindow.D:
+  //         from = now - 86400; // 1 day
+  //         break;
+  //       case TimeWindow.W:
+  //         from = now - 604800; // 1 week
+  //         break;
+  //       case TimeWindow.M:
+  //         from = now - 2592000; // 1 month
+  //         break;
+  //       default:
+  //         from = now - 86400; // default to 1 day
+  //     }
+
+  //     // Convert TimeInterval to seconds
+  //     let interval: number;
+  //     switch (selectedInterval) {
+  //       case TimeInterval.I5M:
+  //         interval = 300;
+  //         break;
+  //       case TimeInterval.I15M:
+  //         interval = 900;
+  //         break;
+  //       case TimeInterval.I30M:
+  //         interval = 1800;
+  //         break;
+  //       case TimeInterval.I1H:
+  //         interval = 3600;
+  //         break;
+  //       case TimeInterval.I4H:
+  //         interval = 14400;
+  //         break;
+  //       case TimeInterval.I1D:
+  //         interval = 86400;
+  //         break;
+  //       default:
+  //         interval = 900; // default to 15 minutes
+  //     }
+
+  //     const query = gql`
+  //       query ResourceCandles($slug: String!, $from: Int!, $to: Int!, $interval: Int!) {
+  //         resourceCandles(slug: $slug, from: $from, to: $to, interval: $interval) {
+  //           timestamp
+  //           open
+  //           high
+  //           low
+  //           close
+  //         }
+  //       }
+  //     `;
+
+  //     const response = await foilApi.post('/graphql', {
+  //       query: print(query),
+  //       variables: {
+  //         slug,
+  //         from,
+  //         to,
+  //         interval,
+  //       },
+  //     });
+
+  //     return response.data.data.resourceCandles;
+  //   },
+  //   enabled: !!slug && !!selectedWindow && !!selectedInterval,
+  //   retry: 3,
+  //   retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+  // });
+
+  // Show loading state while either query is loading
+  // if (isChartLoading) {
+  //   return (
+  //     <div className="flex items-center justify-center w-full h-full">
+  //       <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary" />
+  //     </div>
+  //   );
+  // }
 
   // Handle mouse enter/leave events
   useEffect(() => {
@@ -95,21 +175,8 @@ export const Chart = ({
     };
   }, [onHoverChange]);
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center w-full h-full">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary" />
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col flex-1 relative group w-full h-full">
-      {isLoading && (
-        <div className="absolute top-4 right-16 md:top-8 md:right-24 z-10">
-          <Loader2 className="h-12 w-12 animate-spin text-muted-foreground opacity-30" />
-        </div>
-      )}
       <div className="flex flex-1 h-full">
         <div ref={chartContainerRef} className="w-full h-full" />
       </div>
