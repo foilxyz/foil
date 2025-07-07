@@ -89,16 +89,11 @@ depends=["router.Sapience", "clone.BondCurrency"]
 target="Sapience"
 from = "<%= settings.owner %>"
 func="createMarket"
-args=[
-  "1735689600",
-  "1738368000",
-  "<%= settings.startingSqrtPriceX96 %>",
-  "<%= settings.baseAssetMinPriceTick %>",
-  "<%= settings.baseAssetMaxPriceTick %>",
-  "1",
-  "<%= settings.claimStatement %>",
-  ""
-]
+args=[ 
+  { startTime = "1735689600", endTime = "1738368000", startingSqrtPriceX96 = "<%= settings.startingSqrtPriceX96 %>", baseAssetMinPriceTick = "<%= settings.baseAssetMinPriceTick %>", baseAssetMaxPriceTick = "<%= settings.baseAssetMaxPriceTick %>", salt = "1", claimStatementYesOrNumeric = "<%= settings.claimStatement %>", claimStatementNo = "" } 
+] 
+
+
 depends=["invoke.initializeMarketGroup"]
 
 [invoke.gimmeTokens]
