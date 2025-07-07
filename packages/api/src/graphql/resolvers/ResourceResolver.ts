@@ -1,9 +1,8 @@
 import { Resolver, Query, Arg } from 'type-graphql';
 import prisma from '../../db';
-import { Resource, ResourcePrice } from '../types/PrismaTypes';
+import { Resource, Resource_price } from '@generated/type-graphql';
 import type {
   resource,
-  resource_price,
   market_group,
   category,
   Prisma,
@@ -74,25 +73,16 @@ export class ResourceResolver {
     }
   }
 
-  @Query(() => [ResourcePrice])
-  async resourcePrices(): Promise<ResourcePrice[]> {
+  @Query(() => [Resource_price])
+  async resourcePrices(): Promise<Resource_price[]> {
     try {
-      const prices: (resource_price & { resource: resource | null })[] =
-        await prisma.resource_price.findMany({
-          include: {
-            resource: true,
-          },
-        });
+      const prices = await prisma.resource_price.findMany({
+        include: {
+          resource: true,
+        },
+      });
 
-      return prices.map(
-        (price: resource_price & { resource: resource | null }) => ({
-          id: price.id,
-          timestamp: price.timestamp,
-          value: price.value.toString(),
-          blockNumber: price.blockNumber,
-          resource: price.resource ? (price.resource as Resource) : null,
-        })
-      ) as ResourcePrice[];
+      return prices as Resource_price[];
     } catch (error) {
       console.error('Error fetching resource prices:', error);
       throw new Error('Failed to fetch resource prices');

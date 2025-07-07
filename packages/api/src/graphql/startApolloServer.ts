@@ -6,15 +6,14 @@ import { buildSchema } from 'type-graphql';
 import {
   MarketGroupResolver,
   PositionResolver,
-  ResourceResolver,
   TransactionResolver,
   CandleResolver,
   PnLResolver,
   VolumeResolver,
-  CategoryResolver,
   MarketResolver,
 } from './resolvers';
 import { SharedSchema } from './sharedSchema';
+import { readOnlyResolvers } from './resolvers/GeneratedResolvers';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ApolloContext {}
@@ -25,13 +24,12 @@ export const initializeApolloServer = async () => {
     resolvers: [
       MarketGroupResolver,
       MarketResolver,
-      ResourceResolver,
       PositionResolver,
       TransactionResolver,
       CandleResolver,
       PnLResolver,
       VolumeResolver,
-      CategoryResolver,
+      ...readOnlyResolvers,
     ],
     emitSchemaFile: true,
     validate: false,
