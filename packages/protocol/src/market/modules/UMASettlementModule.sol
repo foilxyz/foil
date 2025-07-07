@@ -84,7 +84,7 @@ contract UMASettlementModule is IUMASettlementModule, ReentrancyGuardUpgradeable
         return market.assertionId;
     }
 
-    function assertionResolvedCallback(bytes32 assertionId, bool ) external {
+    function assertionResolvedCallback(bytes32 assertionId, bool) external {
         MarketGroup.Data storage marketGroup = MarketGroup.load();
         uint256 marketId = marketGroup.marketIdByAssertionId[assertionId];
         Market.Data storage market = Market.load(marketId);

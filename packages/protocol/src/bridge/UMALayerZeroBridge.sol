@@ -123,13 +123,10 @@ contract UMALayerZeroBridge is OApp, IUMALayerZeroBridge, ETHManagement, BondMan
     }
 
     // LayerZero message handling
-    function _lzReceive(
-        Origin calldata _origin,
-        bytes32,
-        bytes calldata _message,
-        address,
-        bytes calldata
-    ) internal override {
+    function _lzReceive(Origin calldata _origin, bytes32, bytes calldata _message, address, bytes calldata)
+        internal
+        override
+    {
         require(_origin.srcEid == bridgeConfig.remoteEid, "Invalid source chain");
         require(address(uint160(uint256(_origin.sender))) == bridgeConfig.remoteBridge, "Invalid sender");
 

@@ -199,8 +199,7 @@ contract BridgeTestBondEscrow is TestHelperOz5 {
         uint256 initialUmaUserTokenBalance = bondCurrency.balanceOf(umaUser);
         uint256 initialUmaTokenBalance = bondCurrency.balanceOf(address(umaBridge));
         uint256 initialUserBondBalance = umaBridge.getBondBalance(umaUser, address(bondCurrency));
-        (uint256 initialUserPendingWithdrawal,) =
-            umaBridge.getPendingWithdrawal(umaUser, address(bondCurrency));
+        (uint256 initialUserPendingWithdrawal,) = umaBridge.getPendingWithdrawal(umaUser, address(bondCurrency));
         uint256 initialRemoteUserBondBalance =
             marketBridge.getRemoteSubmitterBalance(address(umaUser), address(bondCurrency));
         uint256 initialRemoteUserWithdrawalIntent =

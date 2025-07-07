@@ -9,7 +9,7 @@ solc_version = "0.8.30"
 allow_internal_expect_revert = true
 
 # Linting and formatting
-line_length = 120
+line_length = 80
 tab_width = 4
 bracket_spacing = true
 number_underscore = "thousands"

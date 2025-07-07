@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.2 <0.9.0;
 
-
 import {ISapience} from "../../src/market/interfaces/ISapience.sol";
 import {ISapienceStructs} from "../../src/market/interfaces/ISapienceStructs.sol";
 import {Position} from "../../src/market/storage/Position.sol";

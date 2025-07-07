@@ -4,7 +4,6 @@ pragma solidity ^0.8.19;
 import "forge-std/Test.sol";
 import {Market} from "../../src/market/storage/Market.sol";
 
-
 contract SettleZeroPriceTest is Test {
     using Market for Market.Data;
 

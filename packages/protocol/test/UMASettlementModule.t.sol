@@ -8,7 +8,6 @@ import {ISapienceStructs} from "../src/market/interfaces/ISapienceStructs.sol";
 import {IMintableToken} from "../src/market/external/IMintableToken.sol";
 import {TestMarket} from "./helpers/TestMarket.sol";
 
-
 contract UmaSettleMarket is TestMarket {
     using Cannon for Vm;
 

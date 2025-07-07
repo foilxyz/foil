@@ -12,7 +12,6 @@ import {Errors} from "../../src/market/storage/Errors.sol";
 import {ISapienceStructs} from "../../src/market/interfaces/ISapienceStructs.sol";
 import {ISapiencePositionEvents} from "../../src/market/interfaces/ISapiencePositionEvents.sol";
 
-
 contract DepositCollateralTest is TestTrade {
     using Cannon for Vm;
 
