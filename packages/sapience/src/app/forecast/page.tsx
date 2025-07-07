@@ -6,6 +6,7 @@ import { LayoutGridIcon, FileTextIcon, UserIcon } from 'lucide-react';
 
 // Import existing components
 import PredictForm from '~/components/forecasting/forms/PredictForm';
+import AskForm from '~/components/shared/AskForm';
 import { FOCUS_AREAS } from '~/lib/constants/focusAreas';
 import Slider from '@sapience/ui/components/ui/slider';
 import { Button } from '@sapience/ui/components/ui/button';
@@ -224,11 +225,7 @@ const ForecastPage = () => {
 
         {/* Ask Tab Content */}
         {activeTab === 'ask' && (
-          <div className="p-6">
-            <div className="text-center py-8 text-muted-foreground">
-              <p>Ask tab content coming soon...</p>
-            </div>
-          </div>
+          <AskForm />
         )}
       </div>
     </div>
