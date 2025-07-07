@@ -73,7 +73,10 @@ export class MarketGroupType {
   marketParamsBondamount: string | null;
 
   @Field(() => String, { nullable: true })
-  marketParamsClaimstatement: string | null;
+  marketParamsClaimstatementYesOrNumeric: string | null;
+
+  @Field(() => String, { nullable: true })
+  marketParamsClaimstatementNo: string | null;
 
   @Field(() => String, { nullable: true })
   marketParamsUniswappositionmanager: string | null;

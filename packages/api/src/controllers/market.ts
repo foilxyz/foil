@@ -65,7 +65,8 @@ export const initializeMarket = async (marketInfo: MarketInfo) => {
     marketParamsAssertionliveness: null,
     marketParamsBondcurrency: null,
     marketParamsBondamount: null,
-    marketParamsClaimstatement: null,
+    marketParamsClaimstatementYesOrNumeric: null,
+    marketParamsClaimstatementNo: null,
     marketParamsUniswappositionmanager: null,
     marketParamsUniswapswaprouter: null,
     marketParamsUniswapquoter: null,
@@ -107,8 +108,10 @@ export const initializeMarket = async (marketInfo: MarketInfo) => {
       marketParamsRaw.bondCurrency || null;
     updatedMarketData.marketParamsBondamount =
       marketParamsRaw.bondAmount?.toString() || null;
-    updatedMarketData.marketParamsClaimstatement =
-      marketParamsRaw.claimStatement || null;
+    updatedMarketData.marketParamsClaimstatementYesOrNumeric =
+      marketParamsRaw.claimStatementYesOrNumeric || null;
+    updatedMarketData.marketParamsClaimstatementNo =
+      marketParamsRaw.claimStatementNo || null;
     updatedMarketData.marketParamsUniswappositionmanager =
       marketParamsRaw.uniswapPositionManager || null;
     updatedMarketData.marketParamsUniswapswaprouter =
@@ -154,7 +157,9 @@ const extractMarketGroupFields = (market: any) => {
     marketParamsAssertionliveness: market.marketParamsAssertionliveness,
     marketParamsBondcurrency: market.marketParamsBondcurrency,
     marketParamsBondamount: market.marketParamsBondamount,
-    marketParamsClaimstatement: market.marketParamsClaimstatement,
+    marketParamsClaimstatementYesOrNumeric:
+      market.marketParamsClaimstatementYesOrNumeric,
+    marketParamsClaimstatementNo: market.marketParamsClaimstatementNo,
     marketParamsUniswappositionmanager:
       market.marketParamsUniswappositionmanager,
     marketParamsUniswapswaprouter: market.marketParamsUniswapswaprouter,

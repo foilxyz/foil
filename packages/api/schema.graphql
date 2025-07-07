@@ -34,7 +34,8 @@ type Market {
   marketParamsAssertionliveness: String
   marketParamsBondamount: String
   marketParamsBondcurrency: String
-  marketParamsClaimstatement: String
+  marketParamsClaimstatementNo: String
+  marketParamsClaimstatementYesOrNumeric: String
   marketParamsFeerate: Int
   marketParamsOptimisticoraclev3: String
   marketParamsUniswappositionmanager: String
@@ -74,7 +75,8 @@ type MarketGroup {
   marketParamsAssertionliveness: String
   marketParamsBondamount: String
   marketParamsBondcurrency: String
-  marketParamsClaimstatement: String
+  marketParamsClaimstatementNo: String
+  marketParamsClaimstatementYesOrNumeric: String
   marketParamsFeerate: Int
   marketParamsOptimisticoraclev3: String
   marketParamsUniswappositionmanager: String

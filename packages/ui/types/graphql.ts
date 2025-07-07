@@ -49,7 +49,8 @@ export type Market = {
   marketParamsAssertionliveness?: Maybe<Scalars['String']['output']>;
   marketParamsBondamount?: Maybe<Scalars['String']['output']>;
   marketParamsBondcurrency?: Maybe<Scalars['String']['output']>;
-  marketParamsClaimstatement?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementYesOrNumeric?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementNo?: Maybe<Scalars['String']['output']>;
   marketParamsFeerate?: Maybe<Scalars['Int']['output']>;
   marketParamsOptimisticoraclev3?: Maybe<Scalars['String']['output']>;
   marketParamsUniswappositionmanager?: Maybe<Scalars['String']['output']>;
@@ -86,11 +87,12 @@ export type MarketGroup = {
   id: Scalars['ID']['output'];
   initializationNonce?: Maybe<Scalars['String']['output']>;
   isCumulative: Scalars['Boolean']['output'];
-  isYin: Scalars['Boolean']['output'];
+  isBridged: Scalars['Boolean']['output'];
   marketParamsAssertionliveness?: Maybe<Scalars['String']['output']>;
   marketParamsBondamount?: Maybe<Scalars['String']['output']>;
   marketParamsBondcurrency?: Maybe<Scalars['String']['output']>;
-  marketParamsClaimstatement?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementYesOrNumeric?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementNo?: Maybe<Scalars['String']['output']>;
   marketParamsFeerate?: Maybe<Scalars['Int']['output']>;
   marketParamsOptimisticoraclev3?: Maybe<Scalars['String']['output']>;
   marketParamsUniswappositionmanager?: Maybe<Scalars['String']['output']>;

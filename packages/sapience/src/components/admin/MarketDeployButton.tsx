@@ -21,6 +21,8 @@ import { toBytes, bytesToHex } from 'viem';
 import type { Address } from 'viem';
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 
+import { sapienceAbi } from '@sapience/ui/lib/abi';
+
 // ABI for the createEpoch function (from CreateMarketDialog originally)
 const createEpochAbiFragment = [
   {
@@ -120,8 +122,11 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
     ) {
       return 'Missing base asset maximum price tick.';
     }
-    if (!market.marketParamsClaimstatement) {
-      return 'Missing or invalid claim statement.';
+    if (!market.marketParamsClaimstatementYesOrNumeric) {
+      return 'Missing or invalid claim statement Yes or Numeric.';
+    }
+    if (!market.marketParamsClaimstatementNo) {
+      return 'Missing or invalid claim statement No.';
     }
     return null;
   };
@@ -140,9 +145,13 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
     }
 
     try {
-      const claimStatement = market.marketParamsClaimstatement;
-      const claimStatementBytes = toBytes(claimStatement as string);
-      const claimStatementHex = bytesToHex(claimStatementBytes);
+      const claimStatementYesOrNumeric = market.marketParamsClaimstatementYesOrNumeric;
+      const claimStatementNo = market.marketParamsClaimstatementNo;
+      const claimStatementBytesYesOrNumeric = toBytes(claimStatementYesOrNumeric as string);
+      const claimStatementHexYesOrNumeric = bytesToHex(claimStatementBytesYesOrNumeric);
+
+      const claimStatementBytesNo = toBytes(claimStatementNo as string);
+      const claimStatementHexNo = bytesToHex(claimStatementBytesNo);
 
       // Ensure numeric values are correctly typed for BigInt/Number conversion
       const startTimeNum = Number(market.startTimestamp);
@@ -169,16 +178,17 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
         minPriceTickNum,
         maxPriceTickNum,
         salt,
-        claimStatementHex as `0x${string}`,
+        claimStatementHexYesOrNumeric as `0x${string}`,
+        claimStatementHexNo as `0x${string}`,
       ] as const;
 
-      console.log('Calling writeContract (createEpoch) with args:', args);
+      console.log('Calling writeContract (createMarket) with args:', args);
       console.log('Target contract:', marketGroupAddress);
 
       writeContract({
         address: marketGroupAddress as Address,
-        abi: createEpochAbiFragment,
-        functionName: 'createEpoch',
+        abi: sapienceAbi().abi,
+        functionName: 'createMarket',
         args,
       });
     } catch (err) {
@@ -257,8 +267,12 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
                 {market.baseAssetMaxPriceTick?.toString() ?? 'N/A'}
               </p>
               <p>
-                <strong>claimStatement (bytes):</strong>{' '}
-                {market.marketParamsClaimstatement ?? 'N/A'}
+                <strong>claimStatement Yes (bytes):</strong>{' '}
+                {market.marketParamsClaimstatementYesOrNumeric ?? 'N/A'}
+              </p>
+              <p>
+                <strong>claimStatement No (bytes):</strong>{' '}
+                {market.marketParamsClaimstatementNo ?? 'N/A'}
               </p>
               <p>
                 <strong>salt (uint256):</strong> {'<generated on deploy>'}

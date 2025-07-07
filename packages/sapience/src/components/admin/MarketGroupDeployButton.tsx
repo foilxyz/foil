@@ -20,79 +20,9 @@ import { parseAbiItem, decodeEventLog, zeroAddress } from 'viem';
 import type { Address, AbiEvent } from 'viem';
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 
-import type { EnrichedMarketGroup } from '~/hooks/graphql/useMarketGroups';
+import { sapienceFactoryAbi } from '@sapience/ui/lib/abi';
 
-// ABI for the MarketGroupFactory contract - Minimal needed for deployment
-const marketGroupFactoryAbi = [
-  {
-    type: 'function',
-    name: 'cloneAndInitializeMarketGroup',
-    inputs: [
-      { name: 'collateralAsset', type: 'address', internalType: 'address' },
-      { name: 'feeCollectors', type: 'address[]', internalType: 'address[]' },
-      { name: 'callbackRecipient', type: 'address', internalType: 'address' },
-      { name: 'minTradeSize', type: 'uint256', internalType: 'uint256' },
-      {
-        name: 'marketParams',
-        type: 'tuple',
-        internalType: 'struct IFoilStructs.MarketParams',
-        components: [
-          { name: 'feeRate', type: 'uint24', internalType: 'uint24' },
-          { name: 'assertionLiveness', type: 'uint64', internalType: 'uint64' },
-          { name: 'bondAmount', type: 'uint256', internalType: 'uint256' },
-          { name: 'bondCurrency', type: 'address', internalType: 'address' },
-          {
-            name: 'uniswapPositionManager',
-            type: 'address',
-            internalType: 'address',
-          },
-          {
-            name: 'uniswapSwapRouter',
-            type: 'address',
-            internalType: 'address',
-          },
-          { name: 'uniswapQuoter', type: 'address', internalType: 'address' },
-          {
-            name: 'optimisticOracleV3',
-            type: 'address',
-            internalType: 'address',
-          },
-        ],
-      },
-      { name: 'nonce', type: 'uint256', internalType: 'uint256' },
-    ],
-    outputs: [
-      { name: '', type: 'address', internalType: 'address' },
-      { name: '', type: 'bytes', internalType: 'bytes' },
-    ],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'event',
-    name: 'MarketGroupInitialized',
-    inputs: [
-      {
-        name: 'sender',
-        type: 'address',
-        indexed: true,
-        internalType: 'address',
-      },
-      {
-        name: 'marketGroup',
-        type: 'address',
-        indexed: true,
-        internalType: 'address',
-      },
-      {
-        name: 'nonce',
-        type: 'uint256',
-        indexed: false,
-        internalType: 'uint256',
-      },
-    ],
-    anonymous: false,
-  },
-] as const;
+import type { EnrichedMarketGroup } from '~/hooks/graphql/useMarketGroups';
 
 // Event ABI item for parsing logs
 const marketGroupInitializedEvent = parseAbiItem(
@@ -240,8 +170,8 @@ const MarketGroupDeployButton: React.FC<MarketGroupDeployButtonProps> = ({
       const args = [
         group.collateralAsset as Address,
         [],
-        zeroAddress,
         BigInt(group.minTradeSize),
+        group.isBridged,
         {
           feeRate: feeRateNumber,
           assertionLiveness: BigInt(assertionLivenessNumber),
@@ -260,7 +190,7 @@ const MarketGroupDeployButton: React.FC<MarketGroupDeployButtonProps> = ({
 
       writeContract({
         address: group.factoryAddress as Address,
-        abi: marketGroupFactoryAbi,
+        abi: sapienceFactoryAbi().abi,
         functionName: 'cloneAndInitializeMarketGroup',
         args,
       });

@@ -764,17 +764,31 @@ const MarketFormFields = ({
       }
 
       // Copy claim statement - try multiple sources
-      let claimStatement = '';
+      let claimStatementYesOrNumeric = '';
 
-      if (selectedMarketGroup.marketParamsClaimstatement) {
-        claimStatement = selectedMarketGroup.marketParamsClaimstatement;
-      } else if (selectedMarket.marketParamsClaimstatement) {
-        claimStatement = selectedMarket.marketParamsClaimstatement;
+      if (selectedMarketGroup.marketParamsClaimstatementYesOrNumeric) {
+        claimStatementYesOrNumeric = selectedMarketGroup.marketParamsClaimstatementYesOrNumeric;
+      } else if (selectedMarket.marketParamsClaimstatementYesOrNumeric) {
+        claimStatementYesOrNumeric = selectedMarket.marketParamsClaimstatementYesOrNumeric;
       }
 
-      if (claimStatement) {
-        const decodedClaimStatement = decodeClaimStatement(claimStatement);
-        onMarketChange('claimStatement', decodedClaimStatement);
+      if (claimStatementYesOrNumeric) {
+        const decodedClaimStatement = decodeClaimStatement(claimStatementYesOrNumeric);
+        onMarketChange('claimStatementYesOrNumeric', decodedClaimStatement);
+      }
+
+      // Copy claim statement - try multiple sources
+      let claimStatementNo = '';
+
+      if (selectedMarketGroup.marketParamsClaimstatementNo) {
+        claimStatementNo = selectedMarketGroup.marketParamsClaimstatementNo;
+      } else if (selectedMarket.marketParamsClaimstatementNo) {
+        claimStatementNo = selectedMarket.marketParamsClaimstatementNo;
+      }
+
+      if (claimStatementNo) {
+        const decodedClaimStatement = decodeClaimStatement(claimStatementNo);
+        onMarketChange('claimStatementNo', decodedClaimStatement);
       }
 
       // Clear selections after copying

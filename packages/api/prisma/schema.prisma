@@ -118,7 +118,8 @@ model market {
   marketParamsAssertionliveness      Decimal?      @db.Decimal(78, 0)
   marketParamsBondcurrency           String?       @db.VarChar
   marketParamsBondamount             Decimal?      @db.Decimal(78, 0)
-  marketParamsClaimstatement         String?       @db.VarChar
+  marketParamsClaimstatementYesOrNumeric         String?       @db.VarChar
+  marketParamsClaimstatementNo         String?       @db.VarChar
   marketParamsUniswappositionmanager String?       @db.VarChar
   marketParamsUniswapswaprouter      String?       @db.VarChar
   marketParamsUniswapquoter          String?       @db.VarChar
@@ -153,7 +154,8 @@ model market_group {
   marketParamsAssertionliveness      Decimal?  @db.Decimal(78, 0)
   marketParamsBondcurrency           String?   @db.VarChar
   marketParamsBondamount             Decimal?  @db.Decimal(78, 0)
-  marketParamsClaimstatement         String?   @db.VarChar
+  marketParamsClaimstatementYesOrNumeric         String?   @db.VarChar
+  marketParamsClaimstatementNo         String?   @db.VarChar
   marketParamsUniswappositionmanager String?   @db.VarChar
   marketParamsUniswapswaprouter      String?   @db.VarChar
   marketParamsUniswapquoter          String?   @db.VarChar
@@ -161,8 +163,7 @@ model market_group {
   isBridged                          Boolean   @default(false)
   isCumulative                       Boolean   @default(false)
   categoryId                         Int?
-  questionYesOrNumeric               String?
-  questionNo                         String?
+  question                           String?
   baseTokenName                      String?   @db.VarChar
   quoteTokenName                     String?   @db.VarChar
   collateralDecimals                 Int?

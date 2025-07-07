@@ -133,7 +133,8 @@ const MARKETS_QUERY = gql`
       deployTimestamp
       deployTxnBlockNumber
       isCumulative
-      claimStatement
+      claimStatementYesOrNumeric
+      claimStatementNo
       resource {
         id
         name
@@ -143,7 +144,8 @@ const MARKETS_QUERY = gql`
       marketParamsAssertionliveness
       marketParamsBondcurrency
       marketParamsBondamount
-      marketParamsClaimstatement
+      marketParamsClaimstatementYesOrNumeric
+      marketParamsClaimstatementNo
       marketParamsUniswappositionmanager
       marketParamsUniswapswaprouter
       marketParamsUniswapquoter
@@ -172,7 +174,8 @@ const MARKETS_QUERY = gql`
         marketParamsAssertionliveness
         marketParamsBondcurrency
         marketParamsBondamount
-        marketParamsClaimstatement
+        marketParamsClaimstatementYesOrNumeric
+        marketParamsClaimstatementNo
         marketParamsUniswappositionmanager
         marketParamsUniswapswaprouter
         marketParamsUniswapquoter

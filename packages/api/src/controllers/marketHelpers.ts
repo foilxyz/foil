@@ -491,7 +491,9 @@ export const createOrUpdateMarketFromContract = async (
         marketParamsRaw.assertionLiveness?.toString() || null,
       marketParamsBondcurrency: marketParamsRaw.bondCurrency || null,
       marketParamsBondamount: marketParamsRaw.bondAmount?.toString() || null,
-      marketParamsClaimstatement: marketParamsRaw.claimStatement || null,
+      marketParamsClaimstatementYesOrNumeric:
+        marketParamsRaw.claimStatementYesOrNumeric || null,
+      marketParamsClaimstatementNo: marketParamsRaw.claimStatementNo || null,
       marketParamsUniswappositionmanager:
         marketParamsRaw.uniswapPositionManager || null,
       marketParamsUniswapswaprouter: marketParamsRaw.uniswapSwapRouter || null,
@@ -550,7 +552,9 @@ export const createOrUpdateEpochFromContract = async (
         marketParamsAssertionliveness: market.marketParamsAssertionliveness,
         marketParamsBondcurrency: market.marketParamsBondcurrency,
         marketParamsBondamount: market.marketParamsBondamount,
-        marketParamsClaimstatement: market.marketParamsClaimstatement,
+        marketParamsClaimstatementYesOrNumeric:
+          market.marketParamsClaimstatementYesOrNumeric,
+        marketParamsClaimstatementNo: market.marketParamsClaimstatementNo,
         marketParamsUniswappositionmanager:
           market.marketParamsUniswappositionmanager,
         marketParamsUniswapswaprouter: market.marketParamsUniswapswaprouter,
@@ -577,7 +581,9 @@ export const createOrUpdateEpochFromContract = async (
         marketParamsAssertionliveness: market.marketParamsAssertionliveness,
         marketParamsBondcurrency: market.marketParamsBondcurrency,
         marketParamsBondamount: market.marketParamsBondamount,
-        marketParamsClaimstatement: market.marketParamsClaimstatement,
+        marketParamsClaimstatementYesOrNumeric:
+          market.marketParamsClaimstatementYesOrNumeric,
+        marketParamsClaimstatementNo: market.marketParamsClaimstatementNo,
         marketParamsUniswappositionmanager:
           market.marketParamsUniswappositionmanager,
         marketParamsUniswapswaprouter: market.marketParamsUniswapswaprouter,
@@ -619,8 +625,10 @@ export const createOrUpdateMarketFromEvent = async (
         marketParamsBondcurrency: eventArgs?.marketParams?.bondCurrency || null,
         marketParamsBondamount:
           eventArgs?.marketParams?.bondAmount?.toString() || null,
-        marketParamsClaimstatement:
-          eventArgs?.marketParams?.claimStatement || null,
+        marketParamsClaimstatementYesOrNumeric:
+          eventArgs?.marketParams?.claimStatementYesOrNumeric || null,
+        marketParamsClaimstatementNo:
+          eventArgs?.marketParams?.claimStatementNo || null,
         marketParamsUniswappositionmanager:
           eventArgs?.uniswapPositionManager || null,
         marketParamsUniswapswaprouter: eventArgs?.uniswapSwapRouter || null,
@@ -960,7 +968,9 @@ export const createEpochFromEvent = async (
         marketParamsAssertionliveness: market.marketParamsAssertionliveness,
         marketParamsBondcurrency: market.marketParamsBondcurrency,
         marketParamsBondamount: market.marketParamsBondamount,
-        marketParamsClaimstatement: market.marketParamsClaimstatement,
+        marketParamsClaimstatementYesOrNumeric:
+          market.marketParamsClaimstatementYesOrNumeric,
+        marketParamsClaimstatementNo: market.marketParamsClaimstatementNo,
         marketParamsUniswappositionmanager:
           market.marketParamsUniswappositionmanager,
         marketParamsUniswapswaprouter: market.marketParamsUniswapswaprouter,
@@ -982,7 +992,9 @@ export const createEpochFromEvent = async (
         marketParamsAssertionliveness: market.marketParamsAssertionliveness,
         marketParamsBondcurrency: market.marketParamsBondcurrency,
         marketParamsBondamount: market.marketParamsBondamount,
-        marketParamsClaimstatement: market.marketParamsClaimstatement,
+        marketParamsClaimstatementYesOrNumeric:
+          market.marketParamsClaimstatementYesOrNumeric,
+        marketParamsClaimstatementNo: market.marketParamsClaimstatementNo,
         marketParamsUniswappositionmanager:
           market.marketParamsUniswappositionmanager,
         marketParamsUniswapswaprouter: market.marketParamsUniswapswaprouter,

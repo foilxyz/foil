@@ -59,7 +59,8 @@ export type Market = {
   marketParamsAssertionliveness?: Maybe<Scalars['String']['output']>;
   marketParamsBondamount?: Maybe<Scalars['String']['output']>;
   marketParamsBondcurrency?: Maybe<Scalars['String']['output']>;
-  marketParamsClaimstatement?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementYesOrNumeric?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementNo?: Maybe<Scalars['String']['output']>;
   marketParamsFeerate?: Maybe<Scalars['Int']['output']>;
   marketParamsOptimisticoraclev3?: Maybe<Scalars['String']['output']>;
   marketParamsUniswappositionmanager?: Maybe<Scalars['String']['output']>;
@@ -100,7 +101,8 @@ export type MarketGroup = {
   marketParamsAssertionliveness?: Maybe<Scalars['String']['output']>;
   marketParamsBondamount?: Maybe<Scalars['String']['output']>;
   marketParamsBondcurrency?: Maybe<Scalars['String']['output']>;
-  marketParamsClaimstatement?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementYesOrNumeric?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementNo?: Maybe<Scalars['String']['output']>;
   marketParamsFeerate?: Maybe<Scalars['Int']['output']>;
   marketParamsOptimisticoraclev3?: Maybe<Scalars['String']['output']>;
   marketParamsUniswappositionmanager?: Maybe<Scalars['String']['output']>;
@@ -478,7 +480,8 @@ export type MarketResolvers<ContextType = ApolloContext, ParentType extends Reso
   marketParamsAssertionliveness?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   marketParamsBondamount?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   marketParamsBondcurrency?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  marketParamsClaimstatement?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  marketParamsClaimstatementYesOrNumeric?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  marketParamsClaimstatementNo?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   marketParamsFeerate?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   marketParamsOptimisticoraclev3?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   marketParamsUniswappositionmanager?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -515,7 +518,8 @@ export type MarketGroupResolvers<ContextType = ApolloContext, ParentType extends
   marketParamsAssertionliveness?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   marketParamsBondamount?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   marketParamsBondcurrency?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  marketParamsClaimstatement?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  marketParamsClaimstatementYesOrNumeric?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  marketParamsClaimstatementNo?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   marketParamsFeerate?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   marketParamsOptimisticoraclev3?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   marketParamsUniswappositionmanager?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
