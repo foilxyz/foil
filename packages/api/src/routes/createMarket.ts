@@ -206,6 +206,7 @@ router.post('/', async (req: Request, res: Response) => {
         marketParamsOptimisticoraclev3: marketParams.optimisticoraclev3,
         resourceId: resource ? resource.id : null,
         isCumulative: isCumulative !== undefined ? isCumulative : false,
+        isBridged: isBridged !== undefined ? isBridged : false,
       },
     });
 

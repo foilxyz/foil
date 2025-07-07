@@ -1,5 +1,5 @@
 import { useToast } from '@/hooks/use-toast';
-import { useFoilAbi } from '@/hooks/useFoilAbi';
+import { useSapienceAbi } from '@/hooks/useSapienceAbi';
 import { useUniswapPool } from '@/hooks/useUniswapPool';
 import { foilApi } from '@/lib';
 import { Market } from '@/types/Market';
@@ -79,7 +79,7 @@ export const MarketGroupProvider = ({
   children,
 }: MarketGroupProviderProps) => {
   const { toast } = useToast();
-  const { abi } = useFoilAbi(chainId);
+  const { abi } = useSapienceAbi(chainId);
   // TODO: Fetch single market
   const {
     data: marketGroup,

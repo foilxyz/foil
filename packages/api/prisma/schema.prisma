@@ -4,8 +4,6 @@ generator client {
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
-
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -145,8 +143,6 @@ model market_group {
   id                                 Int       @id(map: "PK_1e9a2963edfd331d92018e3abac") @default(autoincrement())
   createdAt                          DateTime  @default(now()) @db.Timestamp(6)
   address                            String?   @db.VarChar
-  vaultAddress                       String?   @db.VarChar
-  isYin                              Boolean   @default(false)
   chainId                            Int
   deployTimestamp                    Int?
   deployTxnBlockNumber               Int?
@@ -162,9 +158,11 @@ model market_group {
   marketParamsUniswapswaprouter      String?   @db.VarChar
   marketParamsUniswapquoter          String?   @db.VarChar
   marketParamsOptimisticoraclev3     String?   @db.VarChar
+  isBridged                          Boolean   @default(false)
   isCumulative                       Boolean   @default(false)
   categoryId                         Int?
-  question                           String?
+  questionYesOrNumeric               String?
+  questionNo                         String?
   baseTokenName                      String?   @db.VarChar
   quoteTokenName                     String?   @db.VarChar
   collateralDecimals                 Int?

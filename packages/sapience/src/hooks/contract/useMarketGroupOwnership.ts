@@ -1,4 +1,4 @@
-import { useFoilAbi } from '@sapience/ui/hooks/useFoilAbi';
+import { useSapienceAbi } from '@sapience/ui/hooks/useSapienceAbi';
 import { useEffect, useState } from 'react';
 import type { Address } from 'viem';
 import { useReadContract, useWriteContract } from 'wagmi';
@@ -9,7 +9,7 @@ export function useMarketGroupOwnership(marketGroupAddress: Address) {
   const [acceptLoading, setAcceptLoading] = useState(false);
   const [acceptError, setAcceptError] = useState<Error | null>(null);
 
-  const { abi: marketGroupAbi } = useFoilAbi();
+  const { abi: marketGroupAbi } = useSapienceAbi();
 
   const {
     data: pendingOwner,

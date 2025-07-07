@@ -3,7 +3,7 @@ export * from './hooks/useTradeForm';
 export * from './hooks/useLiquidityForm';
 export * from './hooks/use-toast';
 export * from './hooks/useResources';
-export * from './hooks/useFoilAbi';
+export * from './hooks/useSapienceAbi';
 export * from './hooks/useUniswapPool';
 export * from './hooks/use-mobile';
 
