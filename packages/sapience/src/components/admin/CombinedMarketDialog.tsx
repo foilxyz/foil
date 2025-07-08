@@ -294,7 +294,7 @@ const CombinedMarketDialog = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>(
     DEFAULT_FOCUS_AREA.id
   );
-  const [isBridged, setIsBridged] = useState<boolean>(false);
+  const [isBridged, setIsBridged] = useState<boolean>(true);
   const [baseTokenName, setBaseTokenName] = useState<string>('Yes');
   const [quoteTokenName, setQuoteTokenName] = useState<string>('sUSDS');
   const [selectedResourceId, setSelectedResourceId] = useState<number | null>(
