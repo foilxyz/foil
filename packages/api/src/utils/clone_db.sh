@@ -2,7 +2,7 @@
 
 
 # Define tables that should be filtered by timestamp
-TIMESTAMP_FILTER_TABLES=("cache_candle" "resource_price")
+TIMESTAMP_FILTER_TABLES=()
 # Reset environment variables if they are already set
 unset DB_HOST DB_NAME DB_NAME_LOCAL DB_USER DB_PASSWORD LOCAL_USER
 
@@ -10,6 +10,8 @@ unset DB_HOST DB_NAME DB_NAME_LOCAL DB_USER DB_PASSWORD LOCAL_USER
 SKIP_IF_EXISTS=false
 TIMESTAMP_FROM=""
 TIMESTAMP_TO=""
+INCLUDE_CANDLES=false
+INCLUDE_PRICES=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -25,6 +27,14 @@ while [[ $# -gt 0 ]]; do
             TIMESTAMP_TO="$2"
             shift 2
             ;;
+        --include-candles)
+            INCLUDE_CANDLES=true
+            shift
+            ;;
+        --include-prices)
+            INCLUDE_PRICES=true
+            shift
+            ;;
         --help|-h)
             echo "Usage: $0 [OPTIONS]"
             echo ""
@@ -32,12 +42,15 @@ while [[ $# -gt 0 ]]; do
             echo "  --skip-if-exists        Stop execution if dump file already exists (exit code 1)"
             echo "  --timestamp-from TIME   Filter timestamp and createdAt columns from this time (Unix timestamp)"
             echo "  --timestamp-to TIME     Filter timestamp and createdAt columns to this time (Unix timestamp)"
+            echo "  --include-candles       Include cache_candle table in timestamp filtering"
+            echo "  --include-prices        Include resource_price table in timestamp filtering"
             echo "  --help, -h              Show this help message"
             echo ""
             echo "Examples:"
             echo "  $0                                    # Download fresh schema dump"
             echo "  $0 --skip-if-exists                   # Stop if dump exists, otherwise download"
             echo "  $0 --timestamp-from 1640995200 --timestamp-to 1641081600  # Filter by timestamp range"
+            echo "  $0 --include-candles --include-prices # Include both tables in filtering"
             exit 0
             ;;
         *)
@@ -69,6 +82,23 @@ if [ -z "$DB_HOST" ] || [ -z "$DB_NAME" ] || [ -z "$DB_NAME_LOCAL" ] || [ -z "$D
     echo "DB_HOST, DB_NAME, DB_NAME_LOCAL, DB_USER, DB_PASSWORD, LOCAL_USER"
     exit 1
 fi
+
+# Build the timestamp filter tables array based on flags
+if [ "$INCLUDE_CANDLES" = true ]; then
+    echo "Including cache_candle table in timestamp filtering"
+    TIMESTAMP_FILTER_TABLES+=("cache_candle")
+else
+    echo "Excluding cache_candle table from timestamp filtering"
+fi
+
+if [ "$INCLUDE_PRICES" = true ]; then
+    echo "Including resource_price table in timestamp filtering"
+    TIMESTAMP_FILTER_TABLES+=("resource_price")
+else
+    echo "Excluding resource_price table from timestamp filtering"
+fi
+
+echo "Timestamp filter tables: ${TIMESTAMP_FILTER_TABLES[*]}"
 
 # Create backup directory if it doesn't exist
 mkdir -p ./db_backups

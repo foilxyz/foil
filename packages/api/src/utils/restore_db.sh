@@ -73,7 +73,7 @@ sed -i "s/$DB_NAME/$DB_NAME_LOCAL/g" ./db_backups/complete_dump.sql
 # Step 1: Drop and recreate local database
 echo "Dropping and recreating local database..."
 psql -U $LOCAL_USER -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$DB_NAME_LOCAL';"
-psql -U $LOCAL_USER -c "DROP DATABASE IF EXISTS $DB_NAME_LOCAL;"
+psql -U $LOCAL_USER -c "DROP DATABASE IF EXISTS $DB_NAME_LOCAL;"  
 psql -U $LOCAL_USER -c "DROP DATABASE IF EXISTS temp_connection_db;"
 psql -U $LOCAL_USER -c "CREATE DATABASE $DB_NAME_LOCAL;"
 psql -U $LOCAL_USER -c "CREATE DATABASE temp_connection_db;"
