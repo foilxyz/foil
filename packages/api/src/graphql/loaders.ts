@@ -62,8 +62,8 @@ const batchMarkets = async (ids: readonly number[]) => {
     },
   });
 
-  const epochMap = new Map(markets.map((epoch) => [epoch.id, epoch]));
-  return ids.map((id) => epochMap.get(id));
+  const marketMap = new Map(markets.map((market) => [market.id, market]));
+  return ids.map((id) => marketMap.get(id));
 };
 
 // Batch function to load transactions by position IDs

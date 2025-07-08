@@ -6,7 +6,7 @@ import {
   getProviderForChain,
 } from '../../utils/utils';
 import { Abi, decodeEventLog, Log } from 'viem';
-import marketGroupFactoryData from '@sapience/protocol/deployments/FoilFactory.json';
+import marketGroupFactoryData from '@sapience/protocol/deployments/SapienceFactory.json';
 import { handleMarketGroupInitialized } from './indexMarkets';
 
 const marketGroupFactoryAbi = marketGroupFactoryData.abi;
@@ -173,7 +173,7 @@ async function getStartAndEndBlock(chainId: number, factoryAddress: string) {
     Number(deploymentBlock.block.number)
   );
 
-  // Get the end block using the sooner of epoch end time and current time
+  // Get the end block using the sooner of market group end time and current time
   const currentTime = Math.floor(Date.now() / 1000);
   const endTime = currentTime;
 

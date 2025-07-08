@@ -29,7 +29,7 @@ export class EpochPnL {
   private static instance: EpochPnL;
   private INTERVAL = TIME_INTERVALS.intervals.INTERVAL_5_MINUTES;
 
-  private epochs: EpochPnLData[] = [];
+  private markets: EpochPnLData[] = [];
 
   private constructor() {
     // Private constructor to prevent direct construction calls with the `new` operator
@@ -47,34 +47,34 @@ export class EpochPnL {
     const currentTimestamp = Date.now() / 1000;
     const datapointTime = startOfInterval(currentTimestamp, this.INTERVAL);
 
-    let epoch = this.epochs.find(
+    let market = this.markets.find(
       (data) =>
         data.epochData.chainId === chainId &&
         data.epochData.address === address.toLowerCase() &&
         data.epochData.epochId === epochId
     );
 
-    if (!epoch) {
-      epoch = await this.getMarketData(chainId, address, epochId);
-      if (!epoch) {
+    if (!market) {
+      market = await this.getMarketData(chainId, address, epochId);
+      if (!market) {
         return [];
       }
     }
 
-    if (epoch.datapointTime === datapointTime) {
-      return epoch.pnlData;
+    if (market.datapointTime === datapointTime) {
+      return market.pnlData;
     }
 
-    // Build the pnlData array for this epoch and datapointTime
-    epoch.pnlData = await this.buildPnlData(epoch.epochData);
-    epoch.datapointTime = datapointTime;
+    // Build the pnlData array for this market and datapointTime
+    market.pnlData = await this.buildPnlData(market.epochData);
+    market.datapointTime = datapointTime;
 
-    return epoch.pnlData;
+    return market.pnlData;
   }
 
   private async buildPnlData(epochData: EpochData): Promise<PnLData[]> {
     try {
-      // 1. Fetch positions for the epoch
+      // 1. Fetch positions for the market
       const positions = await prisma.position.findMany({
         where: {
           marketId: epochData.id,
@@ -146,7 +146,7 @@ export class EpochPnL {
     marketId: number
   ): Promise<EpochPnLData | undefined> {
     try {
-      const epoch = await prisma.market.findFirst({
+      const market = await prisma.market.findFirst({
         where: {
           market_group: {
             chainId,
@@ -156,13 +156,13 @@ export class EpochPnL {
         },
       });
 
-      if (!epoch) {
+      if (!market) {
         return undefined;
       }
 
       const epochPnLData: EpochPnLData = {
         epochData: {
-          id: epoch.id,
+          id: market.id,
           chainId,
           address,
           epochId: marketId,
@@ -171,11 +171,11 @@ export class EpochPnL {
         datapointTime: 0,
       };
 
-      this.epochs.push(epochPnLData);
+      this.markets.push(epochPnLData);
 
       return epochPnLData;
     } catch (error) {
-      console.error('Error fetching epoch data:', error);
+      console.error('Error fetching market data:', error);
       return undefined;
     }
   }

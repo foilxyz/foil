@@ -1,7 +1,7 @@
 import { initializeDataSource } from '../../db';
 import {
   initializeMarket,
-  reindexMarketEvents,
+  reindexMarketGroupEvents,
 } from '../../controllers/market';
 import * as Sentry from '@sentry/node';
 import prisma from '../../db';
@@ -16,11 +16,11 @@ export async function reindexMarket(
 ) {
   try {
     console.log(
-      'reindexing market',
+      'reindexing market group',
       address,
       'on chain',
       chainId,
-      'epoch',
+      'market',
       epochId
     );
 
@@ -54,6 +54,7 @@ export async function reindexMarket(
           marketEntity.deployTxnBlockNumber?.toString() || '0',
       },
       isCumulative: marketEntity.isCumulative || false,
+      isBridged: marketEntity.isBridged || false,
       resource: {
         name: marketEntity.resource?.name,
         priceIndexer: marketEntity.resource
@@ -66,7 +67,7 @@ export async function reindexMarket(
 
     await Promise.all([
       // Pass only the two required arguments: market
-      reindexMarketEvents(market),
+      reindexMarketGroupEvents(market),
     ]);
 
     console.log('finished reindexing market', address, 'on chain', chainId);

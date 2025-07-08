@@ -9,12 +9,12 @@ export enum EventType {
   TraderPositionCreated = 'TraderPositionCreated',
   TraderPositionModified = 'TraderPositionModified',
   Transfer = 'Transfer',
-  MarketInitialized = 'MarketInitialized',
-  MarketUpdated = 'MarketUpdated',
-  EpochCreated = 'EpochCreated',
-  EpochSettled = 'EpochSettled',
+  MarketGroupInitialized = 'MarketGroupInitialized',
+  MarketGroupUpdated = 'MarketGroupUpdated',
   PositionSettled = 'PositionSettled',
-  PositionUpdated = 'PositionUpdated',
+  MarketCreated = 'MarketCreated',
+  MarketSettled = 'MarketSettled',
+  // PositionUpdated = 'PositionUpdated',
 }
 
 export interface TradePositionEventLog {
@@ -79,8 +79,8 @@ export interface MarketParams {
   uniswapSwapRouter: string;
 }
 
-export interface EpochData {
-  epochId: string;
+export interface MarketData {
+  marketId: string;
   startTime: bigint;
   endTime: bigint;
   pool: `0x${string}`;
@@ -94,20 +94,23 @@ export interface EpochData {
   settlementPriceD18: bigint;
 }
 
-export interface MarketCreatedUpdatedEventLog {
+export interface MarketGroupCreatedUpdatedEventLog {
   initialOwner?: string;
   uniswapPositionManager: string;
   collateralAsset?: string;
   uniswapSwapRouter: string;
   optimisticOracleV3: string;
+  isBridged: boolean;
   marketParams: MarketParams;
 }
 
-export interface EpochCreatedEventLog {
-  epochId: string;
+export interface MarketCreatedEventLog {
+  marketId: string;
   startTime: string;
   endTime: string;
   startingSqrtPriceX96: string;
+  claimStatementYesOrNumeric: string;
+  claimStatementNo: string;
 }
 
 export interface Deployment {
@@ -193,4 +196,5 @@ export interface MarketInfo {
   };
 
   isCumulative?: boolean;
+  isBridged?: boolean;
 }

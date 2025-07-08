@@ -158,7 +158,7 @@ export class CandleResolver {
 
       const epochStartTimestamp = Number(market.startTimestamp);
       if (timestamp < epochStartTimestamp) {
-        throw new Error(`Timestamp is before epoch start time`);
+        throw new Error(`Timestamp is before market start time`);
       }
 
       const pricesInRange = await prisma.resource_price.findMany({
