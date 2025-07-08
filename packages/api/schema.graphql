@@ -71,7 +71,6 @@ type MarketGroup {
   id: ID!
   initializationNonce: String
   isCumulative: Boolean!
-  isYin: Boolean!
   marketParamsAssertionliveness: String
   marketParamsBondamount: String
   marketParamsBondcurrency: String
@@ -88,7 +87,6 @@ type MarketGroup {
   question: String
   quoteTokenName: String
   resource: Resource
-  vaultAddress: String
 }
 
 input MarketOrderInput {
