@@ -70,6 +70,7 @@ type MarketGroup {
   factoryAddress: String
   id: ID!
   initializationNonce: String
+  isBridged: Boolean!
   isCumulative: Boolean!
   marketParamsAssertionliveness: String
   marketParamsBondamount: String

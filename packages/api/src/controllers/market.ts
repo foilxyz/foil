@@ -143,8 +143,6 @@ export const initializeMarket = async (marketInfo: MarketInfo) => {
 const extractMarketGroupFields = (market: any) => {
   return {
     address: market.address,
-    vaultAddress: market.vaultAddress,
-    isYin: market.isYin,
     chainId: market.chainId,
     deployTimestamp: market.deployTimestamp,
     deployTxnBlockNumber: market.deployTxnBlockNumber,
@@ -164,6 +162,7 @@ const extractMarketGroupFields = (market: any) => {
     marketParamsUniswapquoter: market.marketParamsUniswapquoter,
     marketParamsOptimisticoraclev3: market.marketParamsOptimisticoraclev3,
     isCumulative: market.isCumulative,
+    isBridged: market.isBridged,
     categoryId: market.categoryId,
     question: market.question,
     baseTokenName: market.baseTokenName,

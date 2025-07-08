@@ -294,6 +294,7 @@ const CombinedMarketDialog = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>(
     DEFAULT_FOCUS_AREA.id
   );
+  const [isBridged, setIsBridged] = useState<boolean>(false);
   const [baseTokenName, setBaseTokenName] = useState<string>('Yes');
   const [quoteTokenName, setQuoteTokenName] = useState<string>('sUSDS');
   const [selectedResourceId, setSelectedResourceId] = useState<number | null>(
@@ -489,6 +490,7 @@ const CombinedMarketDialog = () => {
       chainId,
       question,
       category: selectedCategory,
+      isBridged,
       baseTokenName,
       quoteTokenName,
       ...(selectedResourceId && {
@@ -700,6 +702,17 @@ const CombinedMarketDialog = () => {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+              {/* isBridged toggle */}
+              <div className="flex items-center gap-2 py-2">
+                <Label htmlFor="isBridged" className="font-medium">
+                  Bridged
+                </Label>
+                <Switch
+                  id="isBridged"
+                  checked={isBridged}
+                  onCheckedChange={setIsBridged}
+                />
               </div>
               {/* Resource Selection */}
               <div className="space-y-2">

@@ -15,6 +15,9 @@ export class MarketGroup {
   @Field(() => Boolean)
   isCumulative: boolean;
 
+  @Field(() => Boolean)
+  isBridged: boolean;
+
   @Field(() => [Market], { nullable: true })
   markets?: Market[];
 

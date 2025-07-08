@@ -232,7 +232,8 @@ const getMarketGroups = {
           address
           chainId
           baseTokenName
-          claimStatement
+          claimStatementYesOrNumeric
+          claimStatementNo
           collateralAsset
           collateralDecimals
           collateralSymbol
@@ -241,7 +242,7 @@ const getMarketGroups = {
           factoryAddress
           initializationNonce
           isCumulative
-          # isYin removed
+          isBridged
           minTradeSize
           owner
           question
@@ -255,7 +256,8 @@ const getMarketGroups = {
             assertionLiveness
             bondAmount
             bondCurrency
-            claimStatement # Specific to market params
+            claimStatementYesOrNumeric
+            claimStatementNo
             feeRate
             optimisticOracleV3
             uniswapPositionManager
@@ -576,11 +578,12 @@ const getResource = {
             id
             # Added more fields for context from MarketGroupType
             baseTokenName
-            claimStatement
+            claimStatementYesOrNumeric
+            claimStatementNo
             collateralAsset
             collateralSymbol
             isCumulative
-            # isYin removed
+            isBridged
             question
             quoteTokenName
           }
@@ -624,11 +627,12 @@ const getResources = {
             id
             # Added more fields for context from MarketGroupType
             baseTokenName
-            claimStatement
+            claimStatementYesOrNumeric
+            claimStatementNo
             collateralAsset
             collateralSymbol
             isCumulative
-            # isYin removed
+            isBridged
             question
             quoteTokenName
           }

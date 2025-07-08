@@ -87,6 +87,7 @@ export type MarketGroup = {
   id: Scalars['ID']['output'];
   initializationNonce?: Maybe<Scalars['String']['output']>;
   isCumulative: Scalars['Boolean']['output'];
+  isBridged: Scalars['Boolean']['output'];
   marketParamsAssertionliveness?: Maybe<Scalars['String']['output']>;
   marketParamsBondamount?: Maybe<Scalars['String']['output']>;
   marketParamsBondcurrency?: Maybe<Scalars['String']['output']>;
