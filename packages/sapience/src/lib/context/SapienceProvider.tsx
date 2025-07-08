@@ -42,7 +42,8 @@ export interface ApiMarket {
   baseAssetMinPriceTick: number; // Added
   baseAssetMaxPriceTick: number; // Added
   poolAddress?: string | null; // Added
-  claimStatement?: string | null; // Added
+  claimStatementYesOrNumeric?: string | null; // Added
+  claimStatementNo?: string | null; // Added
   settled?: boolean | null;
   optionName?: string | null;
 }
