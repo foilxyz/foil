@@ -4,7 +4,7 @@ pragma solidity >=0.8.2 <0.9.0;
 import {ISapienceStructs} from "./ISapienceStructs.sol";
 
 interface IConfigurationModule {
-    event MarketInitialized(
+    event MarketGroupInitialized(
         address initialOwner,
         address collateralAsset,
         address feeCollectorNFT,
@@ -13,7 +13,7 @@ interface IConfigurationModule {
         ISapienceStructs.MarketParams marketParams
     );
 
-    event MarketUpdated(ISapienceStructs.MarketParams marketParams);
+    event MarketGroupUpdated(ISapienceStructs.MarketParams marketParams);
 
     event MarketCreated(
         uint256 marketId,

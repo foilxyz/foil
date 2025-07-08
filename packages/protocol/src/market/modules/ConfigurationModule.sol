@@ -44,7 +44,7 @@ contract ConfigurationModule is IConfigurationModule, ReentrancyGuardUpgradeable
         MarketGroup.createValid(
             initialOwner, collateralAsset, feeCollectorNFT, minTradeSize, bridgedSettlement, marketParams
         );
-        emit MarketInitialized(
+        emit MarketGroupInitialized(
             initialOwner, collateralAsset, feeCollectorNFT, minTradeSize, bridgedSettlement, marketParams
         );
     }
@@ -52,7 +52,7 @@ contract ConfigurationModule is IConfigurationModule, ReentrancyGuardUpgradeable
     function updateMarketGroup(ISapienceStructs.MarketParams memory marketParams) external override onlyOwner {
         MarketGroup.updateValid(marketParams);
 
-        emit MarketUpdated(marketParams);
+        emit MarketGroupUpdated(marketParams);
     }
 
     function createMarket(ISapienceStructs.MarketCreationParams memory params)
