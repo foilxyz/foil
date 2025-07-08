@@ -191,7 +191,6 @@ export interface MarketInfo {
     } | null;
     [key: string]: unknown;
   };
-  vaultAddress?: string;
-  isYin?: boolean;
+
   isCumulative?: boolean;
 }

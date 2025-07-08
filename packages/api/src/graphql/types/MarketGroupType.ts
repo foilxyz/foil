@@ -12,14 +12,8 @@ export class MarketGroupType {
   @Field(() => String, { nullable: true })
   address: string | null;
 
-  @Field(() => String, { nullable: true })
-  vaultAddress: string;
-
   @Field(() => Int)
   chainId: number;
-
-  @Field(() => Boolean)
-  isYin: boolean;
 
   @Field(() => Boolean)
   isCumulative: boolean;

@@ -9,14 +9,8 @@ export class MarketGroup {
   @Field(() => String, { nullable: true })
   address?: string | null;
 
-  @Field(() => String, { nullable: true })
-  vaultAddress?: string | null;
-
   @Field(() => Int)
   chainId: number;
-
-  @Field(() => Boolean)
-  isYin: boolean;
 
   @Field(() => Boolean)
   isCumulative: boolean;
