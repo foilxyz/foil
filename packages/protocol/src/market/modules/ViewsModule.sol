@@ -1,21 +1,24 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.25 <0.9.0;
 
-import "../storage/Epoch.sol";
+import "../storage/Market.sol";
+import "../storage/MarketGroup.sol";
 import "../storage/Position.sol";
 import "../storage/Trade.sol";
 import "../interfaces/IViewsModule.sol";
-import "../interfaces/IFoilStructs.sol";
+import "../interfaces/ISapienceStructs.sol";
 import {SafeCastU256} from "@synthetixio/core-contracts/contracts/utils/SafeCast.sol";
 import {DecimalMath} from "../libraries/DecimalMath.sol";
+import {DecimalPrice} from "../libraries/DecimalPrice.sol";
 
 contract ViewsModule is IViewsModule {
     using Position for Position.Data;
-    using Epoch for Epoch.Data;
+    using Market for Market.Data;
+    using MarketGroup for MarketGroup.Data;
     using SafeCastU256 for uint256;
     using DecimalMath for int256;
 
-    function getMarket()
+    function getMarketGroup()
         external
         view
         override
@@ -23,96 +26,84 @@ contract ViewsModule is IViewsModule {
             address owner,
             address collateralAsset,
             address feeCollectorNFT,
-            address callbackRecipient,
-            IFoilStructs.MarketParams memory marketParams
+            ISapienceStructs.MarketParams memory marketParams
         )
     {
-        Market.Data storage market = Market.load();
+        MarketGroup.Data storage marketGroup = MarketGroup.load();
         return (
-            market.owner,
-            address(market.collateralAsset),
-            address(market.feeCollectorNFT),
-            address(market.callbackRecipient),
-            market.marketParams
+            marketGroup.owner,
+            address(marketGroup.collateralAsset),
+            address(marketGroup.feeCollectorNFT),
+            marketGroup.marketParams
         );
     }
 
-    function getEpoch(
-        uint256 id
-    )
+    function getMarket(uint256 id)
         external
         view
         override
-        returns (
-            IFoilStructs.EpochData memory epochData,
-            IFoilStructs.MarketParams memory params
-        )
+        returns (ISapienceStructs.MarketData memory marketData, ISapienceStructs.MarketParams memory params)
     {
-        Epoch.Data storage epoch = Epoch.load(id);
-        epochData = IFoilStructs.EpochData({
-            epochId: epoch.id,
-            startTime: epoch.startTime,
-            endTime: epoch.endTime,
-            pool: address(epoch.pool),
-            ethToken: address(epoch.ethToken),
-            gasToken: address(epoch.gasToken),
-            minPriceD18: epoch.minPriceD18,
-            maxPriceD18: epoch.maxPriceD18,
-            baseAssetMinPriceTick: epoch.baseAssetMinPriceTick,
-            baseAssetMaxPriceTick: epoch.baseAssetMaxPriceTick,
-            settled: epoch.settled,
-            settlementPriceD18: epoch.settlementPriceD18,
-            assertionId: epoch.assertionId,
-            claimStatement: epoch.claimStatement
+        Market.Data storage market = Market.load(id);
+        marketData = ISapienceStructs.MarketData({
+            marketId: market.id,
+            startTime: market.startTime,
+            endTime: market.endTime,
+            pool: address(market.pool),
+            quoteToken: address(market.quoteToken),
+            baseToken: address(market.baseToken),
+            minPriceD18: market.minPriceD18,
+            maxPriceD18: market.maxPriceD18,
+            baseAssetMinPriceTick: market.baseAssetMinPriceTick,
+            baseAssetMaxPriceTick: market.baseAssetMaxPriceTick,
+            settled: market.settled,
+            settlementPriceD18: market.settlementPriceD18,
+            assertionId: market.assertionId,
+            claimStatementYesOrNumeric: market.claimStatementYesOrNumeric,
+            claimStatementNo: market.claimStatementNo
         });
 
-        return (epochData, epoch.marketParams);
+        return (marketData, market.marketParams);
     }
 
-    function getLatestEpoch()
+    function getLatestMarket()
         external
         view
         override
-        returns (
-            IFoilStructs.EpochData memory epochData,
-            IFoilStructs.MarketParams memory params
-        )
+        returns (ISapienceStructs.MarketData memory marketData, ISapienceStructs.MarketParams memory params)
     {
-        uint256 epochId = Market.load().lastEpochId;
+        uint256 marketId = MarketGroup.load().lastMarketId;
 
-        if (epochId == 0) {
-            revert Errors.NoEpochsCreated();
+        if (marketId == 0) {
+            revert Errors.NoMarketsCreated();
         }
-        Epoch.Data storage epoch = Epoch.load(epochId);
-        epochData = IFoilStructs.EpochData({
-            epochId: epochId,
-            startTime: epoch.startTime,
-            endTime: epoch.endTime,
-            pool: address(epoch.pool),
-            ethToken: address(epoch.ethToken),
-            gasToken: address(epoch.gasToken),
-            minPriceD18: epoch.minPriceD18,
-            maxPriceD18: epoch.maxPriceD18,
-            baseAssetMinPriceTick: epoch.baseAssetMinPriceTick,
-            baseAssetMaxPriceTick: epoch.baseAssetMaxPriceTick,
-            settled: epoch.settled,
-            settlementPriceD18: epoch.settlementPriceD18,
-            assertionId: epoch.assertionId,
-            claimStatement: epoch.claimStatement
+        Market.Data storage market = Market.load(marketId);
+        marketData = ISapienceStructs.MarketData({
+            marketId: marketId,
+            startTime: market.startTime,
+            endTime: market.endTime,
+            pool: address(market.pool),
+            quoteToken: address(market.quoteToken),
+            baseToken: address(market.baseToken),
+            minPriceD18: market.minPriceD18,
+            maxPriceD18: market.maxPriceD18,
+            baseAssetMinPriceTick: market.baseAssetMinPriceTick,
+            baseAssetMaxPriceTick: market.baseAssetMaxPriceTick,
+            settled: market.settled,
+            settlementPriceD18: market.settlementPriceD18,
+            assertionId: market.assertionId,
+            claimStatementYesOrNumeric: market.claimStatementYesOrNumeric,
+            claimStatementNo: market.claimStatementNo
         });
 
-        return (epochData, epoch.marketParams);
+        return (marketData, market.marketParams);
     }
 
-    function getPosition(
-        uint256 positionId
-    ) external pure override returns (Position.Data memory) {
+    function getPosition(uint256 positionId) external pure override returns (Position.Data memory) {
         return Position.load(positionId);
     }
 
-    function getPositionSize(
-        uint256 positionId
-    ) external view override returns (int256) {
+    function getPositionSize(uint256 positionId) external view override returns (int256) {
         Position.Data storage position = Position.load(positionId);
         return position.positionSize();
     }
@@ -120,37 +111,29 @@ contract ViewsModule is IViewsModule {
     /**
      * @inheritdoc IViewsModule
      */
-    function getSqrtPriceX96(
-        uint256 epochId
-    ) external view override returns (uint160 sqrtPriceX96) {
-        Epoch.Data storage epoch = Epoch.load(epochId);
+    function getSqrtPriceX96(uint256 marketId) external view override returns (uint160 sqrtPriceX96) {
+        Market.Data storage market = Market.load(marketId);
 
-        if (!epoch.settled) {
-            (sqrtPriceX96, , , , , , ) = epoch.pool.slot0();
+        if (!market.settled) {
+            (sqrtPriceX96,,,,,,) = market.pool.slot0();
         }
     }
 
     /**
      * @inheritdoc IViewsModule
      */
-    function getReferencePrice(
-        uint256 epochId
-    ) external view override returns (uint256 price18Digits) {
-        return Epoch.load(epochId).getReferencePrice();
+    function getReferencePrice(uint256 marketId) external view override returns (uint256 price18Digits) {
+        return Market.load(marketId).getReferencePrice();
     }
 
-    function getPositionPnl(
-        uint256 positionId
-    ) external view override returns (int256 pnl) {
+    function getPositionPnl(uint256 positionId) external view override returns (int256 pnl) {
         return Position.load(positionId).getPnl();
     }
 
     /**
      * @inheritdoc IViewsModule
      */
-    function getPositionCollateralValue(
-        uint256 positionId
-    ) external view override returns (uint256 collateralValue) {
+    function getPositionCollateralValue(uint256 positionId) external view override returns (uint256 collateralValue) {
         // Load the position data and ensure it's valid
         Position.Data storage position = Position.loadValid(positionId);
 
@@ -159,20 +142,16 @@ contract ViewsModule is IViewsModule {
         // Get the deposited collateral amount as an integer
         int256 depositedCollateral = position.depositedCollateralAmount.toInt();
 
-        collateralValue = (depositedCollateral + totalNetValue) > 0
-            ? uint256(depositedCollateral + totalNetValue)
-            : 0;
+        collateralValue = (depositedCollateral + totalNetValue) > 0 ? uint256(depositedCollateral + totalNetValue) : 0;
 
         return collateralValue;
     }
 
-    function getMarketTickSpacing() external view override returns (int24) {
-        return Epoch.getTickSpacingForFee(Market.load().marketParams.feeRate);
+    function getMarketGroupTickSpacing() external view override returns (int24) {
+        return Market.getTickSpacingForFee(MarketGroup.load().marketParams.feeRate);
     }
 
-    function getDecimalPriceFromSqrtPriceX96(
-        uint160 sqrtPriceX96
-    ) external view override returns (uint256) {
+    function getDecimalPriceFromSqrtPriceX96(uint160 sqrtPriceX96) external pure override returns (uint256) {
         return DecimalPrice.sqrtRatioX96ToPrice(sqrtPriceX96);
     }
 }

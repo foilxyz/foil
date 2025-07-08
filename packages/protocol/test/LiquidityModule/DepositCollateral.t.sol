@@ -3,24 +3,23 @@ pragma solidity >=0.8.2 <0.9.0;
 
 import "forge-std/Test.sol";
 import "cannon-std/Cannon.sol";
-import {IFoil} from "../../src/market/interfaces/IFoil.sol";
+import {ISapience} from "../../src/market/interfaces/ISapience.sol";
 import {IMintableToken} from "../../src/market/external/IMintableToken.sol";
 import {TestTrade} from "../helpers/TestTrade.sol";
 import {TestUser} from "../helpers/TestUser.sol";
-import {ILiquidityModule} from "../../src/market/interfaces/ILiquidityModule.sol";
 import {Position} from "../../src/market/storage/Position.sol";
 import {Errors} from "../../src/market/storage/Errors.sol";
-import {IFoilStructs} from "../../src/market/interfaces/IFoilStructs.sol";
-import {IFoilPositionEvents} from "../../src/market/interfaces/IFoilPositionEvents.sol";
+import {ISapienceStructs} from "../../src/market/interfaces/ISapienceStructs.sol";
+import {ISapiencePositionEvents} from "../../src/market/interfaces/ISapiencePositionEvents.sol";
 
 contract DepositCollateralTest is TestTrade {
     using Cannon for Vm;
 
-    IFoil foil;
+    ISapience sapience;
     IMintableToken collateralAsset;
     address feeCollector;
     address regularLp;
-    uint256 epochId;
+    uint256 marketId;
     uint256 feeCollectorPositionId;
     uint256 regularLpPositionId;
 
@@ -28,13 +27,11 @@ contract DepositCollateralTest is TestTrade {
     uint256 constant COLLATERAL_AMOUNT = 10 ether;
     int24 constant LOWER_TICK = 19400;
     int24 constant UPPER_TICK = 24800;
-    uint256 constant MIN_TRADE_SIZE = 10_000; // 10,000 vGas
+    uint256 constant MIN_TRADE_SIZE = 10_000; // 10,000 vBase
 
     function setUp() public {
-        collateralAsset = IMintableToken(
-            vm.getAddress("CollateralAsset.Token")
-        );
-        foil = IFoil(vm.getAddress("Foil"));
+        collateralAsset = IMintableToken(vm.getAddress("CollateralAsset.Token"));
+        sapience = ISapience(vm.getAddress("Sapience"));
 
         feeCollector = TestUser.createUser("FeeCollector", INITIAL_BALANCE);
         regularLp = TestUser.createUser("RegularLP", INITIAL_BALANCE);
@@ -42,40 +39,28 @@ contract DepositCollateralTest is TestTrade {
         uint160 startingSqrtPriceX96 = 250541448375047931186413801569; // 10
         address[] memory feeCollectors = new address[](1);
         feeCollectors[0] = feeCollector;
-        (foil, ) = createEpochWithFeeCollectors(
-            LOWER_TICK,
-            UPPER_TICK,
-            startingSqrtPriceX96,
-            feeCollectors,
-            MIN_TRADE_SIZE,
-            "wstGwei/gas"
+        (sapience,) = createMarketWithFeeCollectors(
+            LOWER_TICK, UPPER_TICK, startingSqrtPriceX96, feeCollectors, MIN_TRADE_SIZE, "wstGwei/quote", ""
         );
 
-        (IFoilStructs.EpochData memory epochData, ) = foil.getLatestEpoch();
-        epochId = epochData.epochId;
+        (ISapienceStructs.MarketData memory marketData,) = sapience.getLatestMarket();
+        marketId = marketData.marketId;
 
-        (
-            uint256 gasTokenAmount,
-            uint256 ethTokenAmount,
-
-        ) = getTokenAmountsForCollateralAmount(
-                50 ether,
-                LOWER_TICK,
-                UPPER_TICK
-            );
+        (uint256 baseTokenAmount, uint256 quoteTokenAmount,) =
+            getTokenAmountsForCollateralAmount(50 ether, LOWER_TICK, UPPER_TICK);
 
         // Create fee collector position
         vm.startPrank(feeCollector);
-        (feeCollectorPositionId, , , , , , ) = foil.createLiquidityPosition(
-            IFoilStructs.LiquidityMintParams({
-                epochId: epochId,
-                amountTokenA: gasTokenAmount,
-                amountTokenB: ethTokenAmount,
+        (feeCollectorPositionId,,,,,,) = sapience.createLiquidityPosition(
+            ISapienceStructs.LiquidityMintParams({
+                marketId: marketId,
+                amountBaseToken: baseTokenAmount,
+                amountQuoteToken: quoteTokenAmount,
                 collateralAmount: COLLATERAL_AMOUNT,
                 lowerTick: LOWER_TICK,
                 upperTick: UPPER_TICK,
-                minAmountTokenA: 0,
-                minAmountTokenB: 0,
+                minAmountBaseToken: 0,
+                minAmountQuoteToken: 0,
                 deadline: block.timestamp + 1 hours
             })
         );
@@ -83,16 +68,16 @@ contract DepositCollateralTest is TestTrade {
 
         // Create regular LP position
         vm.startPrank(regularLp);
-        (regularLpPositionId, , , , , , ) = foil.createLiquidityPosition(
-            IFoilStructs.LiquidityMintParams({
-                epochId: epochId,
-                amountTokenA: gasTokenAmount,
-                amountTokenB: ethTokenAmount,
+        (regularLpPositionId,,,,,,) = sapience.createLiquidityPosition(
+            ISapienceStructs.LiquidityMintParams({
+                marketId: marketId,
+                amountBaseToken: baseTokenAmount,
+                amountQuoteToken: quoteTokenAmount,
                 collateralAmount: 50 ether,
                 lowerTick: LOWER_TICK,
                 upperTick: UPPER_TICK,
-                minAmountTokenA: 0,
-                minAmountTokenB: 0,
+                minAmountBaseToken: 0,
+                minAmountQuoteToken: 0,
                 deadline: block.timestamp + 1 hours
             })
         );
@@ -101,9 +86,7 @@ contract DepositCollateralTest is TestTrade {
 
     function test_depositCollateralAsFeeCollector() public {
         // Get initial position data for fee collector
-        Position.Data memory initialPosition = foil.getPosition(
-            feeCollectorPositionId
-        );
+        Position.Data memory initialPosition = sapience.getPosition(feeCollectorPositionId);
         assertEq(
             initialPosition.depositedCollateralAmount,
             COLLATERAL_AMOUNT,
@@ -112,17 +95,13 @@ contract DepositCollateralTest is TestTrade {
         uint256 amountToDeposit = 5 ether;
 
         vm.startPrank(feeCollector);
-        foil.depositCollateral(feeCollectorPositionId, amountToDeposit);
+        sapience.depositCollateral(feeCollectorPositionId, amountToDeposit);
         vm.stopPrank();
 
         // Get the updated position data for the fee collector
-        Position.Data memory position = foil.getPosition(
-            feeCollectorPositionId
-        );
+        Position.Data memory position = sapience.getPosition(feeCollectorPositionId);
         assertEq(
-            position.depositedCollateralAmount,
-            amountToDeposit + COLLATERAL_AMOUNT,
-            "Collateral amount should increase"
+            position.depositedCollateralAmount, amountToDeposit + COLLATERAL_AMOUNT, "Collateral amount should increase"
         );
     }
 
@@ -131,7 +110,7 @@ contract DepositCollateralTest is TestTrade {
 
         vm.startPrank(regularLp);
         vm.expectRevert(Errors.OnlyFeeCollector.selector);
-        foil.depositCollateral(regularLpPositionId, additionalCollateral);
+        sapience.depositCollateral(regularLpPositionId, additionalCollateral);
         vm.stopPrank();
     }
 
@@ -140,13 +119,8 @@ contract DepositCollateralTest is TestTrade {
         uint256 nonExistentPositionId = 999999;
 
         vm.startPrank(feeCollector);
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                Errors.InvalidPositionId.selector,
-                nonExistentPositionId
-            )
-        );
-        foil.depositCollateral(nonExistentPositionId, additionalCollateral);
+        vm.expectRevert(abi.encodeWithSelector(Errors.InvalidPositionId.selector, nonExistentPositionId));
+        sapience.depositCollateral(nonExistentPositionId, additionalCollateral);
         vm.stopPrank();
     }
 
@@ -154,42 +128,36 @@ contract DepositCollateralTest is TestTrade {
         uint256 amountToDeposit = 5 ether;
 
         // Get position data
-        Position.Data memory position = foil.getPosition(
-            feeCollectorPositionId
-        );
+        Position.Data memory position = sapience.getPosition(feeCollectorPositionId);
 
         vm.startPrank(feeCollector);
         vm.expectEmit(true, true, true, true);
-        emit IFoilPositionEvents.CollateralDeposited(
+        emit ISapiencePositionEvents.CollateralDeposited(
             feeCollector,
-            epochId,
+            marketId,
             feeCollectorPositionId,
             amountToDeposit + COLLATERAL_AMOUNT,
-            position.vEthAmount,
-            position.vGasAmount,
-            position.borrowedVEth,
-            position.borrowedVGas,
+            position.vQuoteAmount,
+            position.vBaseAmount,
+            position.borrowedVQuote,
+            position.borrowedVBase,
             int256(amountToDeposit)
         );
-        foil.depositCollateral(feeCollectorPositionId, amountToDeposit);
+        sapience.depositCollateral(feeCollectorPositionId, amountToDeposit);
         vm.stopPrank();
     }
 
     function test_depositAdditionalCollateral() public {
         uint256 initialDeposit = 5 ether;
         uint256 additionalDeposit = 3 ether;
-        uint256 totalExpectedDeposit = initialDeposit +
-            additionalDeposit +
-            COLLATERAL_AMOUNT;
+        uint256 totalExpectedDeposit = initialDeposit + additionalDeposit + COLLATERAL_AMOUNT;
 
         // Initial deposit
         vm.startPrank(feeCollector);
-        foil.depositCollateral(feeCollectorPositionId, initialDeposit);
+        sapience.depositCollateral(feeCollectorPositionId, initialDeposit);
 
         // Get position data after initial deposit
-        Position.Data memory positionAfterInitial = foil.getPosition(
-            feeCollectorPositionId
-        );
+        Position.Data memory positionAfterInitial = sapience.getPosition(feeCollectorPositionId);
         assertEq(
             positionAfterInitial.depositedCollateralAmount,
             initialDeposit + COLLATERAL_AMOUNT,
@@ -197,13 +165,11 @@ contract DepositCollateralTest is TestTrade {
         );
 
         // Additional deposit
-        foil.depositCollateral(feeCollectorPositionId, additionalDeposit);
+        sapience.depositCollateral(feeCollectorPositionId, additionalDeposit);
         vm.stopPrank();
 
         // Get updated position data
-        Position.Data memory positionAfterAdditional = foil.getPosition(
-            feeCollectorPositionId
-        );
+        Position.Data memory positionAfterAdditional = sapience.getPosition(feeCollectorPositionId);
 
         // Check that the total deposited collateral is correct
         assertEq(
@@ -216,41 +182,28 @@ contract DepositCollateralTest is TestTrade {
     function test_increaseLiquidityNoAdditionalCollateral() public {
         vm.startPrank(feeCollector);
         // Get position data and current token amounts
-        Position.Data memory positionBefore = foil.getPosition(
-            feeCollectorPositionId
-        );
+        Position.Data memory positionBefore = sapience.getPosition(feeCollectorPositionId);
         uint256 uniswapNftId = positionBefore.uniswapPositionId;
-        (
-            uint256 initialGasTokenAmount,
-            uint256 initialEthTokenAmount,
-            ,
-            ,
-
-        ) = getCurrentPositionTokenAmounts(
-                uniswapNftId,
-                LOWER_TICK,
-                UPPER_TICK
-            );
+        (uint256 initialGasTokenAmount, uint256 initialEthTokenAmount,,,) =
+            getCurrentPositionTokenAmounts(uniswapNftId, LOWER_TICK, UPPER_TICK);
 
         uint256 additionalCollateral = 2;
         // Increase liquidity with no additional collateral
-        foil.increaseLiquidityPosition(
-            IFoilStructs.LiquidityIncreaseParams({
+        sapience.increaseLiquidityPosition(
+            ISapienceStructs.LiquidityIncreaseParams({
                 positionId: feeCollectorPositionId,
                 collateralAmount: additionalCollateral,
-                gasTokenAmount: initialGasTokenAmount * 2,
-                ethTokenAmount: initialEthTokenAmount * 2,
-                minGasAmount: 0,
-                minEthAmount: 0,
+                baseTokenAmount: initialGasTokenAmount * 2,
+                quoteTokenAmount: initialEthTokenAmount * 2,
+                minBaseAmount: 0,
+                minQuoteAmount: 0,
                 deadline: block.timestamp + 30 minutes
             })
         );
         vm.stopPrank();
 
         // Get updated position data
-        Position.Data memory positionAfter = foil.getPosition(
-            feeCollectorPositionId
-        );
+        Position.Data memory positionAfter = sapience.getPosition(feeCollectorPositionId);
 
         // Check that deposited collateral amount hasn't changed
         assertEq(
@@ -263,35 +216,27 @@ contract DepositCollateralTest is TestTrade {
     function test_decreaseLiquidityNoCollateralChange() public {
         vm.startPrank(feeCollector);
         // Get position data and current token amounts
-        Position.Data memory positionBefore = foil.getPosition(
-            feeCollectorPositionId
-        );
+        Position.Data memory positionBefore = sapience.getPosition(feeCollectorPositionId);
         uint256 uniswapNftId = positionBefore.uniswapPositionId;
-        (, , , , uint128 initialLiquidity) = getCurrentPositionTokenAmounts(
-            uniswapNftId,
-            LOWER_TICK,
-            UPPER_TICK
-        );
+        (,,,, uint128 initialLiquidity) = getCurrentPositionTokenAmounts(uniswapNftId, LOWER_TICK, UPPER_TICK);
 
         // Calculate 20% of initial liquidity to decrease
         uint128 liquidityToDecrease = uint128((initialLiquidity * 20) / 100);
 
         // Decrease liquidity by 20%
-        foil.decreaseLiquidityPosition(
-            IFoilStructs.LiquidityDecreaseParams({
+        sapience.decreaseLiquidityPosition(
+            ISapienceStructs.LiquidityDecreaseParams({
                 positionId: feeCollectorPositionId,
                 liquidity: liquidityToDecrease,
-                minGasAmount: 0,
-                minEthAmount: 0,
+                minBaseAmount: 0,
+                minQuoteAmount: 0,
                 deadline: block.timestamp + 30 minutes
             })
         );
         vm.stopPrank();
 
         // Get updated position data
-        Position.Data memory positionAfter = foil.getPosition(
-            feeCollectorPositionId
-        );
+        Position.Data memory positionAfter = sapience.getPosition(feeCollectorPositionId);
 
         // Check that deposited collateral amount hasn't changed
         assertEq(
@@ -301,11 +246,7 @@ contract DepositCollateralTest is TestTrade {
         );
 
         // Verify liquidity decreased by ~20%
-        (, , , , uint128 remainingLiquidity) = getCurrentPositionTokenAmounts(
-            uniswapNftId,
-            LOWER_TICK,
-            UPPER_TICK
-        );
+        (,,,, uint128 remainingLiquidity) = getCurrentPositionTokenAmounts(uniswapNftId, LOWER_TICK, UPPER_TICK);
 
         assertApproxEqRel(
             remainingLiquidity,
@@ -317,36 +258,28 @@ contract DepositCollateralTest is TestTrade {
 
     function test_decreaseLiquidity95Percent() public {
         // Get initial position data
-        Position.Data memory positionBefore = foil.getPosition(
-            feeCollectorPositionId
-        );
+        Position.Data memory positionBefore = sapience.getPosition(feeCollectorPositionId);
         uint256 uniswapNftId = positionBefore.uniswapPositionId;
-        (, , , , uint128 initialLiquidity) = getCurrentPositionTokenAmounts(
-            uniswapNftId,
-            LOWER_TICK,
-            UPPER_TICK
-        );
+        (,,,, uint128 initialLiquidity) = getCurrentPositionTokenAmounts(uniswapNftId, LOWER_TICK, UPPER_TICK);
 
         // Calculate 95% of initial liquidity to decrease
         uint128 liquidityToDecrease = uint128((initialLiquidity * 95) / 100);
 
         vm.startPrank(feeCollector);
         // Decrease liquidity by 95%
-        foil.decreaseLiquidityPosition(
-            IFoilStructs.LiquidityDecreaseParams({
+        sapience.decreaseLiquidityPosition(
+            ISapienceStructs.LiquidityDecreaseParams({
                 positionId: feeCollectorPositionId,
                 liquidity: liquidityToDecrease,
-                minGasAmount: 0,
-                minEthAmount: 0,
+                minBaseAmount: 0,
+                minQuoteAmount: 0,
                 deadline: block.timestamp + 30 minutes
             })
         );
         vm.stopPrank();
 
         // Get updated position data
-        Position.Data memory positionAfter = foil.getPosition(
-            feeCollectorPositionId
-        );
+        Position.Data memory positionAfter = sapience.getPosition(feeCollectorPositionId);
 
         // Check that deposited collateral amount is reduced proportionally
         assertApproxEqRel(
@@ -357,11 +290,7 @@ contract DepositCollateralTest is TestTrade {
         );
 
         // Verify liquidity decreased by ~95%
-        (, , , , uint128 remainingLiquidity) = getCurrentPositionTokenAmounts(
-            uniswapNftId,
-            LOWER_TICK,
-            UPPER_TICK
-        );
+        (,,,, uint128 remainingLiquidity) = getCurrentPositionTokenAmounts(uniswapNftId, LOWER_TICK, UPPER_TICK);
 
         assertApproxEqRel(
             remainingLiquidity,
