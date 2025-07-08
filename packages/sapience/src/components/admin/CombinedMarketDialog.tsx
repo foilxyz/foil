@@ -703,17 +703,6 @@ const CombinedMarketDialog = () => {
                   </Select>
                 </div>
               </div>
-              {/* isBridged toggle */}
-              <div className="flex items-center gap-2 py-2">
-                <Label htmlFor="isBridged" className="font-medium">
-                  Bridged
-                </Label>
-                <Switch
-                  id="isBridged"
-                  checked={isBridged}
-                  onCheckedChange={setIsBridged}
-                />
-              </div>
               {/* Resource Selection */}
               <div className="space-y-2">
                 <Label htmlFor="resource">Index</Label>
@@ -899,6 +888,17 @@ const CombinedMarketDialog = () => {
                           required
                         />
                       </div>
+                    </div>
+                    {/* isBridged toggle */}
+                    <div className="flex items-center gap-2 py-2">
+                      <Label htmlFor="isBridged" className="font-medium">
+                        Bridged
+                      </Label>
+                      <Switch
+                        id="isBridged"
+                        checked={isBridged}
+                        onCheckedChange={setIsBridged}
+                      />
                     </div>
                     {/* Owner, Nonce, Collateral Asset, Min Trade Size */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
