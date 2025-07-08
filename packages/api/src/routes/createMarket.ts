@@ -98,6 +98,7 @@ router.post('/', async (req: Request, res: Response) => {
       markets,
       signature,
       signatureTimestamp,
+      isBridged,
     } = req.body as { markets: MarketDataPayload[] } & Omit<
       Request['body'],
       'markets'

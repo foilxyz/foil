@@ -53,8 +53,6 @@ export async function reindexMarket(
         deployTxnBlockNumber:
           marketEntity.deployTxnBlockNumber?.toString() || '0',
       },
-      vaultAddress: marketEntity.vaultAddress || '',
-      isYin: marketEntity.isYin || false,
       isCumulative: marketEntity.isCumulative || false,
       resource: {
         name: marketEntity.resource?.name,

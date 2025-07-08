@@ -52,8 +52,6 @@ export const initializeMarket = async (marketInfo: MarketInfo) => {
 
   const updatedMarketData = {
     address: marketInfo.deployment.address.toLowerCase(),
-    vaultAddress: marketInfo.vaultAddress ?? '',
-    isYin: marketInfo.isYin ?? true,
     isCumulative: marketInfo.isCumulative ?? false,
     deployTxnBlockNumber: Number(marketInfo.deployment.deployTxnBlockNumber),
     deployTimestamp: Number(marketInfo.deployment.deployTimestamp),

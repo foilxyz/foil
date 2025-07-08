@@ -119,7 +119,7 @@ model market {
   marketParamsBondcurrency           String?       @db.VarChar
   marketParamsBondamount             Decimal?      @db.Decimal(78, 0)
   marketParamsClaimstatementYesOrNumeric         String?       @db.VarChar
-  marketParamsClaimstatementNo         String?       @db.VarChar
+  marketParamsClaimstatementNo       String?       @db.VarChar
   marketParamsUniswappositionmanager String?       @db.VarChar
   marketParamsUniswapswaprouter      String?       @db.VarChar
   marketParamsUniswapquoter          String?       @db.VarChar
@@ -155,7 +155,7 @@ model market_group {
   marketParamsBondcurrency           String?   @db.VarChar
   marketParamsBondamount             Decimal?  @db.Decimal(78, 0)
   marketParamsClaimstatementYesOrNumeric         String?   @db.VarChar
-  marketParamsClaimstatementNo         String?   @db.VarChar
+  marketParamsClaimstatementNo       String?   @db.VarChar
   marketParamsUniswappositionmanager String?   @db.VarChar
   marketParamsUniswapswaprouter      String?   @db.VarChar
   marketParamsUniswapquoter          String?   @db.VarChar
