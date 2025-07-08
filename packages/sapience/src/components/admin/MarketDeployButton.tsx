@@ -14,37 +14,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@sapience/ui/components/ui/dialog';
+import { sapienceAbi } from '@sapience/ui/lib/abi';
 import type { MarketType } from '@sapience/ui/types';
 import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { toBytes, bytesToHex } from 'viem';
 import type { Address } from 'viem';
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-
-import { sapienceAbi } from '@sapience/ui/lib/abi';
-
-// ABI for the createEpoch function (from CreateMarketDialog originally)
-const createEpochAbiFragment = [
-  {
-    type: 'function',
-    name: 'createEpoch',
-    inputs: [
-      { name: 'startTime', type: 'uint256', internalType: 'uint256' },
-      { name: 'endTime', type: 'uint256', internalType: 'uint256' },
-      {
-        name: 'startingSqrtPriceX96',
-        type: 'uint160',
-        internalType: 'uint160',
-      },
-      { name: 'baseAssetMinPriceTick', type: 'int24', internalType: 'int24' },
-      { name: 'baseAssetMaxPriceTick', type: 'int24', internalType: 'int24' },
-      { name: 'salt', type: 'uint256', internalType: 'uint256' },
-      { name: 'claimStatement', type: 'bytes', internalType: 'bytes' },
-    ],
-    outputs: [{ name: 'epochId', type: 'uint256', internalType: 'uint256' }],
-    stateMutability: 'nonpayable',
-  },
-] as const;
 
 interface MarketDeployButtonProps {
   market: MarketType; // Use the adjusted market type
@@ -145,10 +121,15 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
     }
 
     try {
-      const claimStatementYesOrNumeric = market.marketParamsClaimstatementYesOrNumeric;
+      const claimStatementYesOrNumeric =
+        market.marketParamsClaimstatementYesOrNumeric;
       const claimStatementNo = market.marketParamsClaimstatementNo;
-      const claimStatementBytesYesOrNumeric = toBytes(claimStatementYesOrNumeric as string);
-      const claimStatementHexYesOrNumeric = bytesToHex(claimStatementBytesYesOrNumeric);
+      const claimStatementBytesYesOrNumeric = toBytes(
+        claimStatementYesOrNumeric as string
+      );
+      const claimStatementHexYesOrNumeric = bytesToHex(
+        claimStatementBytesYesOrNumeric
+      );
 
       const claimStatementBytesNo = toBytes(claimStatementNo as string);
       const claimStatementHexNo = bytesToHex(claimStatementBytesNo);

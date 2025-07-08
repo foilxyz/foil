@@ -75,7 +75,8 @@ export interface MarketInput {
   startingSqrtPriceX96: string;
   baseAssetMinPriceTick: string;
   baseAssetMaxPriceTick: string;
-  claimStatement: string;
+  claimStatementYesOrNumeric: string;
+  claimStatementNo: string;
   rules?: string;
 }
 
@@ -767,13 +768,17 @@ const MarketFormFields = ({
       let claimStatementYesOrNumeric = '';
 
       if (selectedMarketGroup.marketParamsClaimstatementYesOrNumeric) {
-        claimStatementYesOrNumeric = selectedMarketGroup.marketParamsClaimstatementYesOrNumeric;
+        claimStatementYesOrNumeric =
+          selectedMarketGroup.marketParamsClaimstatementYesOrNumeric;
       } else if (selectedMarket.marketParamsClaimstatementYesOrNumeric) {
-        claimStatementYesOrNumeric = selectedMarket.marketParamsClaimstatementYesOrNumeric;
+        claimStatementYesOrNumeric =
+          selectedMarket.marketParamsClaimstatementYesOrNumeric;
       }
 
       if (claimStatementYesOrNumeric) {
-        const decodedClaimStatement = decodeClaimStatement(claimStatementYesOrNumeric);
+        const decodedClaimStatement = decodeClaimStatement(
+          claimStatementYesOrNumeric
+        );
         onMarketChange('claimStatementYesOrNumeric', decodedClaimStatement);
       }
 
@@ -1138,16 +1143,39 @@ const MarketFormFields = ({
         </div>
       </div>
 
-      {/* Claim Statement */}
+      {/* Claim Statement Yes or Numeric */}
       <div>
-        <Label htmlFor={fieldId('claimStatement')}>Claim Statement</Label>
+        <Label htmlFor={fieldId('claimStatementYesOrNumeric')}>
+          Claim Statement (Yes or Numeric)
+        </Label>
         <Input
-          id={fieldId('claimStatement')}
+          id={fieldId('claimStatementYesOrNumeric')}
           type="text"
-          value={market.claimStatement}
-          onChange={(e) => onMarketChange('claimStatement', e.target.value)}
+          value={market.claimStatementYesOrNumeric}
+          onChange={(e) =>
+            onMarketChange('claimStatementYesOrNumeric', e.target.value)
+          }
           placeholder="e.g. The average cost of gas in June 2025..."
           required
+        />
+        {!isCompact && (
+          <p className="text-sm text-muted-foreground mt-1">
+            This will be followed by the settlement value in UMA.
+          </p>
+        )}
+      </div>
+
+      {/* Claim Statement No */}
+      <div>
+        <Label htmlFor={fieldId('claimStatementNo')}>
+          Claim Statement (No) (Optional)
+        </Label>
+        <Input
+          id={fieldId('claimStatementNo')}
+          type="text"
+          value={market.claimStatementNo}
+          onChange={(e) => onMarketChange('claimStatementNo', e.target.value)}
+          placeholder="e.g. The average cost of gas in June 2025..."
         />
         {!isCompact && (
           <p className="text-sm text-muted-foreground mt-1">

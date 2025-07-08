@@ -14,13 +14,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@sapience/ui/components/ui/dialog';
+import { sapienceFactoryAbi } from '@sapience/ui/lib/abi';
 import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { parseAbiItem, decodeEventLog, zeroAddress } from 'viem';
+import { parseAbiItem, decodeEventLog } from 'viem';
 import type { Address, AbiEvent } from 'viem';
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-
-import { sapienceFactoryAbi } from '@sapience/ui/lib/abi';
 
 import type { EnrichedMarketGroup } from '~/hooks/graphql/useMarketGroups';
 
