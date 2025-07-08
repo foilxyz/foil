@@ -51,6 +51,7 @@ while [[ $# -gt 0 ]]; do
             echo "  $0 --skip-if-exists                   # Stop if dump exists, otherwise download"
             echo "  $0 --timestamp-from 1640995200 --timestamp-to 1641081600  # Filter by timestamp range"
             echo "  $0 --include-candles --include-prices # Include both tables in filtering"
+            echo "  $0 --timestamp-from 1749352892 --timestamp-to 1751858492 --include-prices --include-candles # Filter by timestamp range and include both tables"
             exit 0
             ;;
         *)
