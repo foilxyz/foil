@@ -72,7 +72,8 @@ export interface MarketParams {
   bondCurrency: string;
   feeRate: number;
   optimisticOracleV3: string;
-  claimStatement: string;
+  claimStatementYesOrNumeric: string;
+  claimStatementNo: string;
   uniswapPositionManager: string;
   uniswapQuoter: string;
   uniswapSwapRouter: string;
