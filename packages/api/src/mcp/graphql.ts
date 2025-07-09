@@ -85,7 +85,6 @@ const getMarketGroup = {
           id
           isCumulative
           owner
-          vaultAddress
           markets {
             id
             marketId

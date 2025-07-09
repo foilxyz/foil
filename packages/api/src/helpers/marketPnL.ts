@@ -12,50 +12,50 @@ interface PnLData {
   totalPnL: bigint;
 }
 
-interface EpochData {
+interface MarketData {
   id: number;
   chainId: number;
   address: string;
-  epochId: number;
+  marketId: number;
 }
 
-interface EpochPnLData {
-  epochData: EpochData;
+interface MarketPnLData {
+  marketData: MarketData;
   pnlData: PnLData[];
   datapointTime: number;
 }
 
-export class EpochPnL {
-  private static instance: EpochPnL;
+export class MarketPnL {
+  private static instance: MarketPnL;
   private INTERVAL = TIME_INTERVALS.intervals.INTERVAL_5_MINUTES;
 
-  private markets: EpochPnLData[] = [];
+  private markets: MarketPnLData[] = [];
 
   private constructor() {
     // Private constructor to prevent direct construction calls with the `new` operator
   }
 
-  public static getInstance(): EpochPnL {
-    if (!EpochPnL.instance) {
-      EpochPnL.instance = new EpochPnL();
+  public static getInstance(): MarketPnL {
+    if (!MarketPnL.instance) {
+      MarketPnL.instance = new MarketPnL();
     }
 
-    return EpochPnL.instance;
+    return MarketPnL.instance;
   }
 
-  async getEpochPnLs(chainId: number, address: string, epochId: number) {
+  async getMarketPnLs(chainId: number, address: string, marketId: number) {
     const currentTimestamp = Date.now() / 1000;
     const datapointTime = startOfInterval(currentTimestamp, this.INTERVAL);
 
     let market = this.markets.find(
       (data) =>
-        data.epochData.chainId === chainId &&
-        data.epochData.address === address.toLowerCase() &&
-        data.epochData.epochId === epochId
+        data.marketData.chainId === chainId &&
+        data.marketData.address === address.toLowerCase() &&
+        data.marketData.marketId === marketId
     );
 
     if (!market) {
-      market = await this.getMarketData(chainId, address, epochId);
+      market = await this.getMarketData(chainId, address, marketId);
       if (!market) {
         return [];
       }
@@ -66,18 +66,18 @@ export class EpochPnL {
     }
 
     // Build the pnlData array for this market and datapointTime
-    market.pnlData = await this.buildPnlData(market.epochData);
+    market.pnlData = await this.buildPnlData(market.marketData);
     market.datapointTime = datapointTime;
 
     return market.pnlData;
   }
 
-  private async buildPnlData(epochData: EpochData): Promise<PnLData[]> {
+  private async buildPnlData(marketData: MarketData): Promise<PnLData[]> {
     try {
       // 1. Fetch positions for the market
       const positions = await prisma.position.findMany({
         where: {
-          marketId: epochData.id,
+          marketId: marketData.id,
         },
         include: {
           transaction: {
@@ -144,7 +144,7 @@ export class EpochPnL {
     chainId: number,
     address: string,
     marketId: number
-  ): Promise<EpochPnLData | undefined> {
+  ): Promise<MarketPnLData | undefined> {
     try {
       const market = await prisma.market.findFirst({
         where: {
@@ -160,20 +160,20 @@ export class EpochPnL {
         return undefined;
       }
 
-      const epochPnLData: EpochPnLData = {
-        epochData: {
+      const marketPnLData: MarketPnLData = {
+        marketData: {
           id: market.id,
           chainId,
           address,
-          epochId: marketId,
+          marketId: marketId,
         },
         pnlData: [],
         datapointTime: 0,
       };
 
-      this.markets.push(epochPnLData);
+      this.markets.push(marketPnLData);
 
-      return epochPnLData;
+      return marketPnLData;
     } catch (error) {
       console.error('Error fetching market data:', error);
       return undefined;

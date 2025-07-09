@@ -1,18 +1,17 @@
-import { initializeDataSource } from '../../db';
+import Sapience from '@sapience/protocol/deployments/Sapience.json';
+import * as Sentry from '@sentry/node';
+import { Abi } from 'viem';
 import {
   initializeMarket,
   reindexMarketGroupEvents,
 } from '../../controllers/market';
-import * as Sentry from '@sentry/node';
-import prisma from '../../db';
+import prisma, { initializeDataSource } from '../../db';
 import { INDEXERS } from '../../fixtures';
-import { Abi } from 'viem';
-import Foil from '@sapience/protocol/deployments/Foil.json';
 
 export async function reindexMarket(
   chainId: number,
   address: string,
-  epochId: string
+  marketId: string
 ) {
   try {
     console.log(
@@ -21,7 +20,7 @@ export async function reindexMarket(
       'on chain',
       chainId,
       'market',
-      epochId
+      marketId
     );
 
     await initializeDataSource();
@@ -48,7 +47,7 @@ export async function reindexMarket(
       marketChainId: chainId,
       deployment: {
         address,
-        abi: Foil.abi as Abi,
+        abi: Sapience.abi as Abi,
         deployTimestamp: marketEntity.deployTimestamp?.toString() || '0',
         deployTxnBlockNumber:
           marketEntity.deployTxnBlockNumber?.toString() || '0',
@@ -76,7 +75,7 @@ export async function reindexMarket(
     Sentry.withScope((scope: Sentry.Scope) => {
       scope.setExtra('chainId', chainId);
       scope.setExtra('address', address);
-      scope.setExtra('epochId', epochId);
+      scope.setExtra('marketId', marketId);
       Sentry.captureException(error);
     });
     throw error;

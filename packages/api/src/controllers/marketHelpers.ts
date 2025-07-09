@@ -20,7 +20,7 @@ import {
   MarketParams,
 } from '../interfaces';
 import { getBlockByTimestamp, getProviderForChain } from '../utils/utils';
-import Foil from '@sapience/protocol/deployments/Foil.json';
+import Sapience from '@sapience/protocol/deployments/Sapience.json';
 
 /**
  * Handles a Transfer event by updating the owner of the corresponding Position.
@@ -517,7 +517,7 @@ export const createOrUpdateMarketFromContract = async (
   // get market from contract
   const marketReadResult = await client.readContract({
     address: market.address as `0x${string}`,
-    abi: Foil.abi,
+    abi: Sapience.abi,
     functionName,
     args,
   });
