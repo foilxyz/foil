@@ -503,7 +503,6 @@ const CombinedMarketDialog = () => {
       }),
       markets: marketsToValidate, // Use the version without 'id'
     };
-    console.log('formData', formData, combinedSchema.parse(formData));
 
     try {
       combinedSchema.parse(formData);

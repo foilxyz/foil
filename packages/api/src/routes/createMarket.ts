@@ -1,8 +1,7 @@
+import { Request, Response, Router } from 'express';
 import prisma from '../db';
-import { Router } from 'express';
-import { Request, Response } from 'express';
-import { watchFactoryAddress } from '../workers/jobs/indexMarkets';
 import { isValidWalletSignature } from '../middleware';
+import { watchFactoryAddress } from '../workers/jobs/indexMarkets';
 
 const router = Router();
 
@@ -199,17 +198,16 @@ router.post('/', async (req: Request, res: Response) => {
         owner: owner,
         collateralAsset: collateralAsset,
         minTradeSize: minTradeSize,
-        marketParamsFeerate: marketParams.feerate,
-        marketParamsAssertionliveness: marketParams.assertionliveness,
-        marketParamsBondcurrency: marketParams.bondcurrency,
-        marketParamsBondamount: marketParams.bondamount,
-        marketParamsClaimstatementYesOrNumeric:
-          marketParams.claimstatementYesOrNumeric,
-        marketParamsClaimstatementNo: marketParams.claimstatementNo,
-        marketParamsUniswappositionmanager: marketParams.uniswappositionmanager,
-        marketParamsUniswapswaprouter: marketParams.uniswapswaprouter,
-        marketParamsUniswapquoter: marketParams.uniswapquoter,
-        marketParamsOptimisticoraclev3: marketParams.optimisticoraclev3,
+        marketParamsFeerate: marketParams.feeRate,
+        marketParamsAssertionliveness: marketParams.assertionLiveness,
+        marketParamsBondcurrency: marketParams.bondCurrency,
+        marketParamsBondamount: marketParams.bondAmount,
+        marketParamsClaimstatementYesOrNumeric: null,
+        marketParamsClaimstatementNo: null,
+        marketParamsUniswappositionmanager: marketParams.uniswapPositionManager,
+        marketParamsUniswapswaprouter: marketParams.uniswapSwapRouter,
+        marketParamsUniswapquoter: marketParams.uniswapQuoter,
+        marketParamsOptimisticoraclev3: marketParams.optimisticOracleV3,
         resourceId: resource ? resource.id : null,
         isCumulative: isCumulative !== undefined ? isCumulative : false,
         isBridged: isBridged !== undefined ? isBridged : false,
