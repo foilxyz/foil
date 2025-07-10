@@ -144,7 +144,7 @@ export const getDisplayQuestion = (
 
   // 3. Fallback: If group question isn't available, find the first market (active or not) with a question.
   //    (Consider if this fallback is truly desired, might be better to show defaultErrorMessage)
-  const firstMarketWithQuestion = marketGroupData.markets?.find(
+  const firstMarketWithQuestion = marketGroupData.market?.find(
     (market: MarketType) => market.question // Explicitly type 'market'
   );
   if (firstMarketWithQuestion?.question) {
@@ -163,7 +163,7 @@ export const findActiveMarkets = (
 ): MarketType[] => {
   const nowInSeconds = Date.now() / 1000;
   // Filter markets based on timestamps
-  return (marketGroupData.markets || []).filter(
+  return (marketGroupData.market || []).filter(
     (
       market: MarketType // Use MarketType here
     ) => {
@@ -322,7 +322,7 @@ export function calculateEffectiveEntryPrice(
 
   // Sort transactions by timestamp (oldest first)
   const sortedTransactions = [...transactions].sort(
-    (a, b) => (a.timestamp || 0) - (b.timestamp || 0)
+    (a, b) => (new Date(a.createdAt).getTime() || 0) - (new Date(b.createdAt).getTime() || 0)
   );
 
   // Initialize entry price calculation variables
@@ -332,7 +332,7 @@ export function calculateEffectiveEntryPrice(
   // Process transactions to calculate deltas
   for (const tx of sortedTransactions) {
     // Skip non-trade transactions
-    if (tx.type === 'trade') {
+    if (tx.type === 'long' || tx.type === 'short') {
       // Parse token deltas safely, handling null/undefined and converting from wei string
       // Use the correct property names from the GraphQL Transaction type
       const baseTokenDelta = parseFloat(

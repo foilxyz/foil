@@ -28,7 +28,7 @@ export default function PredictForm({
   marketClassification,
   chainId,
 }: PredictFormProps) {
-  const firstMarket = marketGroupData.markets?.[0];
+  const firstMarket = marketGroupData.market?.[0];
   const lowerBound = tickToPrice(firstMarket?.baseAssetMinPriceTick ?? 0);
   const upperBound = tickToPrice(firstMarket?.baseAssetMaxPriceTick ?? 0);
   // Create schema based on market category
@@ -101,7 +101,7 @@ export default function PredictForm({
       return Number(predictionValue);
     }
     return firstMarket?.marketId ?? 0;
-  }, [marketClassification, predictionValue, marketGroupData.markets]);
+  }, [marketClassification, predictionValue, marketGroupData.market]);
 
   const submissionValue = useMemo(() => {
     switch (marketClassification) {
@@ -136,7 +136,7 @@ export default function PredictForm({
       case MarketGroupClassification.MULTIPLE_CHOICE:
         return (
           <MultipleChoicePredict
-            options={(marketGroupData.markets || []).map((market) => ({
+            options={(marketGroupData.market || []).map((market) => ({
               name: market.optionName || '',
               marketId: market.marketId,
             }))}

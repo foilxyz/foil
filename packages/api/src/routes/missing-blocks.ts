@@ -13,7 +13,7 @@ const getMissingBlocks = async (
   marketId: string
 ): Promise<{ missingBlockNumbers: number[] | null; error?: string }> => {
   // Find the market
-  const market = await prisma.market_group.findFirst({
+  const market = await prisma.marketGroup.findFirst({
     where: { chainId: Number(chainId), address: address.toLowerCase() },
     include: { resource: true },
   });
@@ -47,7 +47,7 @@ const getMissingBlocks = async (
   }
 
   // Get existing block numbers for ResourcePrice
-  const resourcePrices = await prisma.resource_price.findMany({
+  const resourcePrices = await prisma.resourcePrice.findMany({
     where: {
       resourceId: market.resource.id,
       blockNumber: {

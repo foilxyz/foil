@@ -3,11 +3,11 @@ import prisma from '../db';
 import { PublicClient, erc20Abi } from 'viem';
 import { Decimal } from 'generated/prisma/runtime/library';
 import type {
-  transaction,
-  event,
-  market_group,
-  position,
-  market,
+  Transaction,
+  Event,
+  Position,
+  Market,
+  MarketGroup,
 } from '../../generated/prisma';
 import { transaction_type_enum as TransactionType } from '../../generated/prisma';
 import {
@@ -27,13 +27,13 @@ import Foil from '@sapience/protocol/deployments/Foil.json';
  * @param event The Transfer event
  */
 export const handleTransferEvent = async (
-  event: event & { market_group: market_group }
+  event: Event & { market_group: MarketGroup }
 ) => {
   const args = getLogDataArgs(event.logData);
   const { to, tokenId } = args;
 
   if (!to || !tokenId) {
-    console.log('Missing required fields in transfer event:', event);
+    console.log('Missing required fields in transfer event:', Event);
     return;
   }
 
@@ -51,7 +51,7 @@ export const handleTransferEvent = async (
 
   if (!existingPosition) {
     // Ignore the transfer event until the position is created from another event
-    console.log('Position not found for transfer event: ', event);
+    console.log('Position not found for transfer event: ', Event);
     return;
   }
 
@@ -67,12 +67,12 @@ export const handleTransferEvent = async (
  * Handles a Transfer event by updating the owner of the corresponding Position.
  * @param event The Transfer event
  */
-export const handlePositionSettledEvent = async (event: event) => {
+export const handlePositionSettledEvent = async (event: Event) => {
   const args = getLogDataArgs(event.logData);
   const { positionId } = args;
 
   if (!positionId) {
-    console.log('Missing positionId in settled event:', event);
+    console.log('Missing positionId in settled event:', Event);
     return;
   }
 
@@ -84,7 +84,7 @@ export const handlePositionSettledEvent = async (event: event) => {
 
   if (!existingPosition) {
     // Ignore the settled event until the position is created from another event
-    console.log('Position not found for settled event: ', event);
+    console.log('Position not found for settled event: ', Event);
     return;
   }
 
@@ -101,15 +101,15 @@ export const handlePositionSettledEvent = async (event: event) => {
  * @param transaction the Transaction to use for creating/modifying the position
  */
 export const createOrModifyPositionFromTransaction = async (
-  transaction: transaction & {
-    event: event & { market_group: market_group };
-    position?: position | null;
+  transaction: Transaction & {
+    event: Event & { market_group: MarketGroup };
+    position?: Position | null;
   }
 ) => {
   try {
     const eventArgs = getLogDataArgs(transaction.event.logData);
     let epochId = eventArgs.epochId;
-    let epoch: market | undefined;
+    let epoch: Market | undefined;
 
     if (!epochId) {
       const positionId = eventArgs.positionId;
@@ -129,7 +129,7 @@ export const createOrModifyPositionFromTransaction = async (
       let found = false;
       for (const market of markets) {
         const position = market.position.find(
-          (p: position) => p.positionId === Number(positionId)
+          (p: Position) => p.positionId === Number(positionId)
         );
         if (position) {
           epoch = market;
@@ -200,7 +200,7 @@ export const createOrModifyPositionFromTransaction = async (
       },
     });
 
-    let savedPosition: position;
+    let savedPosition: Position;
 
     if (existingPosition) {
       console.log('Found existing position:', existingPosition.id);
@@ -280,11 +280,11 @@ export const createOrModifyPositionFromTransaction = async (
 };
 
 const updateTransactionStateFromEvent = (
-  transaction: transaction & {
-    event: event & { market_group: market_group };
-    position?: position | null;
+  transaction: Transaction & {
+    event: Event & { market_group: MarketGroup };
+    position?: Position | null;
   },
-  event: event
+  event: Event
 ) => {
   const eventArgs = getLogDataArgs(event.logData);
 
@@ -309,9 +309,9 @@ const updateTransactionStateFromEvent = (
  * @param transaction the Transaction to find or create a CollateralTransfer for
  */
 export const insertCollateralTransfer = async (
-  transaction: transaction & {
-    event: event & { market_group: market_group };
-    position?: position | null;
+  transaction: Transaction & {
+    event: Event & { market_group: MarketGroup };
+    position?: Position | null;
   }
 ) => {
   const eventArgs = getLogDataArgs(transaction.event.logData);
@@ -322,7 +322,7 @@ export const insertCollateralTransfer = async (
   }
 
   // Check if a collateral transfer already exists for this transaction hash
-  const existingTransfer = await prisma.collateral_transfer.findFirst({
+  const existingTransfer = await prisma.collateralTransfer.findFirst({
     where: { transactionHash: transaction.event.transactionHash },
   });
 
@@ -336,7 +336,7 @@ export const insertCollateralTransfer = async (
   }
 
   // Create a new one if it doesn't exist
-  const transfer = await prisma.collateral_transfer.create({
+  const transfer = await prisma.collateralTransfer.create({
     data: {
       transactionHash: transaction.event.transactionHash,
       timestamp: Number(transaction.event.timestamp),
@@ -357,9 +357,9 @@ export const insertCollateralTransfer = async (
  * @param transaction the Transaction to create a MarketPrice for
  */
 export const insertMarketPrice = async (
-  transaction: transaction & {
-    event: event & { market_group: market_group };
-    position?: position | null;
+  transaction: Transaction & {
+    event: Event & { market_group: MarketGroup };
+    position?: Position | null;
   }
 ) => {
   if (
@@ -369,7 +369,7 @@ export const insertMarketPrice = async (
     const args = getLogDataArgs(transaction.event.logData);
 
     // Create a new market price
-    const newMp = await prisma.market_price.create({
+    const newMp = await prisma.marketPrice.create({
       data: {
         value: toDecimal(args.finalPrice || '0'),
         timestamp: transaction.event.timestamp,
@@ -391,7 +391,7 @@ export const insertMarketPrice = async (
  */
 export const updateCollateralData = async (
   client: PublicClient,
-  market: market_group
+  market: MarketGroup
 ) => {
   if (market.collateralAsset) {
     try {
@@ -406,7 +406,7 @@ export const updateCollateralData = async (
         functionName: 'symbol',
       });
 
-      await prisma.market_group.update({
+      await prisma.marketGroup.update({
         where: { id: market.id },
         data: {
           collateralDecimals: Number(decimals),
@@ -426,24 +426,24 @@ export const createOrUpdateMarketFromContract = async (
   client: PublicClient,
   contractDeployment: Deployment,
   chainId: number,
-  initialMarket?: market_group
+  initialMarket?: MarketGroup
 ) => {
   const address = contractDeployment.address.toLowerCase();
   // get market and epoch from contract
-  const marketReadResult = await client.readContract({
+  const MarketReadResult = await client.readContract({
     address: address as `0x${string}`,
     abi: contractDeployment.abi,
     functionName: 'getMarket',
   });
-  console.log('marketReadResult', marketReadResult);
+  console.log('MarketReadResult', MarketReadResult);
 
-  let updatedMarket: market_group;
+  let updatedMarket: MarketGroup;
 
   if (initialMarket) {
     updatedMarket = initialMarket;
   } else {
     // check if market already exists in db
-    const existingMarket = await prisma.market_group.findFirst({
+    const existingMarket = await prisma.marketGroup.findFirst({
       where: { address: address.toLowerCase(), chainId },
       include: {
         market: true,
@@ -454,16 +454,16 @@ export const createOrUpdateMarketFromContract = async (
       updatedMarket = existingMarket;
     } else {
       // Create new market
-      updatedMarket = await prisma.market_group.create({
+      updatedMarket = await prisma.marketGroup.create({
         data: {
           address: address.toLowerCase(),
           deployTxnBlockNumber: Number(contractDeployment.deployTxnBlockNumber),
           deployTimestamp: Number(contractDeployment.deployTimestamp),
           chainId,
           owner: (
-            (marketReadResult as MarketReadResult)[0] as string
+            (MarketReadResult as MarketReadResult)[0] as string
           ).toLowerCase(),
-          collateralAsset: (marketReadResult as MarketReadResult)[1],
+          collateralAsset: (MarketReadResult as MarketReadResult)[1],
         },
       });
     }
@@ -472,10 +472,10 @@ export const createOrUpdateMarketFromContract = async (
   // Update collateral data
   await updateCollateralData(client, updatedMarket);
 
-  const marketParamsRaw = (marketReadResult as MarketReadResult)[4];
+  const marketParamsRaw = (MarketReadResult as MarketReadResult)[4];
 
   // Update market with new data
-  updatedMarket = await prisma.market_group.update({
+  updatedMarket = await prisma.marketGroup.update({
     where: { id: updatedMarket.id },
     data: {
       address: address.toLowerCase(),
@@ -483,9 +483,9 @@ export const createOrUpdateMarketFromContract = async (
       deployTimestamp: Number(contractDeployment.deployTimestamp),
       chainId,
       owner: (
-        (marketReadResult as MarketReadResult)[0] as string
+        (MarketReadResult as MarketReadResult)[0] as string
       ).toLowerCase(),
-      collateralAsset: (marketReadResult as MarketReadResult)[1],
+      collateralAsset: (MarketReadResult as MarketReadResult)[1],
       marketParamsFeerate: marketParamsRaw.feeRate || null,
       marketParamsAssertionliveness:
         marketParamsRaw.assertionLiveness?.toString() || null,
@@ -505,7 +505,7 @@ export const createOrUpdateMarketFromContract = async (
 };
 
 export const createOrUpdateEpochFromContract = async (
-  market: market_group,
+  market: MarketGroup,
   epochId?: number
 ) => {
   const functionName = epochId ? 'getEpoch' : 'getLatestEpoch';
@@ -601,15 +601,15 @@ export const createOrUpdateMarketFromEvent = async (
   eventArgs: MarketCreatedUpdatedEventLog,
   chainId: number,
   address: string,
-  originalMarket?: market_group | null
+  originalMarket?: MarketGroup | null
 ) => {
-  let market: market_group;
+  let market: MarketGroup;
 
   if (originalMarket) {
     market = originalMarket;
   } else {
     // Create new market
-    market = await prisma.market_group.create({
+    market = await prisma.marketGroup.create({
       data: {
         chainId,
         address: address.toLowerCase(),
@@ -632,7 +632,7 @@ export const createOrUpdateMarketFromEvent = async (
   }
 
   // Update market data
-  const updateData: Partial<market_group> = {};
+  const updateData: Partial<MarketGroup> = {};
 
   if (eventArgs.collateralAsset) {
     updateData.collateralAsset = eventArgs.collateralAsset;
@@ -642,7 +642,7 @@ export const createOrUpdateMarketFromEvent = async (
   }
 
   if (Object.keys(updateData).length > 0) {
-    market = await prisma.market_group.update({
+    market = await prisma.marketGroup.update({
       where: { id: market.id },
       data: updateData,
     });
@@ -664,11 +664,11 @@ export const getTradeTypeFromEvent = (eventArgs: TradePositionEventLog) => {
  * @param event the Event containing the LiquidityPositionCreatedEventLog args
  */
 export const updateTransactionFromAddLiquidityEvent = (
-  newTransaction: transaction & {
-    event: event & { market_group: market_group };
-    position?: position | null;
+  newTransaction: Transaction & {
+    event: Event & { market_group: MarketGroup };
+    position?: Position | null;
   },
-  event: event
+  event: Event
 ) => {
   newTransaction.type = TransactionType.addLiquidity;
 
@@ -711,11 +711,11 @@ export const updateTransactionFromAddLiquidityEvent = (
  * @param isDecrease whether the event is a decrease or increase in liquidity
  */
 export const updateTransactionFromLiquidityClosedEvent = async (
-  newTransaction: transaction & {
-    event: event & { market_group: market_group };
-    position?: position | null;
+  newTransaction: Transaction & {
+    event: Event & { market_group: MarketGroup };
+    position?: Position | null;
   },
-  event: event
+  event: Event
 ) => {
   newTransaction.type = TransactionType.removeLiquidity;
 
@@ -758,11 +758,11 @@ export const updateTransactionFromLiquidityClosedEvent = async (
  * @param isDecrease whether the event is a decrease or increase in liquidity
  */
 export const updateTransactionFromLiquidityModifiedEvent = async (
-  newTransaction: transaction & {
-    event: event & { market_group: market_group };
-    position?: position | null;
+  newTransaction: Transaction & {
+    event: Event & { market_group: MarketGroup };
+    position?: Position | null;
   },
-  event: event,
+  event: Event,
   isDecrease?: boolean
 ) => {
   newTransaction.type = isDecrease
@@ -817,11 +817,11 @@ export const updateTransactionFromLiquidityModifiedEvent = async (
  * @param event the Event containing the TradePositionModifiedEventLog args
  */
 export const updateTransactionFromTradeModifiedEvent = async (
-  newTransaction: transaction & {
-    event: event & { market_group: market_group };
-    position?: position | null;
+  newTransaction: Transaction & {
+    event: Event & { market_group: MarketGroup };
+    position?: Position | null;
   },
-  event: event
+  event: Event
 ) => {
   const args = getLogDataArgs(event.logData);
   newTransaction.type = getTradeTypeFromEvent({
@@ -860,11 +860,11 @@ export const updateTransactionFromTradeModifiedEvent = async (
 };
 
 export const updateTransactionFromPositionSettledEvent = async (
-  newTransaction: transaction & {
-    event: event & { market_group: market_group };
-    position?: position | null;
+  newTransaction: Transaction & {
+    event: Event & { market_group: MarketGroup };
+    position?: Position | null;
   },
-  event: event,
+  event: Event,
   marketGroupAddress: string,
   marketId: number,
   chainId: number
@@ -889,7 +889,7 @@ export const updateTransactionFromPositionSettledEvent = async (
   let found = false;
   for (const market of markets) {
     const position = market.position.find(
-      (p: position) => p.positionId === Number(positionId)
+      (p: Position) => p.positionId === Number(positionId)
     );
     if (position) {
       updateTransactionStateFromEvent(newTransaction, event);
@@ -934,7 +934,7 @@ export const updateTransactionFromPositionSettledEvent = async (
  */
 export const createEpochFromEvent = async (
   eventArgs: EpochCreatedEventLog,
-  market: market_group
+  market: MarketGroup
 ) => {
   // first check if there's an existing epoch in the database before creating a new one
   const existingEpoch = await prisma.market.findFirst({
@@ -995,7 +995,7 @@ export const createEpochFromEvent = async (
 };
 
 export const getMarketStartEndBlock = async (
-  market: market_group,
+  market: MarketGroup,
   epochId: string,
   overrideClient?: PublicClient
 ) => {
@@ -1033,9 +1033,9 @@ export const getMarketStartEndBlock = async (
 };
 
 const isLpPosition = (
-  transaction: transaction & {
-    event: event & { market_group: market_group };
-    position?: position | null;
+  transaction: Transaction & {
+    event: Event & { market_group: MarketGroup };
+    position?: Position | null;
   }
 ) => {
   if (transaction.type === TransactionType.addLiquidity) {

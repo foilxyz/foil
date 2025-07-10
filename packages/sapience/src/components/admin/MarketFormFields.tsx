@@ -37,10 +37,10 @@ interface MarketGroupCopyData {
   question?: string | null;
   category?: {
     slug?: string | null;
-    id?: string | null;
+    id?: string | number | null;
   } | null;
   resource?: {
-    id?: string | null;
+    id?: string | number | null;
   } | null;
   baseTokenName?: string | null;
   quoteTokenName?: string | null;
@@ -180,7 +180,7 @@ const MarketFormFields = ({
     marketGroups.forEach((group) => {
       if (group.category) {
         categories.set(group.category.slug, {
-          id: group.category.id,
+          id: group.category.id.toString(),
           name: group.category.name,
           slug: group.category.slug,
         });
@@ -720,12 +720,12 @@ const MarketFormFields = ({
 
     try {
       const selectedMarketGroup = marketGroups.find(
-        (group) => group.id === selectedMarketGroupId
+        (group) => group.id.toString() === selectedMarketGroupId
       );
       if (!selectedMarketGroup) return;
 
       const selectedMarket = selectedMarketGroup.markets.find(
-        (marketItem) => marketItem.id === selectedMarketId
+        (marketItem) => marketItem.id.toString() === selectedMarketId
       );
       if (!selectedMarket) return;
 
@@ -834,7 +834,7 @@ const MarketFormFields = ({
               type="text"
               value={
                 selectedMarketGroupId
-                  ? marketGroups?.find((g) => g.id === selectedMarketGroupId)
+                  ? marketGroups?.find((g) => g.id.toString() === selectedMarketGroupId)
                       ?.question || `Market Group ${selectedMarketGroupId}`
                   : searchQuery
               }
@@ -886,7 +886,7 @@ const MarketFormFields = ({
                     ) {
                       const selectedGroup =
                         filteredMarketGroups[selectedDropdownIndex];
-                      setSelectedMarketGroupId(selectedGroup.id);
+                      setSelectedMarketGroupId(selectedGroup.id.toString());
                       setShowMarketGroupDropdown(false);
                       setSelectedDropdownIndex(-1);
                     }
@@ -958,7 +958,7 @@ const MarketFormFields = ({
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      setSelectedMarketGroupId(group.id);
+                      setSelectedMarketGroupId(group.id.toString());
                       setShowMarketGroupDropdown(false);
                       setSelectedDropdownIndex(-1);
                     }}
@@ -1007,7 +1007,7 @@ const MarketFormFields = ({
                 <SelectContent>
                   {(() => {
                     const selectedGroup = marketGroups?.find(
-                      (group) => group.id === selectedMarketGroupId
+                      (group) => group.id.toString() === selectedMarketGroupId
                     );
                     if (!selectedGroup) return null;
 
@@ -1020,7 +1020,7 @@ const MarketFormFields = ({
                     }
 
                     return selectedGroup.markets.map((marketItem) => (
-                      <SelectItem key={marketItem.id} value={marketItem.id}>
+                                             <SelectItem key={marketItem.id} value={marketItem.id.toString()}>
                         {marketItem.optionName ||
                           marketItem.question ||
                           `Market ${marketItem.marketId}`}

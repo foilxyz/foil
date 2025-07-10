@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import type {
   Market as MarketType,
-  MarketGroup as MarketGroupType,
+  Market_Group as MarketGroupType,
   Category as CategoryType,
   Position as PositionType,
 } from '@sapience/ui/types/graphql';
@@ -268,7 +268,7 @@ export const useEnrichedMarketGroups = () => {
         query: print(MARKETS_QUERY),
       });
 
-      if (!apiResponseData || !apiResponseData.marketGroups) {
+      if (!apiResponseData || !apiResponseData.market_groups) {
         console.error(
           '[useEnrichedMarketGroups] No market groups data received from API or data structure invalid.'
         );
@@ -276,7 +276,7 @@ export const useEnrichedMarketGroups = () => {
       }
 
       // --- Process market groups (enrichment only) ---
-      return apiResponseData.marketGroups.map(
+      return apiResponseData.market_groups.map(
         (marketGroup: MarketGroupType): EnrichedMarketGroup => {
           // marketGroup is now MarketGroupType
           let categoryInfo: CategoryType & { iconSvg?: string; color?: string };
@@ -284,29 +284,29 @@ export const useEnrichedMarketGroups = () => {
           if (marketGroup.category) {
             const focusAreaData = focusAreaMap.get(marketGroup.category.slug);
             categoryInfo = {
-              id: marketGroup.category.id,
-              name: focusAreaData?.name || marketGroup.category.name,
-              slug: marketGroup.category.slug,
-              marketGroups: marketGroup.category.marketGroups,
+              ...marketGroup.category,
+              market_group: marketGroup.category.market_group,
               iconSvg: focusAreaData?.iconSvg || DEFAULT_FOCUS_AREA.iconSvg,
               color: focusAreaData?.color || '#9CA3AF', // Tailwind gray-400
             };
           } else {
             categoryInfo = {
-              id: 'unknown',
+              id: -1,
               name: 'Unknown',
               slug: 'unknown',
-              marketGroups: [],
+              createdAt: new Date().toISOString(),
+              resource: [],
+              market_group: [],
               iconSvg: DEFAULT_FOCUS_AREA.iconSvg,
               color: '#9CA3AF', // Tailwind gray-400
             };
           }
 
-          const mappedMarkets = (marketGroup.markets || []).map(
+          const mappedMarkets = (marketGroup.market || []).map(
             (market): MarketType => ({
               ...market,
-              id: market.id.toString(),
-              positions: market.positions || [],
+              id: market.id,
+              position: market.position || [],
             })
           );
 

@@ -22,10 +22,10 @@ const getEndTimeCounts = (
 };
 
 export const getMarketGroupClassification = (
-  marketGroup: Partial<Pick<MarketGroupType, 'markets' | 'baseTokenName'>> // Changed to use imported MarketGroupType
+  marketGroup: Partial<Pick<MarketGroupType, 'market' | 'baseTokenName'>> // Changed to use imported MarketGroupType
 ): MarketGroupClassification => {
   if (
-    !marketGroup?.markets?.length // Simplified guard clause
+    !marketGroup?.market?.length // Simplified guard clause
   ) {
     console.warn(
       '[getMarketGroupClassification] Invalid or empty market group data, defaulting to NUMERIC.'
@@ -33,7 +33,7 @@ export const getMarketGroupClassification = (
     return MarketGroupClassification.NUMERIC;
   }
 
-  const { markets, baseTokenName } = marketGroup;
+  const { market: markets, baseTokenName } = marketGroup;
 
   // Check for MULTIPLE_CHOICE if multiple markets share the same endTime
   if (markets.length > 1) {

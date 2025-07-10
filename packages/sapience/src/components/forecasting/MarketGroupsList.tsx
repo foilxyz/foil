@@ -35,7 +35,7 @@ import MarketGroupsRow from './MarketGroupsRow';
 
 // Define Category type based on assumed hook return
 interface Category {
-  id: string;
+  id: number;
   slug: string;
   name: string;
   // Add other fields if known
@@ -78,6 +78,7 @@ export interface MarketWithContext extends GraphQLMarketType {
   isYin: boolean;
   categorySlug: string;
   categoryId: string;
+  currentPrice?: string | null;
 }
 
 // Interface for the final grouped market data structure
@@ -316,7 +317,7 @@ const ForecastingTable = () => {
               collateralAsset: marketGroup.collateralAsset!,
               isYin: marketGroup.isYin,
               categorySlug: marketGroup.category!.slug!,
-              categoryId: marketGroup.category!.id!,
+              categoryId: marketGroup.category!.id!.toString(),
             };
           });
       }

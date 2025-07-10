@@ -5,7 +5,7 @@ import { indexMarketGroupEvents } from '../../controllers/market';
 import { updateCollateralData } from '../../controllers/marketHelpers';
 import marketGroupFactoryData from '@sapience/protocol/deployments/FoilFactory.json';
 import Sentry from '../../instrument';
-import type { market_group } from '../../../generated/prisma';
+import type { MarketGroup } from '../../../generated/prisma';
 
 const marketGroupFactoryAbi = marketGroupFactoryData.abi;
 
@@ -13,7 +13,7 @@ const marketGroupFactoryAbi = marketGroupFactoryData.abi;
  * Sets up event watching for a single market group using the logic from market.ts.
  */
 async function startIndexingForMarketGroup(
-  marketGroup: market_group,
+  marketGroup: MarketGroup,
   client: PublicClient
 ): Promise<() => void> {
   console.log(
@@ -73,7 +73,7 @@ export async function handleMarketGroupInitialized(
 
   try {
     // Find the existing market group record based on initialization nonce, factory address, and chain ID.
-    const existingMarketGroup = await prisma.market_group.findFirst({
+    const existingMarketGroup = await prisma.marketGroup.findFirst({
       where: {
         initializationNonce: nonce,
         factoryAddress: factoryAddress.toLowerCase(),
@@ -83,7 +83,7 @@ export async function handleMarketGroupInitialized(
 
     if (existingMarketGroup) {
       // Update the address and owner of the existing record
-      const updatedMarketGroup = await prisma.market_group.update({
+      const updatedMarketGroup = await prisma.marketGroup.update({
         where: { id: existingMarketGroup.id },
         data: {
           address: newMarketGroupAddress,
@@ -95,7 +95,7 @@ export async function handleMarketGroupInitialized(
         // Cast to work with the legacy updateCollateralData function
         await updateCollateralData(
           client,
-          updatedMarketGroup as unknown as market_group
+          updatedMarketGroup as unknown as MarketGroup
         );
       } catch (err) {
         console.error(
@@ -109,7 +109,7 @@ export async function handleMarketGroupInitialized(
       );
 
       // Fetch the updated record including necessary relations for indexing.
-      const marketGroupRecord = await prisma.market_group.findUnique({
+      const marketGroupRecord = await prisma.marketGroup.findUnique({
         where: { id: existingMarketGroup.id },
         include: {
           market: true,
@@ -350,7 +350,7 @@ export async function startIndexingAndWatchingMarketGroups(
   const client = getProviderForChain(chainId);
   const unwatchFunctions: (() => void)[] = [];
 
-  const marketGroups = await prisma.market_group.findMany({
+  const marketGroups = await prisma.marketGroup.findMany({
     where: { chainId },
     include: {
       market: true,

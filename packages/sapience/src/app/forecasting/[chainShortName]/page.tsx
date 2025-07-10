@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from '@sapience/ui/components/ui/dialog';
 import type {
-  MarketGroup as MarketGroupType,
+  Market_Group as MarketGroupType,
   Market as MarketType,
 } from '@sapience/ui/types/graphql';
 import { ChevronRight } from 'lucide-react';
@@ -221,7 +221,7 @@ const MarketGroupPageContent = () => {
     );
   }
 
-  const optionNames = (marketGroupData.markets || []).map(
+  const optionNames = (marketGroupData.market || []).map(
     (market: MarketType) => market.optionName || ''
   );
 

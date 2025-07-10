@@ -19,14 +19,14 @@ import {
   FindUniqueCategoryOrThrowResolver,
   GroupByCategoryResolver,
 
-  // Crypto_prices queries
-  AggregateCrypto_pricesResolver,
-  FindFirstCrypto_pricesResolver,
-  FindFirstCrypto_pricesOrThrowResolver,
-  FindManyCrypto_pricesResolver,
-  FindUniqueCrypto_pricesResolver,
-  FindUniqueCrypto_pricesOrThrowResolver,
-  GroupByCrypto_pricesResolver,
+  // CryptoPrices queries
+  AggregateCryptoPricesResolver,
+  FindFirstCryptoPricesResolver,
+  FindFirstCryptoPricesOrThrowResolver,
+  FindManyCryptoPricesResolver,
+  FindUniqueCryptoPricesResolver,
+  FindUniqueCryptoPricesOrThrowResolver,
+  GroupByCryptoPricesResolver,
 
   // Market queries
   AggregateMarketResolver,
@@ -37,23 +37,23 @@ import {
   FindUniqueMarketOrThrowResolver,
   GroupByMarketResolver,
 
-  // Market_group queries
-  AggregateMarket_groupResolver,
-  FindFirstMarket_groupResolver,
-  FindFirstMarket_groupOrThrowResolver,
-  FindManyMarket_groupResolver,
-  FindUniqueMarket_groupResolver,
-  FindUniqueMarket_groupOrThrowResolver,
-  GroupByMarket_groupResolver,
+  // MarketGroup queries
+  AggregateMarketGroupResolver,
+  FindFirstMarketGroupResolver,
+  FindFirstMarketGroupOrThrowResolver,
+  FindManyMarketGroupResolver,
+  FindUniqueMarketGroupResolver,
+  FindUniqueMarketGroupOrThrowResolver,
+  GroupByMarketGroupResolver,
 
-  // Market_price queries
-  AggregateMarket_priceResolver,
-  FindFirstMarket_priceResolver,
-  FindFirstMarket_priceOrThrowResolver,
-  FindManyMarket_priceResolver,
-  FindUniqueMarket_priceResolver,
-  FindUniqueMarket_priceOrThrowResolver,
-  GroupByMarket_priceResolver,
+  // MarketPrice queries
+  AggregateMarketPriceResolver,
+  FindFirstMarketPriceResolver,
+  FindFirstMarketPriceOrThrowResolver,
+  FindManyMarketPriceResolver,
+  FindUniqueMarketPriceResolver,
+  FindUniqueMarketPriceOrThrowResolver,
+  GroupByMarketPriceResolver,
 
   // Position queries
   AggregatePositionResolver,
@@ -73,14 +73,14 @@ import {
   FindUniqueResourceOrThrowResolver,
   GroupByResourceResolver,
 
-  // Resource_price queries
-  AggregateResource_priceResolver,
-  FindFirstResource_priceResolver,
-  FindFirstResource_priceOrThrowResolver,
-  FindManyResource_priceResolver,
-  FindUniqueResource_priceResolver,
-  FindUniqueResource_priceOrThrowResolver,
-  GroupByResource_priceResolver,
+  // ResourcePrice queries
+  AggregateResourcePriceResolver,
+  FindFirstResourcePriceResolver,
+  FindFirstResourcePriceOrThrowResolver,
+  FindManyResourcePriceResolver,
+  FindUniqueResourcePriceResolver,
+  FindUniqueResourcePriceOrThrowResolver,
+  GroupByResourcePriceResolver,
 
   // Transaction queries
   AggregateTransactionResolver,
@@ -103,7 +103,6 @@ export const initializeApolloServer = async () => {
   // Define the query-only resolvers
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   const queryResolvers: Function[] = [
-
     // Category queries
     AggregateCategoryResolver,
     FindFirstCategoryResolver,
@@ -113,14 +112,14 @@ export const initializeApolloServer = async () => {
     FindUniqueCategoryOrThrowResolver,
     GroupByCategoryResolver,
 
-    // Crypto_prices queries
-    AggregateCrypto_pricesResolver,
-    FindFirstCrypto_pricesResolver,
-    FindFirstCrypto_pricesOrThrowResolver,
-    FindManyCrypto_pricesResolver,
-    FindUniqueCrypto_pricesResolver,
-    FindUniqueCrypto_pricesOrThrowResolver,
-    GroupByCrypto_pricesResolver,
+    // CryptoPrices queries
+    AggregateCryptoPricesResolver,
+    FindFirstCryptoPricesResolver,
+    FindFirstCryptoPricesOrThrowResolver,
+    FindManyCryptoPricesResolver,
+    FindUniqueCryptoPricesResolver,
+    FindUniqueCryptoPricesOrThrowResolver,
+    GroupByCryptoPricesResolver,
 
     // Market queries
     AggregateMarketResolver,
@@ -131,23 +130,23 @@ export const initializeApolloServer = async () => {
     FindUniqueMarketOrThrowResolver,
     GroupByMarketResolver,
 
-    // Market_group queries
-    AggregateMarket_groupResolver,
-    FindFirstMarket_groupResolver,
-    FindFirstMarket_groupOrThrowResolver,
-    FindManyMarket_groupResolver,
-    FindUniqueMarket_groupResolver,
-    FindUniqueMarket_groupOrThrowResolver,
-    GroupByMarket_groupResolver,
+    // MarketGroup queries
+    AggregateMarketGroupResolver,
+    FindFirstMarketGroupResolver,
+    FindFirstMarketGroupOrThrowResolver,
+    FindManyMarketGroupResolver,
+    FindUniqueMarketGroupResolver,
+    FindUniqueMarketGroupOrThrowResolver,
+    GroupByMarketGroupResolver,
 
-    // Market_price queries
-    AggregateMarket_priceResolver,
-    FindFirstMarket_priceResolver,
-    FindFirstMarket_priceOrThrowResolver,
-    FindManyMarket_priceResolver,
-    FindUniqueMarket_priceResolver,
-    FindUniqueMarket_priceOrThrowResolver,
-    GroupByMarket_priceResolver,
+    // MarketPrice queries
+    AggregateMarketPriceResolver,
+    FindFirstMarketPriceResolver,
+    FindFirstMarketPriceOrThrowResolver,
+    FindManyMarketPriceResolver,
+    FindUniqueMarketPriceResolver,
+    FindUniqueMarketPriceOrThrowResolver,
+    GroupByMarketPriceResolver,
 
     // Position queries
     AggregatePositionResolver,
@@ -167,14 +166,14 @@ export const initializeApolloServer = async () => {
     FindUniqueResourceOrThrowResolver,
     GroupByResourceResolver,
 
-    // Resource_price queries
-    AggregateResource_priceResolver,
-    FindFirstResource_priceResolver,
-    FindFirstResource_priceOrThrowResolver,
-    FindManyResource_priceResolver,
-    FindUniqueResource_priceResolver,
-    FindUniqueResource_priceOrThrowResolver,
-    GroupByResource_priceResolver,
+    // ResourcePrice queries
+    AggregateResourcePriceResolver,
+    FindFirstResourcePriceResolver,
+    FindFirstResourcePriceOrThrowResolver,
+    FindManyResourcePriceResolver,
+    FindUniqueResourcePriceResolver,
+    FindUniqueResourcePriceOrThrowResolver,
+    GroupByResourcePriceResolver,
 
     // Transaction queries
     AggregateTransactionResolver,

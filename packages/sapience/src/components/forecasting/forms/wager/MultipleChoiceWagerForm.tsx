@@ -42,7 +42,7 @@ export default function MultipleChoiceWagerForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       predictionValue:
-        marketGroupData.markets?.[0]?.marketId?.toString() ?? '0', // first market
+        marketGroupData.market?.[0]?.marketId?.toString() ?? '0', // first market
       wagerAmount: '',
     },
     mode: 'onChange', // Validate on change for immediate feedback
@@ -144,7 +144,7 @@ export default function MultipleChoiceWagerForm({
     if (!quoteData || quoteError) return null;
 
     // Get the selected option name based on predictionValue
-    const selectedOptionName = (marketGroupData.markets || []).find(
+    const selectedOptionName = (marketGroupData.market || []).find(
       (market) => market.marketId === Number(predictionValue)
     )?.optionName;
 
@@ -167,7 +167,7 @@ export default function MultipleChoiceWagerForm({
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(handleSubmit)} className="space-y-6">
         <MultipleChoicePredict
-          options={(marketGroupData.markets || []).map((market) => ({
+          options={(marketGroupData.market || []).map((market) => ({
             name: market.optionName || '',
             marketId: market.marketId,
           }))}

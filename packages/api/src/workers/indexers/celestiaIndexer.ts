@@ -169,7 +169,7 @@ class CelestiaIndexer implements IResourcePriceIndexer {
     }
 
     // If we don't have a next timestamp, find the latest resource price and use it as the initial timestamp
-    const latestResourcePrice = await prisma.resource_price.findFirst({
+    const latestResourcePrice = await prisma.resourcePrice.findFirst({
       orderBy: {
         blockNumber: 'desc',
       },
@@ -232,7 +232,7 @@ class CelestiaIndexer implements IResourcePriceIndexer {
     const value = used > 0 ? fee / used : 0;
 
     try {
-      await prisma.resource_price.upsert({
+      await prisma.resourcePrice.upsert({
         where: {
           resourceId_timestamp: {
             resourceId: resource.id,
@@ -369,7 +369,7 @@ class CelestiaIndexer implements IResourcePriceIndexer {
       blockNumber--
     ) {
       try {
-        const resourcePrice = await prisma.resource_price.findFirst({
+        const resourcePrice = await prisma.resourcePrice.findFirst({
           where: {
             resourceId: resource.id,
             blockNumber: blockNumber,
@@ -422,7 +422,7 @@ class CelestiaIndexer implements IResourcePriceIndexer {
           blockNumber
         );
 
-        const resourcePrice = await prisma.resource_price.findFirst({
+        const resourcePrice = await prisma.resourcePrice.findFirst({
           where: {
             resourceId: resource.id,
             blockNumber: blockNumber,

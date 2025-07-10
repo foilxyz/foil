@@ -161,7 +161,7 @@ export const useMarket = ({
       return;
     }
 
-    const marketGroupQuestion = marketData?.marketGroup?.question;
+    const marketGroupQuestion = marketData?.market_group?.question;
     const marketSpecificQuestion = marketData?.question;
 
     // Set Market Group Question as the context question if available

@@ -89,7 +89,7 @@ export class CandleCacheReBuilder extends BaseCandleCacheBuilder {
     await this.processResourcePrices(0);
 
     // Process all market prices
-    await this.processMarketPrices(0);
+    await this.processmarketPrices(0);
 
     // Save all runtime candles
     await this.saveAllRuntimeCandles();

@@ -99,7 +99,7 @@ router.post(
       const startCommand = `pnpm run start:reindex-resource ${slug} ${startTimestamp} ${endTimestamp}`;
       const job = await createRenderJob(worker.service.id, startCommand);
 
-      await prisma.render_job.create({
+      await prisma.renderJob.create({
         data: {
           jobId: job.id,
           serviceId: job.serviceId,
@@ -172,7 +172,7 @@ const handleReindexRequest = async (
 
     const job = await createRenderJob(id, startCommand);
 
-    await prisma.render_job.create({
+    await prisma.renderJob.create({
       data: {
         jobId: job.id,
         serviceId: job.serviceId,
@@ -264,7 +264,7 @@ router.post(
 
       const job = await createRenderJob(id, startCommand);
 
-      await prisma.render_job.create({
+      await prisma.renderJob.create({
         data: {
           jobId: job.id,
           serviceId: job.serviceId,

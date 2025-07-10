@@ -1,10 +1,10 @@
 import DataLoader from 'dataloader';
 import prisma from '../db';
-import type { transaction } from '../../generated/prisma';
+import type { Transaction } from '../../generated/prisma';
 
 // Batch function to load market groups by IDs
 const batchMarketGroups = async (ids: readonly number[]) => {
-  const marketGroups = await prisma.market_group.findMany({
+  const marketGroups = await prisma.marketGroup.findMany({
     where: { id: { in: [...ids] } },
     include: {
       market: true,
@@ -83,7 +83,7 @@ const batchTransactionsByPosition = async (positionIds: readonly number[]) => {
     },
   });
 
-  const transactionMap = new Map<number, transaction[]>();
+  const transactionMap = new Map<number, Transaction[]>();
   transactions.forEach((transaction) => {
     const positionId = transaction.positionId;
     if (positionId && !transactionMap.has(positionId)) {

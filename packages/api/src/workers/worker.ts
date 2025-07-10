@@ -21,7 +21,7 @@ async function main() {
 }
 
 async function startMarketIndexers(): Promise<Promise<void | (() => void)>[]> {
-  const distinctChainIdsResult = await prisma.market_group.findMany({
+  const distinctChainIdsResult = await prisma.marketGroup.findMany({
     select: { chainId: true },
     distinct: ['chainId'],
   });
