@@ -10,24 +10,6 @@ import depthLimit from 'graphql-depth-limit';
 
 // Import only the query (read-only) resolvers from generated TypeGraphQL
 import {
-  // Cache_candle queries
-  AggregateCache_candleResolver,
-  FindFirstCache_candleResolver,
-  FindFirstCache_candleOrThrowResolver,
-  FindManyCache_candleResolver,
-  FindUniqueCache_candleResolver,
-  FindUniqueCache_candleOrThrowResolver,
-  GroupByCache_candleResolver,
-
-  // Cache_param queries
-  AggregateCache_paramResolver,
-  FindFirstCache_paramResolver,
-  FindFirstCache_paramOrThrowResolver,
-  FindManyCache_paramResolver,
-  FindUniqueCache_paramResolver,
-  FindUniqueCache_paramOrThrowResolver,
-  GroupByCache_paramResolver,
-
   // Category queries
   AggregateCategoryResolver,
   FindFirstCategoryResolver,
@@ -37,15 +19,6 @@ import {
   FindUniqueCategoryOrThrowResolver,
   GroupByCategoryResolver,
 
-  // Collateral_transfer queries
-  AggregateCollateral_transferResolver,
-  FindFirstCollateral_transferResolver,
-  FindFirstCollateral_transferOrThrowResolver,
-  FindManyCollateral_transferResolver,
-  FindUniqueCollateral_transferResolver,
-  FindUniqueCollateral_transferOrThrowResolver,
-  GroupByCollateral_transferResolver,
-
   // Crypto_prices queries
   AggregateCrypto_pricesResolver,
   FindFirstCrypto_pricesResolver,
@@ -54,15 +27,6 @@ import {
   FindUniqueCrypto_pricesResolver,
   FindUniqueCrypto_pricesOrThrowResolver,
   GroupByCrypto_pricesResolver,
-
-  // Event queries
-  AggregateEventResolver,
-  FindFirstEventResolver,
-  FindFirstEventOrThrowResolver,
-  FindManyEventResolver,
-  FindUniqueEventResolver,
-  FindUniqueEventOrThrowResolver,
-  GroupByEventResolver,
 
   // Market queries
   AggregateMarketResolver,
@@ -91,15 +55,6 @@ import {
   FindUniqueMarket_priceOrThrowResolver,
   GroupByMarket_priceResolver,
 
-  // Migrations queries
-  AggregateMigrationsResolver,
-  FindFirstMigrationsResolver,
-  FindFirstMigrationsOrThrowResolver,
-  FindManyMigrationsResolver,
-  FindUniqueMigrationsResolver,
-  FindUniqueMigrationsOrThrowResolver,
-  GroupByMigrationsResolver,
-
   // Position queries
   AggregatePositionResolver,
   FindFirstPositionResolver,
@@ -108,15 +63,6 @@ import {
   FindUniquePositionResolver,
   FindUniquePositionOrThrowResolver,
   GroupByPositionResolver,
-
-  // Render_job queries
-  AggregateRender_jobResolver,
-  FindFirstRender_jobResolver,
-  FindFirstRender_jobOrThrowResolver,
-  FindManyRender_jobResolver,
-  FindUniqueRender_jobResolver,
-  FindUniqueRender_jobOrThrowResolver,
-  GroupByRender_jobResolver,
 
   // Resource queries
   AggregateResourceResolver,
@@ -157,23 +103,6 @@ export const initializeApolloServer = async () => {
   // Define the query-only resolvers
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   const queryResolvers: Function[] = [
-    // Cache_candle queries
-    AggregateCache_candleResolver,
-    FindFirstCache_candleResolver,
-    FindFirstCache_candleOrThrowResolver,
-    FindManyCache_candleResolver,
-    FindUniqueCache_candleResolver,
-    FindUniqueCache_candleOrThrowResolver,
-    GroupByCache_candleResolver,
-
-    // Cache_param queries
-    AggregateCache_paramResolver,
-    FindFirstCache_paramResolver,
-    FindFirstCache_paramOrThrowResolver,
-    FindManyCache_paramResolver,
-    FindUniqueCache_paramResolver,
-    FindUniqueCache_paramOrThrowResolver,
-    GroupByCache_paramResolver,
 
     // Category queries
     AggregateCategoryResolver,
@@ -184,15 +113,6 @@ export const initializeApolloServer = async () => {
     FindUniqueCategoryOrThrowResolver,
     GroupByCategoryResolver,
 
-    // Collateral_transfer queries
-    AggregateCollateral_transferResolver,
-    FindFirstCollateral_transferResolver,
-    FindFirstCollateral_transferOrThrowResolver,
-    FindManyCollateral_transferResolver,
-    FindUniqueCollateral_transferResolver,
-    FindUniqueCollateral_transferOrThrowResolver,
-    GroupByCollateral_transferResolver,
-
     // Crypto_prices queries
     AggregateCrypto_pricesResolver,
     FindFirstCrypto_pricesResolver,
@@ -201,15 +121,6 @@ export const initializeApolloServer = async () => {
     FindUniqueCrypto_pricesResolver,
     FindUniqueCrypto_pricesOrThrowResolver,
     GroupByCrypto_pricesResolver,
-
-    // Event queries
-    AggregateEventResolver,
-    FindFirstEventResolver,
-    FindFirstEventOrThrowResolver,
-    FindManyEventResolver,
-    FindUniqueEventResolver,
-    FindUniqueEventOrThrowResolver,
-    GroupByEventResolver,
 
     // Market queries
     AggregateMarketResolver,
@@ -238,15 +149,6 @@ export const initializeApolloServer = async () => {
     FindUniqueMarket_priceOrThrowResolver,
     GroupByMarket_priceResolver,
 
-    // Migrations queries
-    AggregateMigrationsResolver,
-    FindFirstMigrationsResolver,
-    FindFirstMigrationsOrThrowResolver,
-    FindManyMigrationsResolver,
-    FindUniqueMigrationsResolver,
-    FindUniqueMigrationsOrThrowResolver,
-    GroupByMigrationsResolver,
-
     // Position queries
     AggregatePositionResolver,
     FindFirstPositionResolver,
@@ -255,15 +157,6 @@ export const initializeApolloServer = async () => {
     FindUniquePositionResolver,
     FindUniquePositionOrThrowResolver,
     GroupByPositionResolver,
-
-    // Render_job queries
-    AggregateRender_jobResolver,
-    FindFirstRender_jobResolver,
-    FindFirstRender_jobOrThrowResolver,
-    FindManyRender_jobResolver,
-    FindUniqueRender_jobResolver,
-    FindUniqueRender_jobOrThrowResolver,
-    GroupByRender_jobResolver,
 
     // Resource queries
     AggregateResourceResolver,
@@ -301,6 +194,7 @@ export const initializeApolloServer = async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolvers: allResolvers as any,
     validate: false,
+    emitSchemaFile: true,
   });
 
   // Create Apollo Server with the combined schema and depth limit
