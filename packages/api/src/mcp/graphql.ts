@@ -206,7 +206,7 @@ const getMarket = {
 const getMarketGroups = {
   name: 'get_sapience_market_groups',
   description:
-    'Lists all market groups available in the Foil system, optionally filtering by chain ID or collateral asset.',
+    'Lists all market groups available in the Sapience system, optionally filtering by chain ID or collateral asset.',
   parameters: {
     properties: {
       chainId: z
@@ -609,7 +609,7 @@ const getResource = {
 
 const getResources = {
   name: 'get_sapience_resources',
-  description: 'Lists all resources available in the Foil system',
+  description: 'Lists all resources available in the Sapience system',
   parameters: {
     properties: {},
   },

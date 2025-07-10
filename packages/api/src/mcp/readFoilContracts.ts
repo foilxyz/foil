@@ -790,7 +790,7 @@ export const getMarketGroupTickSpacing = {
 
 export const getTotalSupply = {
   name: 'get_sapience_total_supply',
-  description: 'Gets the total supply of Foil tokens',
+  description: 'Gets the total supply of Sapience tokens',
   parameters: {
     properties: {
       marketGroupAddress: z
@@ -836,7 +836,7 @@ export const getTotalSupply = {
 
 export const getBalanceOf = {
   name: 'get_sapience_balance_of',
-  description: 'Gets the balance of Foil tokens for a specific holder',
+  description: 'Gets the balance of Sapience tokens for a specific holder',
   parameters: {
     properties: {
       marketGroupAddress: z
