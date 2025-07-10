@@ -834,8 +834,9 @@ const MarketFormFields = ({
               type="text"
               value={
                 selectedMarketGroupId
-                  ? marketGroups?.find((g) => g.id.toString() === selectedMarketGroupId)
-                      ?.question || `Market Group ${selectedMarketGroupId}`
+                  ? marketGroups?.find(
+                      (g) => g.id.toString() === selectedMarketGroupId
+                    )?.question || `Market Group ${selectedMarketGroupId}`
                   : searchQuery
               }
               onChange={(e) => {
@@ -1020,7 +1021,10 @@ const MarketFormFields = ({
                     }
 
                     return selectedGroup.markets.map((marketItem) => (
-                                             <SelectItem key={marketItem.id} value={marketItem.id.toString()}>
+                      <SelectItem
+                        key={marketItem.id}
+                        value={marketItem.id.toString()}
+                      >
                         {marketItem.optionName ||
                           marketItem.question ||
                           `Market ${marketItem.marketId}`}

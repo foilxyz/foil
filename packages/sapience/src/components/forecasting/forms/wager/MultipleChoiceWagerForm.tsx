@@ -41,8 +41,7 @@ export default function MultipleChoiceWagerForm({
   const methods = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      predictionValue:
-        marketGroupData.market?.[0]?.marketId?.toString() ?? '0', // first market
+      predictionValue: marketGroupData.market?.[0]?.marketId?.toString() ?? '0', // first market
       wagerAmount: '',
     },
     mode: 'onChange', // Validate on change for immediate feedback

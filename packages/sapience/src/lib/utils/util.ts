@@ -1,5 +1,4 @@
 import type {
-  MarketGroupType,
   MarketType,
   TransactionType,
 } from '@sapience/ui/types';
@@ -106,7 +105,10 @@ export const formatQuestion = (
  * Determines which question to display based on active markets and market group data
  */
 export const getDisplayQuestion = (
-  marketGroupData: MarketGroupType | null | undefined, // Use MarketGroupType
+  marketGroupData:
+    | { question?: string | null; market?: MarketType[] }
+    | null
+    | undefined,
   activeMarkets: MarketType[], // Use MarketType[]
   isLoading: boolean,
   defaultLoadingMessage: string = '', // Default loading message
@@ -158,9 +160,9 @@ export const getDisplayQuestion = (
 /**
  * Finds active markets for a market group based on current timestamp
  */
-export const findActiveMarkets = (
-  marketGroupData: MarketGroupType
-): MarketType[] => {
+export const findActiveMarkets = (marketGroupData: {
+  market?: MarketType[];
+}): MarketType[] => {
   const nowInSeconds = Date.now() / 1000;
   // Filter markets based on timestamps
   return (marketGroupData.market || []).filter(
@@ -211,7 +213,10 @@ export const formatTokenValue = (
 
 // Helper to determine Y-axis configuration based on market type
 export const getYAxisConfig = (
-  marketGroup: MarketGroupType | null | undefined // Use MarketGroupType
+  marketGroup:
+    | { baseTokenName?: string | null; quoteTokenName?: string | null }
+    | null
+    | undefined
 ) => {
   // Check for Yes/No market (based on base token name)
   // Removed isGroupMarket check as it's not directly on MarketGroupType
@@ -322,7 +327,9 @@ export function calculateEffectiveEntryPrice(
 
   // Sort transactions by timestamp (oldest first)
   const sortedTransactions = [...transactions].sort(
-    (a, b) => (new Date(a.createdAt).getTime() || 0) - (new Date(b.createdAt).getTime() || 0)
+    (a, b) =>
+      (new Date(a.createdAt).getTime() || 0) -
+      (new Date(b.createdAt).getTime() || 0)
   );
 
   // Initialize entry price calculation variables

@@ -9,7 +9,6 @@ import { useToast } from '@sapience/ui/hooks/use-toast'; // Import useToast
 import { useFoilAbi } from '@sapience/ui/hooks/useFoilAbi'; // Import the hook
 import type {
   MarketType as Market,
-  MarketGroupType as MarketGroup,
 } from '@sapience/ui/types'; // Import types
 import { Loader2 } from 'lucide-react'; // Import Loader2
 import { useState } from 'react'; // Import useState and useMemo
@@ -158,7 +157,13 @@ const BondInfoSection = ({
 
 interface SettleMarketDialogProps {
   market: Market; // Assume Market type includes baseTokenName/quoteTokenName or similar
-  marketGroup: MarketGroup;
+  marketGroup: {
+    address?: string | null;
+    chainId: number;
+    owner?: string | null;
+    baseTokenName?: string | null;
+    quoteTokenName?: string | null;
+  };
 }
 
 const SettleMarketDialog = ({

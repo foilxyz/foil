@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import type {
   Market as MarketType,
-  Market_Group as MarketGroupType,
+  MarketGroup as MarketGroupType,
   Category as CategoryType,
   Position as PositionType,
 } from '@sapience/ui/types/graphql';
@@ -303,7 +303,7 @@ export const useEnrichedMarketGroups = () => {
           }
 
           const mappedMarkets = (marketGroup.market || []).map(
-            (market): MarketType => ({
+            (market: any): MarketType => ({
               ...market,
               id: market.id,
               position: market.position || [],

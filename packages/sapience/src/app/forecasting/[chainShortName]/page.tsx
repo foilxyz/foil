@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from '@sapience/ui/components/ui/dialog';
 import type {
-  Market_Group as MarketGroupType,
+  MarketGroup as MarketGroupType,
   Market as MarketType,
 } from '@sapience/ui/types/graphql';
 import { ChevronRight } from 'lucide-react';

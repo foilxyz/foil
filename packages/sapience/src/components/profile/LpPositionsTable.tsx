@@ -149,9 +149,9 @@ export default function LpPositionsTable({
     // Market group page (parentMarketAddress & parentChainId are present, but parentMarketId is not)
     displayQuestionColumn = validPositions.some(
       (p) =>
-              p.market?.market_group &&
-      p.market?.market_group?.market &&
-      p.market?.market_group?.market.length > 1
+        p.market?.market_group &&
+        p.market?.market_group?.market &&
+        p.market?.market_group?.market.length > 1
     );
   }
 
