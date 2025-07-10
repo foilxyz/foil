@@ -1,10 +1,10 @@
 import type {
-  resource_price,
-  cache_candle,
-  resource,
+  ResourcePrice,
+  CacheCandle,
+  Resource,
 } from '../../../generated/prisma';
 
-type ResourcePriceWithResource = resource_price & { resource: resource };
+type ResourcePriceWithResource = ResourcePrice & { resource: Resource };
 import { CANDLE_TYPES, CANDLE_CACHE_CONFIG } from '../config';
 import { RuntimeCandleStore } from '../runtimeCandleStore';
 import { getOrCreateCandle, saveCandle } from '../dbUtils';
@@ -27,7 +27,7 @@ export class TrailingAvgCandleProcessor {
     sumUsed: bigint,
     sumFeePaid: bigint,
     startOfTrailingWindow: number
-  ): Promise<cache_candle> {
+  ): Promise<CacheCandle> {
     const candle = await getOrCreateCandle({
       candleType: CANDLE_TYPES.TRAILING_AVG,
       interval: interval,

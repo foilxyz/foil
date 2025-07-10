@@ -21,7 +21,7 @@ router.get(
     const { chainId, address } = parseContractId(contractId);
 
     // Build the where clause
-    const whereClause: Prisma.transactionWhereInput = {
+    const whereClause: Prisma.TransactionWhereInput = {
       position: {
         market: {
           market_group: {

@@ -228,8 +228,8 @@ const ForecastContent = () => {
           <div>
             {marketClassification ===
               MarketGroupClassification.MULTIPLE_CHOICE &&
-              marketData?.marketGroup?.markets &&
-              marketData.marketGroup.markets.length > 1 && (
+              marketData?.marketGroup?.market &&
+              marketData.marketGroup.market.length > 1 && (
                 <div className="mb-6">
                   <Tabs
                     defaultValue={
@@ -242,7 +242,7 @@ const ForecastContent = () => {
                     }}
                   >
                     <TabsList className="gap-1 py-6">
-                      {marketData.marketGroup.markets
+                      {marketData.marketGroup.market
                         .filter(
                           (
                             market: GqlMarketType // market.id is string, numericMarketId is number | null, market.marketId is number

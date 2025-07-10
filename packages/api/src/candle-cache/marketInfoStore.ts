@@ -1,14 +1,14 @@
 import { Prisma } from '../../generated/prisma';
 
 // Define the type for MarketGroup with necessary includes
-type MarketGroupWithRelations = Prisma.market_groupGetPayload<{
+type MarketGroupWithRelations = Prisma.MarketGroupGetPayload<{
   include: {
     resource: true;
     market: true;
   };
 }>;
 
-export interface MarketInfo {
+export interface marketInfo {
   resourceSlug: string;
   marketGroupIdx: number;
   marketIdx: number;
@@ -20,22 +20,22 @@ export interface MarketInfo {
   isCumulative: boolean;
 }
 
-export class MarketInfoStore {
-  private static instance: MarketInfoStore;
-  private marketInfoByIdx: Map<number, MarketInfo> = new Map();
+export class marketInfoStore {
+  private static instance: marketInfoStore;
+  private marketInfoByIdx: Map<number, marketInfo> = new Map();
 
   private constructor() {}
 
   public static getInstance() {
     if (!this.instance) {
-      this.instance = new MarketInfoStore();
+      this.instance = new marketInfoStore();
     }
     return this.instance;
   }
 
-  public async updateMarketInfo(marketGroups: MarketGroupWithRelations[]) {
+  public async updatemarketInfo(marketGroups: MarketGroupWithRelations[]) {
     console.log(
-      `updateMarketInfo: marketGroups.length: ${marketGroups.length}`
+      `updatemarketInfo: MarketGroups.length: ${marketGroups.length}`
     );
     let _debugCounter = 0;
     for (const marketGroup of marketGroups) {
@@ -63,22 +63,22 @@ export class MarketInfoStore {
         }
       }
     }
-    console.log(`updateMarketInfo: markets counter: ${_debugCounter}`);
+    console.log(`updatemarketInfo: Markets counter: ${_debugCounter}`);
   }
 
-  public getMarketInfo(marketId: number): MarketInfo | undefined {
+  public getmarketInfo(marketId: number): marketInfo | undefined {
     return this.marketInfoByIdx.get(marketId);
   }
 
-  public getMarketInfoByChainAndAddress(
+  public getmarketInfoByChainAndAddress(
     chainId: number,
     address: string,
     marketId: string
-  ): MarketInfo | undefined {
+  ): marketInfo | undefined {
     for (const marketInfo of this.marketInfoByIdx.values()) {
       if (!marketInfo.marketGroupAddress || !address) {
         console.log(
-          'getMarketInfoByChainAndAddress: debug statement',
+          'getmarketInfoByChainAndAddress: debug statement',
           this.marketInfoByIdx,
           chainId,
           address,

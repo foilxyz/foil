@@ -221,7 +221,7 @@ const MarketGroupPageContent = () => {
     );
   }
 
-  const optionNames = (marketGroupData.markets || []).map(
+  const optionNames = (marketGroupData.market || []).map(
     (market: MarketType) => market.optionName || ''
   );
 

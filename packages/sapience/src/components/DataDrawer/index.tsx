@@ -75,13 +75,17 @@ const DataDrawer = ({ trigger }: DataDrawerProps) => {
   const allTransactions = allPositions
     .flatMap(
       (position) =>
-        position.transactions?.map((tx) => ({
+        position.transaction?.map((tx) => ({
           ...tx,
           position,
           positionType: position.isLP ? 'LP' : 'Trader',
         })) || []
     )
-    .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+    .sort(
+      (a, b) =>
+        (new Date(b.createdAt).getTime() || 0) -
+        (new Date(a.createdAt).getTime() || 0)
+    );
 
   const getTransactionTypeDisplay = (type: string) => {
     switch (type) {
@@ -164,12 +168,9 @@ const DataDrawer = ({ trigger }: DataDrawerProps) => {
                   <TableRow key={tx.id}>
                     <TableCell>
                       <span className="text-sm text-muted-foreground">
-                        {formatDistanceToNow(
-                          new Date((tx.timestamp || 0) * 1000),
-                          {
-                            addSuffix: true,
-                          }
-                        )}
+                        {formatDistanceToNow(new Date(tx.createdAt), {
+                          addSuffix: true,
+                        })}
                       </span>
                     </TableCell>
                     <TableCell>

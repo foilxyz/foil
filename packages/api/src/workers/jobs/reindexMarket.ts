@@ -26,7 +26,7 @@ export async function reindexMarket(
     await initializeDataSource();
 
     // Find the market in the database instead of using MARKETS
-    const marketEntity = await prisma.market_group.findFirst({
+    const marketEntity = await prisma.marketGroup.findFirst({
       where: {
         chainId,
         address: address.toLowerCase(),
@@ -42,7 +42,7 @@ export async function reindexMarket(
       );
     }
 
-    // Create a market info object that matches the MarketInfo interface
+    // Create a market info object that matches the marketInfo interface
     const marketInfo = {
       marketChainId: chainId,
       deployment: {

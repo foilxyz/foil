@@ -34,7 +34,7 @@ export function justifyTimeSeries<T extends { timestamp: number }>(
   const intervalMs = getIntervalInMs(timeWindow);
   const intervalSeconds = Math.floor(intervalMs / 1000);
 
-  data.forEach((item) => {
+  data.forEach((item: T) => {
     const { timestamp } = item;
     const value = getValue(item);
 

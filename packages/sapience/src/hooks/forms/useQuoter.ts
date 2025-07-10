@@ -7,7 +7,6 @@ import { parseUnits } from 'viem';
 export interface QuoteData {
   direction: 'LONG' | 'SHORT';
   maxSize: string; // BigInt string
-  currentPrice: string; // Decimal string
   expectedPrice: string; // Decimal string
   collateralAvailable: string; // BigInt string
 }

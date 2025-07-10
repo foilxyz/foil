@@ -1,5 +1,5 @@
 import { Resolver, Query, Arg, Int } from 'type-graphql';
-import { PnLType } from '../types';
+import { PnLType } from '../types/PnLType';
 import { MarketPnL } from '../../helpers/marketPnL';
 
 @Resolver(() => PnLType)

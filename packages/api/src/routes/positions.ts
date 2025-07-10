@@ -19,7 +19,7 @@ router.get(
 
     const { chainId, address } = parseContractId(contractId);
 
-    const marketGroup = await prisma.market_group.findFirst({
+    const marketGroup = await prisma.marketGroup.findFirst({
       where: {
         chainId: Number(chainId),
         address: String(address).toLowerCase(),
@@ -32,7 +32,7 @@ router.get(
     }
 
     // Query for positions related to any market of this market group
-    const whereCondition: Prisma.positionWhereInput = {
+    const whereCondition: Prisma.PositionWhereInput = {
       market: {
         marketGroupId: marketGroup.id,
       },
@@ -94,7 +94,7 @@ router.get(
 
     const { chainId, address } = parseContractId(contractId);
 
-    const marketGroup = await prisma.market_group.findFirst({
+    const marketGroup = await prisma.marketGroup.findFirst({
       where: {
         chainId: Number(chainId),
         address: String(address).toLowerCase(),

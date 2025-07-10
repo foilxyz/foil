@@ -7,7 +7,7 @@ const router = Router();
 router.get(
   '/',
   handleAsyncErrors(async (_, res: Response) => {
-    const markets = await prisma.market_group.findMany({
+    const markets = await prisma.marketGroup.findMany({
       include: {
         market: true,
         resource: true,

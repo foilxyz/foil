@@ -111,7 +111,7 @@ class BtcHashIndexer implements IResourcePriceIndexer {
         blockNumber: timestamp,
       };
 
-      await prisma.resource_price.upsert({
+      await prisma.resourcePrice.upsert({
         where: {
           resourceId_timestamp: {
             resourceId: resource.id,
@@ -506,7 +506,7 @@ class BtcHashIndexer implements IResourcePriceIndexer {
       const endTimestamp = Math.floor(targetTimestamp / 1000);
       const startTimestamp = endTimestamp - 7 * 24 * 60 * 60; // 7 days before target date
 
-      const existingPrice = await prisma.resource_price.findFirst({
+      const existingPrice = await prisma.resourcePrice.findFirst({
         where: {
           resourceId: resource.id,
           timestamp: endTimestamp,

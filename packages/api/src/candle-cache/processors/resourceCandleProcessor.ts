@@ -1,10 +1,10 @@
 import type {
-  resource_price,
-  cache_candle,
-  resource,
+  ResourcePrice,
+  CacheCandle,
+  Resource,
 } from '../../../generated/prisma';
 
-type ResourcePriceWithResource = resource_price & { resource: resource };
+type ResourcePriceWithResource = ResourcePrice & { resource: Resource };
 import { CANDLE_TYPES, CANDLE_CACHE_CONFIG } from '../config';
 import { RuntimeCandleStore } from '../runtimeCandleStore';
 import { BNMax, BNMin, getTimtestampCandleInterval } from '../candleUtils';
@@ -28,7 +28,7 @@ export class ResourceCandleProcessor {
     candleEndTimestamp: number,
     price: ResourcePriceWithResource,
     resourceSlug: string
-  ): Promise<cache_candle> {
+  ): Promise<CacheCandle> {
     const candle = await getOrCreateCandle({
       candleType: CANDLE_TYPES.RESOURCE,
       interval: interval,

@@ -1,6 +1,4 @@
-import { cache_candle } from '../../generated/prisma';
-
-type CacheCandle = cache_candle;
+import { CacheCandle } from '../../generated/prisma';
 
 export type CandleType = 'market' | 'resource' | 'index' | 'trailingAvg';
 

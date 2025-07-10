@@ -1,6 +1,5 @@
 'use client';
 
-import { gql } from '@apollo/client';
 import { Badge } from '@sapience/ui/components/ui/badge';
 import { Button } from '@sapience/ui/components/ui/button';
 import {
@@ -10,11 +9,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@sapience/ui/components/ui/dialog';
+import { graphqlRequest } from '@sapience/ui/lib';
 import type { MarketType } from '@sapience/ui/types';
 import { useQuery } from '@tanstack/react-query';
 import type { ColumnDef } from '@tanstack/react-table';
 import { formatDistanceToNow } from 'date-fns';
-import { print } from 'graphql';
 import { Pencil } from 'lucide-react';
 import { useState } from 'react';
 import type { Address } from 'viem';
@@ -22,7 +21,7 @@ import { formatEther } from 'viem';
 
 import { useMarketGroupLatestEpoch } from '~/hooks/contract/useMarketGroupLatestEpoch';
 import type { EnrichedMarketGroup } from '~/hooks/graphql/useMarketGroups';
-import { shortenAddress, foilApi } from '~/lib/utils/util';
+import { shortenAddress } from '~/lib/utils/util';
 
 import AddMarketDialog from './AddMarketDialog';
 import MarketDeployButton from './MarketDeployButton';
@@ -32,7 +31,7 @@ import ReindexMarketButton from './ReindexMarketButton';
 import SettleMarketDialog from './SettleMarketDialog';
 
 // GraphQL query for index price at time
-const INDEX_PRICE_AT_TIME_QUERY = gql`
+const INDEX_PRICE_AT_TIME_QUERY = `
   query IndexPriceAtTime(
     $address: String!
     $chainId: Int!
@@ -50,6 +49,14 @@ const INDEX_PRICE_AT_TIME_QUERY = gql`
     }
   }
 `;
+
+// Type definition for GraphQL response
+type IndexPriceAtTimeResponse = {
+  indexPriceAtTime: {
+    timestamp: number;
+    close: string;
+  } | null;
+};
 
 // Helper function to convert gwei to ether
 const gweiToEther = (value: bigint): string => {
@@ -95,17 +102,17 @@ function useMarketPriceData(
         return null;
       }
 
-      const response = await foilApi.post('/graphql', {
-        query: print(INDEX_PRICE_AT_TIME_QUERY),
-        variables: {
+      const data = await graphqlRequest<IndexPriceAtTimeResponse>(
+        INDEX_PRICE_AT_TIME_QUERY,
+        {
           address: marketAddress,
           chainId,
           marketId: marketId.toString(),
           timestamp: timestampForApi,
-        },
-      });
+        }
+      );
 
-      const priceData = response.data?.indexPriceAtTime;
+      const priceData = data?.indexPriceAtTime;
       if (!priceData) {
         return null;
       }
@@ -281,13 +288,13 @@ const OwnerCell = ({ group }: { group: EnrichedMarketGroup }) => {
 const SettlementPriceCell = ({ group }: { group: EnrichedMarketGroup }) => {
   // Find the current/active market or the most recent settled market
   const now = Math.floor(Date.now() / 1000);
-  const currentMarket = group.markets.find((m) => {
+  const currentMarket = group.market.find((m) => {
     const start = m.startTimestamp ?? 0;
     const end = m.endTimestamp ?? 0;
     return start <= now && now <= end;
   });
 
-  const mostRecentSettledMarket = group.markets
+  const mostRecentSettledMarket = group.market
     .filter((m) => (m.endTimestamp ?? 0) < now)
     .sort((a, b) => (b.endTimestamp ?? 0) - (a.endTimestamp ?? 0))[0];
 
@@ -364,8 +371,8 @@ const ActionsCell = ({ group }: { group: EnrichedMarketGroup }) => {
               </div>
             </DialogHeader>
             <div className="space-y-3 max-h-[60vh] overflow-y-auto">
-              {group.markets.length > 0 ? (
-                group.markets
+              {group.market.length > 0 ? (
+                group.market
                   .sort((a, b) => {
                     const aId = a.marketId ? Number(a.marketId) : Number(a.id);
                     const bId = b.marketId ? Number(b.marketId) : Number(b.id);
@@ -411,29 +418,29 @@ const ActionsCell = ({ group }: { group: EnrichedMarketGroup }) => {
 const StatusBadges = ({ group }: { group: EnrichedMarketGroup }) => {
   const nowSeconds = Date.now() / 1000;
 
-  const needsSettlement = group.markets.some((m) => {
+  const needsSettlement = group.market.some((m) => {
     const isDeployed = !!m.poolAddress;
     const isPastEnd = (m.endTimestamp ?? 0) < nowSeconds;
     const notSettled = !(m.settled ?? false);
     return isDeployed && isPastEnd && notSettled;
   });
 
-  const activeMarket = group.markets.some((m) => {
+  const activeMarket = group.market.some((m) => {
     const start = m.startTimestamp ?? 0;
     const end = m.endTimestamp ?? 0;
     return start < nowSeconds && end > nowSeconds;
   });
 
-  const upcomingMarket = group.markets.some((m) => {
+  const upcomingMarket = group.market.some((m) => {
     const start = m.startTimestamp ?? 0;
     return start > nowSeconds;
   });
 
   const needsDeployment =
-    !group.address || group.markets.some((m) => !m.poolAddress);
+    !group.address || group.market.some((m) => !m.poolAddress);
 
   const allSettled =
-    group.markets.length > 0 &&
+    group.market.length > 0 &&
     !needsSettlement &&
     !activeMarket &&
     !upcomingMarket;

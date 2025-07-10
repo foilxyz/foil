@@ -2,12 +2,11 @@ import { ResponseCandleData } from './types';
 import { CANDLE_CACHE_CONFIG, CANDLE_TYPES } from './config';
 import { getTimeWindow } from './candleUtils';
 import { getCandles, getMarketGroups } from './dbUtils';
-import type { cache_candle } from '../../generated/prisma';
-import { MarketInfoStore } from './marketInfoStore';
-import type { Prisma } from '../../generated/prisma';
+import { marketInfoStore } from './marketInfoStore';
+import type { CacheCandle, Prisma } from '../../generated/prisma';
 
 // Type for what getMarketGroups returns
-type MarketGroupWithRelations = Prisma.market_groupGetPayload<{
+type MarketGroupWithRelations = Prisma.MarketGroupGetPayload<{
   include: {
     resource: true;
     market: true;
@@ -16,11 +15,11 @@ type MarketGroupWithRelations = Prisma.market_groupGetPayload<{
 
 export class CandleCacheRetriever {
   private static instance: CandleCacheRetriever;
-  private marketInfoStore: MarketInfoStore;
+  private marketInfoStore: marketInfoStore;
   private lastUpdateTimestamp: number;
 
   private constructor() {
-    this.marketInfoStore = MarketInfoStore.getInstance();
+    this.marketInfoStore = marketInfoStore.getInstance();
     this.lastUpdateTimestamp = 0;
   }
 
@@ -73,7 +72,7 @@ export class CandleCacheRetriever {
   ) {
     this.checkInterval(interval);
     await this.getUpdatedMarketsAndMarketGroupsIfNeeded();
-    const marketInfo = this.marketInfoStore.getMarketInfoByChainAndAddress(
+    const marketInfo = this.marketInfoStore.getmarketInfoByChainAndAddress(
       chainId,
       address,
       marketId
@@ -138,7 +137,7 @@ export class CandleCacheRetriever {
     });
   }
 
-  async getMarketPrices(
+  async getmarketPrices(
     from: number,
     to: number,
     interval: number,
@@ -148,7 +147,7 @@ export class CandleCacheRetriever {
   ) {
     this.checkInterval(interval);
     await this.getUpdatedMarketsAndMarketGroupsIfNeeded();
-    const marketInfo = this.marketInfoStore.getMarketInfoByChainAndAddress(
+    const marketInfo = this.marketInfoStore.getmarketInfoByChainAndAddress(
       chainId,
       address,
       marketId
@@ -198,7 +197,7 @@ export class CandleCacheRetriever {
     initialTimestamp: number;
     finalTimestamp: number;
     interval: number;
-    candles: cache_candle[];
+    candles: CacheCandle[];
     isCumulative: boolean;
     fillMissingCandles: boolean;
     fillInitialCandlesWithZeroes: boolean;
@@ -309,7 +308,7 @@ export class CandleCacheRetriever {
     }
     // get all market groups
     const marketGroups = await getMarketGroups();
-    await this.marketInfoStore.updateMarketInfo(
+    await this.marketInfoStore.updatemarketInfo(
       marketGroups as unknown as MarketGroupWithRelations[]
     );
   }

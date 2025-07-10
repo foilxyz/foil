@@ -4,7 +4,7 @@ import { Prisma } from '../../generated/prisma';
 import { TimeWindow } from '../interfaces';
 
 // Type for transaction with all necessary includes
-type TransactionWithIncludes = Prisma.transactionGetPayload<{
+type TransactionWithIncludes = Prisma.TransactionGetPayload<{
   include: {
     event: {
       include: {

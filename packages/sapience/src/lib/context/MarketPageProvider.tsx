@@ -165,8 +165,8 @@ export function MarketPageProvider({
     }
 
     // Assuming GraphQL provides marketData.marketGroup structured appropriately
-    // for all cases, including single markets (e.g., marketGroup.markets = [singleMarket]).
-    // getMarketGroupClassification handles cases where marketGroup.markets is undefined or empty.
+    // for all cases, including single markets (e.g., marketGroup.market = [singleMarket]).
+    // getMarketGroupClassification handles cases where marketGroup.market is undefined or empty.
     return getMarketGroupClassification(marketData.marketGroup || {});
   }, [marketData]);
 

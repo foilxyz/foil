@@ -37,10 +37,10 @@ interface MarketGroupCopyData {
   question?: string | null;
   category?: {
     slug?: string | null;
-    id?: string | null;
+    id?: string | number | null;
   } | null;
   resource?: {
-    id?: string | null;
+    id?: string | number | null;
   } | null;
   baseTokenName?: string | null;
   quoteTokenName?: string | null;
@@ -154,7 +154,7 @@ const MarketFormFields = ({
         const hasMatchingQuestion = question.includes(query);
 
         // Also check if any market in the group matches the search
-        const hasMatchingMarket = group.markets.some((marketItem) => {
+        const hasMatchingMarket = group.market.some((marketItem) => {
           const marketQuestion = marketItem.question?.toLowerCase() || '';
           const optionName = marketItem.optionName?.toLowerCase() || '';
           return marketQuestion.includes(query) || optionName.includes(query);
@@ -181,7 +181,7 @@ const MarketFormFields = ({
     marketGroups.forEach((group) => {
       if (group.category) {
         categories.set(group.category.slug, {
-          id: group.category.id,
+          id: group.category.id.toString(),
           name: group.category.name,
           slug: group.category.slug,
         });
@@ -721,12 +721,12 @@ const MarketFormFields = ({
 
     try {
       const selectedMarketGroup = marketGroups.find(
-        (group) => group.id === selectedMarketGroupId
+        (group) => group.id.toString() === selectedMarketGroupId
       );
       if (!selectedMarketGroup) return;
 
-      const selectedMarket = selectedMarketGroup.markets.find(
-        (marketItem) => marketItem.id === selectedMarketId
+      const selectedMarket = selectedMarketGroup.market.find(
+        (marketItem) => marketItem.id.toString() === selectedMarketId
       );
       if (!selectedMarket) return;
 
@@ -853,8 +853,9 @@ const MarketFormFields = ({
               type="text"
               value={
                 selectedMarketGroupId
-                  ? marketGroups?.find((g) => g.id === selectedMarketGroupId)
-                      ?.question || `Market Group ${selectedMarketGroupId}`
+                  ? marketGroups?.find(
+                      (g) => g.id.toString() === selectedMarketGroupId
+                    )?.question || `Market Group ${selectedMarketGroupId}`
                   : searchQuery
               }
               onChange={(e) => {
@@ -905,7 +906,7 @@ const MarketFormFields = ({
                     ) {
                       const selectedGroup =
                         filteredMarketGroups[selectedDropdownIndex];
-                      setSelectedMarketGroupId(selectedGroup.id);
+                      setSelectedMarketGroupId(selectedGroup.id.toString());
                       setShowMarketGroupDropdown(false);
                       setSelectedDropdownIndex(-1);
                     }
@@ -977,7 +978,7 @@ const MarketFormFields = ({
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      setSelectedMarketGroupId(group.id);
+                      setSelectedMarketGroupId(group.id.toString());
                       setShowMarketGroupDropdown(false);
                       setSelectedDropdownIndex(-1);
                     }}
@@ -1026,11 +1027,11 @@ const MarketFormFields = ({
                 <SelectContent>
                   {(() => {
                     const selectedGroup = marketGroups?.find(
-                      (group) => group.id === selectedMarketGroupId
+                      (group) => group.id.toString() === selectedMarketGroupId
                     );
                     if (!selectedGroup) return null;
 
-                    if (selectedGroup.markets.length === 0) {
+                    if (selectedGroup.market.length === 0) {
                       return (
                         <SelectItem value="no-markets" disabled>
                           No markets found
@@ -1038,8 +1039,11 @@ const MarketFormFields = ({
                       );
                     }
 
-                    return selectedGroup.markets.map((marketItem) => (
-                      <SelectItem key={marketItem.id} value={marketItem.id}>
+                    return selectedGroup.market.map((marketItem) => (
+                      <SelectItem
+                        key={marketItem.id}
+                        value={marketItem.id.toString()}
+                      >
                         {marketItem.optionName ||
                           marketItem.question ||
                           `Market ${marketItem.marketId}`}

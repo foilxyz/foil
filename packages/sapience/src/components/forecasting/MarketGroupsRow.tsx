@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import * as React from 'react';
-import { formatUnits } from 'viem';
 
 import type { MarketGroupClassification } from '~/lib/types';
 import { MarketGroupClassification as MarketGroupClassificationEnum } from '~/lib/types';
@@ -14,7 +13,7 @@ import type { MarketWithContext } from './MarketGroupsList';
 export interface MarketGroupsRowProps {
   chainId: number;
   marketAddress: string;
-  markets: MarketWithContext[];
+  market: MarketWithContext[];
   color: string;
   displayQuestion: string;
   isActive?: boolean;
@@ -25,7 +24,7 @@ export interface MarketGroupsRowProps {
 const MarketGroupsRow = ({
   chainId,
   marketAddress,
-  markets,
+  market,
   color,
   displayQuestion,
   isActive,
@@ -41,92 +40,56 @@ const MarketGroupsRow = ({
     if (
       !isActive ||
       marketClassification !== MarketGroupClassificationEnum.MULTIPLE_CHOICE ||
-      markets.length === 0
+      market.length === 0
     )
       return null;
 
-    let highestPrice = BigInt(-1);
     let optionNameWithHighestPrice: string | null | undefined = null;
 
-    markets.forEach((market) => {
-      if (market.currentPrice && typeof market.currentPrice === 'string') {
-        try {
-          const currentPriceBigInt = BigInt(market.currentPrice);
-          if (currentPriceBigInt > highestPrice) {
-            highestPrice = currentPriceBigInt;
-            optionNameWithHighestPrice = market.optionName;
-          }
-        } catch {
-          /* ignore error, keep searching */
-        }
+    market.forEach((marketItem) => {
+      // TODO: Get actual current price from market data
+      // For now, just return the first market's option name
+      if (optionNameWithHighestPrice === null) {
+        optionNameWithHighestPrice = marketItem.optionName;
       }
     });
     return optionNameWithHighestPrice;
-  }, [isActive, marketClassification, markets]);
+  }, [isActive, marketClassification, market]);
 
   const yesNoPredictionPercentage = React.useMemo(() => {
     if (
       !isActive ||
       marketClassification !== MarketGroupClassificationEnum.YES_NO ||
-      markets.length === 0
+      market.length === 0
     )
       return null;
 
-    let targetMarket = markets.find((m) => m.optionName === 'Yes');
-    if (!targetMarket && markets.length > 0) [targetMarket] = markets;
+    let targetMarket = market.find((m) => m.optionName === 'Yes');
+    if (!targetMarket && market.length > 0) [targetMarket] = market;
 
-    if (
-      targetMarket &&
-      targetMarket.currentPrice &&
-      typeof targetMarket.currentPrice === 'string'
-    ) {
-      try {
-        const percentage = Math.round(
-          Number(formatUnits(BigInt(targetMarket.currentPrice), 18)) * 100
-        );
-        if (Number.isNaN(percentage)) return null;
-        return `${percentage}% Chance`;
-      } catch {
-        return null;
-      }
+    if (targetMarket) {
+      // TODO: Get actual market price from targetMarket data
+      // For now, return null until market price data is available
+      return null;
     }
     return null;
-  }, [isActive, marketClassification, markets]);
+  }, [isActive, marketClassification, market]);
 
   const numericFormattedPriceDisplay = React.useMemo(() => {
     if (
       !isActive ||
-      markets.length === 0 ||
+      market.length === 0 ||
       marketClassification === MarketGroupClassificationEnum.MULTIPLE_CHOICE ||
       marketClassification === MarketGroupClassificationEnum.YES_NO
     ) {
       return null;
     }
-    const marketToDisplay = markets[0];
-    if (
-      marketToDisplay.currentPrice &&
-      typeof marketToDisplay.currentPrice === 'string'
-    ) {
-      try {
-        const priceInEther = formatUnits(
-          BigInt(marketToDisplay.currentPrice),
-          18
-        );
-        const formatted = Number(priceInEther).toFixed(4);
-        if (formatted === 'NaN') return null;
-        return formatted;
-      } catch (error) {
-        console.error(
-          'Error formatting currentPrice for numeric display:',
-          error
-        );
-        return null;
-      }
-    }
+    // TODO: Implement actual market price retrieval
+    // For now, return null until market price data is available
     return null;
-  }, [isActive, marketClassification, markets]);
+  }, [isActive, marketClassification, market]);
 
-  if (!markets || markets.length === 0) {
+  if (!market || market.length === 0) {
     return null;
   }
 

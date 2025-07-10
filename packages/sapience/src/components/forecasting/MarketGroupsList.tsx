@@ -35,7 +35,7 @@ import MarketGroupsRow from './MarketGroupsRow';
 
 // Define Category type based on assumed hook return
 interface Category {
-  id: string;
+  id: number;
   slug: string;
   name: string;
   // Add other fields if known
@@ -77,6 +77,7 @@ export interface MarketWithContext extends GraphQLMarketType {
   collateralAsset: string;
   categorySlug: string;
   categoryId: string;
+  // currentPrice?: string | null; // Removed
 }
 
 // Interface for the final grouped market data structure
@@ -285,7 +286,7 @@ const ForecastingTable = () => {
         }
 
         // Filter and map markets within this marketGroup
-        return marketGroup.markets
+        return marketGroup.market
           .filter(
             (
               market // market is GraphQLMarketType
@@ -313,7 +314,7 @@ const ForecastingTable = () => {
               chainId: marketGroup.chainId,
               collateralAsset: marketGroup.collateralAsset!,
               categorySlug: marketGroup.category!.slug!,
-              categoryId: marketGroup.category!.id!,
+              categoryId: marketGroup.category!.id!.toString(),
             };
           });
       }
@@ -750,7 +751,7 @@ const ForecastingTable = () => {
                                 marketGroup.displayQuestion || 'Loading...'
                               }
                               color={marketGroup.color}
-                              markets={marketGroup.markets}
+                              market={marketGroup.markets}
                               isActive={marketGroup.isActive}
                               marketClassification={
                                 marketGroup.marketClassification

@@ -1,13 +1,12 @@
 'use client';
 
-import { gql } from '@apollo/client';
 import { useToast } from '@sapience/ui/hooks/use-toast';
+import { graphqlRequest } from '@sapience/ui/lib';
 import type {
   QueryObserverResult,
   RefetchOptions,
 } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
-import { print } from 'graphql';
 import type React from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
 
@@ -62,8 +61,7 @@ export interface MarketGroup {
     name: string;
     slug: string;
   };
-  markets: ApiMarket[]; // Use the new Market interface
-  currentMarket: ApiMarket | null; // Use the new Market interface
+  market: ApiMarket | null; // Use the new Market interface
   nextMarket: ApiMarket | null; // Use the new Market interface
   question?: string; // Added group-level question
 }
@@ -81,7 +79,7 @@ interface SapienceContextType {
   marketGroups: MarketGroup[];
   isMarketsLoading: boolean;
   marketsError: Error | null;
-  refetchMarketGroups: (
+  refetchMarketGroup: (
     options?: RefetchOptions
   ) => Promise<QueryObserverResult<MarketGroup[], Error>>;
   stEthPerToken: number | undefined;
@@ -92,7 +90,7 @@ const SapienceContext = createContext<SapienceContextType | undefined>(
 );
 
 // Define GraphQL query for market groups
-const MARKET_GROUPS_QUERY = gql`
+const MARKET_GROUPS_QUERY = `
   query GetMarketGroups {
     marketGroups {
       id
@@ -101,7 +99,7 @@ const MARKET_GROUPS_QUERY = gql`
       question
       baseTokenName
       quoteTokenName
-      markets {
+      market {
         id
         marketId
         question
@@ -113,7 +111,6 @@ const MARKET_GROUPS_QUERY = gql`
         baseAssetMinPriceTick
         baseAssetMaxPriceTick
         poolAddress
-        currentPrice
         marketParamsClaimstatementYesOrNumeric
         marketParamsClaimstatementNo
       }
@@ -145,8 +142,13 @@ interface ApiMarketGroupResponse {
   question?: string;
   baseTokenName?: string;
   quoteTokenName?: string;
-  markets: ApiMarketResponse[];
+  market: ApiMarketResponse;
 }
+
+// Type definition for GraphQL response
+type MarketGroupsQueryResponse = {
+  marketGroups: ApiMarketGroupResponse[];
+};
 
 export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -198,50 +200,50 @@ export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
     data: marketGroups,
     isLoading: isMarketsLoading,
     error: marketsError,
-    refetch: refetchMarketGroups,
+    refetch: refetchMarketGroup,
   } = useQuery<MarketGroup[], Error>({
     queryKey: ['marketGroups'],
     queryFn: async () => {
       try {
-        const response = await foilApi.post('/graphql', {
-          query: print(MARKET_GROUPS_QUERY),
-        });
+        const data =
+          await graphqlRequest<MarketGroupsQueryResponse>(MARKET_GROUPS_QUERY);
 
         // Use renamed variable and check response.data existence
-        if (!response.data || !response.data.marketGroups) {
-          console.error('No marketGroups data in response:', response.data);
+        if (!data || !data.marketGroups) {
+          console.error('No marketGroups data in response:', data);
           return []; // Return empty array if data is missing
         }
-        const apiMarketGroups = response.data.marketGroups; // Rename destructured variable
+        const apiMarketGroup = data.marketGroups; // Rename destructured variable
         const currentTimestamp = Math.floor(Date.now() / 1000);
 
-        return apiMarketGroups.map((marketGroup: ApiMarketGroupResponse) => {
+        return apiMarketGroup.map((marketGroup: ApiMarketGroupResponse) => {
           // Use ApiMarketGroupResponse type
           // Transform the structure to match the expected Market interface
-          const markets: ApiMarket[] = marketGroup.markets.map(
-            (market: ApiMarketResponse): ApiMarket => ({
-              // Use ApiMarketResponse type
-              id: market.id,
-              marketId: market.marketId,
-              startTimestamp: market.startTimestamp,
-              endTimestamp: market.endTimestamp,
-              // Adjust public logic based on settled field if it exists in response
-              public: market.settled !== undefined ? !market.settled : true,
-              question: market.question,
-              startingSqrtPriceX96: market.startingSqrtPriceX96,
-              baseAssetMinPriceTick: market.baseAssetMinPriceTick,
-              baseAssetMaxPriceTick: market.baseAssetMaxPriceTick,
-              poolAddress: market.poolAddress,
-              claimStatementYesOrNumeric:
-                market.marketParamsClaimstatementYesOrNumeric,
-              claimStatementNo: market.marketParamsClaimstatementNo,
-              // Add other fields required by ApiMarket if they exist in ApiMarketResponse
-              settled: market.settled,
-              optionName: market.optionName,
-            })
-          );
+          const market: ApiMarket = {
+            // Use ApiMarketResponse type
+            id: marketGroup.market.id,
+            marketId: marketGroup.market.marketId,
+            startTimestamp: marketGroup.market.startTimestamp,
+            endTimestamp: marketGroup.market.endTimestamp,
+            // Adjust public logic based on settled field if it exists in response
+            public:
+              marketGroup.market.settled !== undefined
+                ? !marketGroup.market.settled
+                : true,
+            question: marketGroup.market.question,
+            startingSqrtPriceX96: marketGroup.market.startingSqrtPriceX96,
+            baseAssetMinPriceTick: marketGroup.market.baseAssetMinPriceTick,
+            baseAssetMaxPriceTick: marketGroup.market.baseAssetMaxPriceTick,
+            poolAddress: marketGroup.market.poolAddress,
+            claimStatementYesOrNumeric:
+              marketGroup.market.marketParamsClaimstatementYesOrNumeric,
+            claimStatementNo: marketGroup.market.marketParamsClaimstatementNo,
+            // Add other fields required by ApiMarket if they exist in ApiMarketResponse
+            settled: marketGroup.market.settled,
+            optionName: marketGroup.market.optionName,
+          };
 
-          const sortedMarkets = [...markets].sort(
+          const sortedMarkets = [...[market]].sort(
             (a, b) => a.startTimestamp - b.startTimestamp
           );
 
@@ -276,7 +278,7 @@ export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
               name: 'Unknown',
               slug: 'unknown',
             }, // Default resource info
-            markets,
+            market,
             currentMarket,
             nextMarket,
           };
@@ -367,7 +369,7 @@ export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
         marketGroups: marketGroups || [],
         isMarketsLoading,
         marketsError,
-        refetchMarketGroups,
+        refetchMarketGroup,
         stEthPerToken,
       }}
     >

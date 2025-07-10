@@ -1,8 +1,8 @@
 import { INDEXERS } from 'src/fixtures';
-import type { resource } from '../../../generated/prisma';
+import type { Resource } from '../../../generated/prisma';
 
 export const reindexResource = async (
-  resource: resource,
+  resource: Resource,
   startTimestamp: number,
   endTimestamp?: number
 ) => {
