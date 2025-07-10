@@ -79,7 +79,7 @@ export const MarketGroupProvider = ({
   children,
 }: MarketGroupProviderProps) => {
   const { toast } = useToast();
-  const { abi } = useFoilAbi(chainId);
+  const { abi } = useFoilAbi();
   // TODO: Fetch single market
   const {
     data: marketGroup,
@@ -127,9 +127,9 @@ export const MarketGroupProvider = ({
   } = useReadContract({
     chainId,
     abi,
-    address: marketData?.[1] as `0x${string}`,
+    address: (marketData as any)?.[1] as `0x${string}`,
     functionName: 'symbol',
-    query: { enabled: !!marketData?.[1] },
+    query: { enabled: !!(marketData as any)?.[1] },
   });
 
   const {
@@ -139,14 +139,14 @@ export const MarketGroupProvider = ({
   } = useReadContract({
     chainId,
     abi,
-    address: marketData?.[1] as `0x${string}`,
+    address: (marketData as any)?.[1] as `0x${string}`,
     functionName: 'decimals',
-    query: { enabled: !!marketData?.[1] },
+    query: { enabled: !!(marketData as any)?.[1] },
   });
 
   const { pool, liquidity, refetchUniswapData } = useUniswapPool(
     chainId,
-    epochData?.[0]?.pool
+    (epochData as any)?.[0]?.pool
   );
 
   useEffect(() => {
@@ -195,34 +195,34 @@ export const MarketGroupProvider = ({
 
   // Create market object from the fetched data
   const market: Market = {
-    epochId: epochData?.[0]?.id?.toString() || '',
-    startTime: epochData?.[0]?.startTime || BigInt(0),
-    endTime: epochData?.[0]?.endTime || BigInt(0),
-    poolAddress: (epochData?.[0]?.pool || '0x') as `0x${string}`,
-    ethToken: epochData?.[1]?.token0 || '',
-    gasToken: epochData?.[1]?.token1 || '',
-    minPriceD18: epochData?.[0]?.minPriceD18 || BigInt(0),
-    maxPriceD18: epochData?.[0]?.maxPriceD18 || BigInt(0),
-    baseAssetMinPriceTick: Number(epochData?.[0]?.baseAssetMinPriceTick || 0),
-    baseAssetMaxPriceTick: Number(epochData?.[0]?.baseAssetMaxPriceTick || 0),
-    settled: epochData?.[0]?.settled || false,
-    settlementPriceD18: epochData?.[0]?.settlementPriceD18 || BigInt(0),
+    epochId: (epochData as any)?.[0]?.id?.toString() || '',
+    startTime: (epochData as any)?.[0]?.startTime || BigInt(0),
+    endTime: (epochData as any)?.[0]?.endTime || BigInt(0),
+    poolAddress: ((epochData as any)?.[0]?.pool || '0x') as `0x${string}`,
+    ethToken: (epochData as any)?.[1]?.token0 || '',
+    gasToken: (epochData as any)?.[1]?.token1 || '',
+    minPriceD18: (epochData as any)?.[0]?.minPriceD18 || BigInt(0),
+    maxPriceD18: (epochData as any)?.[0]?.maxPriceD18 || BigInt(0),
+    baseAssetMinPriceTick: Number((epochData as any)?.[0]?.baseAssetMinPriceTick || 0),
+    baseAssetMaxPriceTick: Number((epochData as any)?.[0]?.baseAssetMaxPriceTick || 0),
+    settled: (epochData as any)?.[0]?.settled || false,
+    settlementPriceD18: (epochData as any)?.[0]?.settlementPriceD18 || BigInt(0),
     pool: pool || ({} as any),
     liquidity: liquidity || '',
   };
 
   // Create marketGroupParams from the fetched data
   const marketGroupParams: MarketGroupParams = {
-    assertionLiveness: marketData?.[0]?.assertionLiveness || BigInt(0),
-    bondAmount: marketData?.[0]?.bondAmount || BigInt(0),
-    bondCurrency: marketData?.[0]?.bondCurrency || '',
-    feeRate: Number(marketData?.[0]?.feeRate || 0),
-    optimisticOracleV3: marketData?.[0]?.optimisticOracleV3 || '',
-    claimStatement: marketData?.[0]?.claimStatement || '',
-    uniswapPositionManager: (marketData?.[0]?.uniswapPositionManager ||
+    assertionLiveness: (marketData as any)?.[0]?.assertionLiveness || BigInt(0),
+    bondAmount: (marketData as any)?.[0]?.bondAmount || BigInt(0),
+    bondCurrency: (marketData as any)?.[0]?.bondCurrency || '',
+    feeRate: Number((marketData as any)?.[0]?.feeRate || 0),
+    optimisticOracleV3: (marketData as any)?.[0]?.optimisticOracleV3 || '',
+    claimStatement: (marketData as any)?.[0]?.claimStatement || '',
+    uniswapPositionManager: ((marketData as any)?.[0]?.uniswapPositionManager ||
       '0x') as `0x${string}`,
-    uniswapQuoter: (marketData?.[0]?.uniswapQuoter || '0x') as `0x${string}`,
-    uniswapSwapRouter: (marketData?.[0]?.uniswapSwapRouter ||
+    uniswapQuoter: ((marketData as any)?.[0]?.uniswapQuoter || '0x') as `0x${string}`,
+    uniswapSwapRouter: ((marketData as any)?.[0]?.uniswapSwapRouter ||
       '0x') as `0x${string}`,
   };
 
