@@ -5,9 +5,9 @@ import { Position } from '@generated/type-graphql';
 import type { Prisma } from '../../../generated/prisma';
 
 @Resolver(() => Position)
-export class PositionResolver {
+export class HydratedPositionResolver {
   @Query(() => [Position])
-  async positions(
+  async hydratedPositions(
     @Arg('owner', () => String, { nullable: true }) owner?: string,
     @Arg('chainId', () => Int, { nullable: true }) chainId?: number,
     @Arg('marketAddress', () => String, { nullable: true })

@@ -5,7 +5,7 @@ import depthLimit from 'graphql-depth-limit';
 import { buildSchema } from 'type-graphql';
 import {
   MarketGroupResolver,
-  PositionResolver,
+  HydratedPositionResolver,
   TransactionResolver,
   CandleResolver,
   PnLResolver,
@@ -28,7 +28,7 @@ export const initializeApolloServer = async () => {
     resolvers: [
       MarketGroupResolver,
       MarketResolver,
-      PositionResolver,
+      HydratedPositionResolver,
       TransactionResolver,
       CandleResolver,
       PnLResolver,

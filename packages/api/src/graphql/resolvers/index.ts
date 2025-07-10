@@ -1,6 +1,6 @@
 export { MarketGroupResolver } from './MarketGroupResolver';
 export { ResourceResolver } from './ResourceResolver';
-export { PositionResolver } from './PositionResolver';
+export { HydratedPositionResolver } from './HydratedPositionResolver';
 export { TransactionResolver } from './TransactionResolver';
 export { MarketResolver } from './MarketResolver';
 export { CandleResolver } from './CandleResolver';

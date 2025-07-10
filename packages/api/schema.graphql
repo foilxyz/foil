@@ -2919,6 +2919,7 @@ type Query {
   groupByResource(by: [ResourceScalarFieldEnum!]!, having: ResourceScalarWhereWithAggregatesInput, orderBy: [ResourceOrderByWithAggregationInput!], skip: Int, take: Int, where: ResourceWhereInput): [ResourceGroupBy!]!
   groupByResource_price(by: [Resource_priceScalarFieldEnum!]!, having: Resource_priceScalarWhereWithAggregatesInput, orderBy: [Resource_priceOrderByWithAggregationInput!], skip: Int, take: Int, where: Resource_priceWhereInput): [Resource_priceGroupBy!]!
   groupByTransaction(by: [TransactionScalarFieldEnum!]!, having: TransactionScalarWhereWithAggregatesInput, orderBy: [TransactionOrderByWithAggregationInput!], skip: Int, take: Int, where: TransactionWhereInput): [TransactionGroupBy!]!
+  hydratedPositions(chainId: Int, marketAddress: String, owner: String): [Position!]!
   indexCandlesFromCache(address: String!, chainId: Int!, from: Int!, interval: Int!, marketId: String!, to: Int!): CandleAndTimestampType!
   indexPriceAtTime(address: String!, chainId: Int!, marketId: String!, timestamp: Int!): CandleType
   legacyMarketCandles(address: String!, chainId: Int!, from: Int!, interval: Int!, marketId: String!, to: Int!): [CandleType!]!
@@ -2932,7 +2933,7 @@ type Query {
   market_prices(cursor: Market_priceWhereUniqueInput, distinct: [Market_priceScalarFieldEnum!], orderBy: [Market_priceOrderByWithRelationInput!], skip: Int, take: Int, where: Market_priceWhereInput): [Market_price!]!
   markets(chainId: Int!, marketAddress: String!, marketId: Int!): [Market!]!
   position(where: PositionWhereUniqueInput!): Position
-  positions(chainId: Int, marketAddress: String, owner: String): [Position!]!
+  positions(cursor: PositionWhereUniqueInput, distinct: [PositionScalarFieldEnum!], orderBy: [PositionOrderByWithRelationInput!], skip: Int, take: Int, where: PositionWhereInput): [Position!]!
   resource(where: ResourceWhereUniqueInput!): Resource
   resourceCandlesFromCache(from: Int!, interval: Int!, slug: String!, to: Int!): CandleAndTimestampType!
   resourceTrailingAverageCandlesFromCache(from: Int!, interval: Int!, slug: String!, to: Int!, trailingAvgTime: Int!): CandleAndTimestampType!

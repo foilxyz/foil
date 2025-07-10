@@ -3031,6 +3031,7 @@ export type Query = {
   groupByResource: Array<ResourceGroupBy>;
   groupByResource_price: Array<Resource_PriceGroupBy>;
   groupByTransaction: Array<TransactionGroupBy>;
+  hydratedPositions: Array<Position>;
   indexCandlesFromCache: CandleAndTimestampType;
   indexPriceAtTime?: Maybe<CandleType>;
   legacyMarketCandles: Array<CandleType>;
@@ -3399,6 +3400,13 @@ export type QueryGroupByTransactionArgs = {
 };
 
 
+export type QueryHydratedPositionsArgs = {
+  chainId?: InputMaybe<Scalars['Int']['input']>;
+  marketAddress?: InputMaybe<Scalars['String']['input']>;
+  owner?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type QueryIndexCandlesFromCacheArgs = {
   address: Scalars['String']['input'];
   chainId: Scalars['Int']['input'];
@@ -3498,9 +3506,12 @@ export type QueryPositionArgs = {
 
 
 export type QueryPositionsArgs = {
-  chainId?: InputMaybe<Scalars['Int']['input']>;
-  marketAddress?: InputMaybe<Scalars['String']['input']>;
-  owner?: InputMaybe<Scalars['String']['input']>;
+  cursor?: InputMaybe<PositionWhereUniqueInput>;
+  distinct?: InputMaybe<Array<PositionScalarFieldEnum>>;
+  orderBy?: InputMaybe<Array<PositionOrderByWithRelationInput>>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<PositionWhereInput>;
 };
 
 
@@ -6147,6 +6158,7 @@ export type QueryResolvers<ContextType = ApolloContext, ParentType extends Resol
   groupByResource?: Resolver<Array<ResolversTypes['ResourceGroupBy']>, ParentType, ContextType, RequireFields<QueryGroupByResourceArgs, 'by'>>;
   groupByResource_price?: Resolver<Array<ResolversTypes['Resource_priceGroupBy']>, ParentType, ContextType, RequireFields<QueryGroupByResource_PriceArgs, 'by'>>;
   groupByTransaction?: Resolver<Array<ResolversTypes['TransactionGroupBy']>, ParentType, ContextType, RequireFields<QueryGroupByTransactionArgs, 'by'>>;
+  hydratedPositions?: Resolver<Array<ResolversTypes['Position']>, ParentType, ContextType, Partial<QueryHydratedPositionsArgs>>;
   indexCandlesFromCache?: Resolver<ResolversTypes['CandleAndTimestampType'], ParentType, ContextType, RequireFields<QueryIndexCandlesFromCacheArgs, 'address' | 'chainId' | 'from' | 'interval' | 'marketId' | 'to'>>;
   indexPriceAtTime?: Resolver<Maybe<ResolversTypes['CandleType']>, ParentType, ContextType, RequireFields<QueryIndexPriceAtTimeArgs, 'address' | 'chainId' | 'marketId' | 'timestamp'>>;
   legacyMarketCandles?: Resolver<Array<ResolversTypes['CandleType']>, ParentType, ContextType, RequireFields<QueryLegacyMarketCandlesArgs, 'address' | 'chainId' | 'from' | 'interval' | 'marketId' | 'to'>>;

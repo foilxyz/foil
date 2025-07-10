@@ -8,7 +8,7 @@ import { foilApi } from '~/lib/utils/util';
 // GraphQL query to fetch positions by owner address and optional market address
 export const POSITIONS_QUERY = gql`
   query GetPositions($owner: String, $marketAddress: String, $chainId: Int) {
-    positions(owner: $owner, marketAddress: $marketAddress, chainId: $chainId) {
+    hydratedPositions(owner: $owner, marketAddress: $marketAddress, chainId: $chainId) {
       id
       positionId
       owner
