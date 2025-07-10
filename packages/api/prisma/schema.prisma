@@ -4,7 +4,9 @@ generator client {
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
-
+generator typegraphql {
+  provider = "typegraphql-prisma"
+}
 
 datasource db {
   provider = "postgresql"
