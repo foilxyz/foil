@@ -9,17 +9,14 @@ export class MarketGroup {
   @Field(() => String, { nullable: true })
   address?: string | null;
 
-  @Field(() => String, { nullable: true })
-  vaultAddress?: string | null;
-
   @Field(() => Int)
   chainId: number;
 
   @Field(() => Boolean)
-  isYin: boolean;
+  isCumulative: boolean;
 
   @Field(() => Boolean)
-  isCumulative: boolean;
+  isBridged: boolean;
 
   @Field(() => [Market], { nullable: true })
   markets?: Market[];
@@ -79,7 +76,10 @@ export class MarketGroup {
   marketParamsBondamount?: string | null;
 
   @Field(() => String, { nullable: true })
-  marketParamsClaimstatement?: string | null;
+  marketParamsClaimstatementYesOrNumeric?: string | null;
+
+  @Field(() => String, { nullable: true })
+  marketParamsClaimstatementNo?: string | null;
 
   @Field(() => String, { nullable: true })
   marketParamsUniswappositionmanager?: string | null;
@@ -193,7 +193,10 @@ export class Market {
   marketParamsBondamount?: string | null;
 
   @Field(() => String, { nullable: true })
-  marketParamsClaimstatement?: string | null;
+  marketParamsClaimstatementYesOrNumeric?: string | null;
+
+  @Field(() => String, { nullable: true })
+  marketParamsClaimstatementNo?: string | null;
 
   @Field(() => String, { nullable: true })
   marketParamsUniswappositionmanager?: string | null;

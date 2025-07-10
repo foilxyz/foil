@@ -202,14 +202,22 @@ export function useCreateTrade({
     try {
       // 30 minutes from now
       const deadline = BigInt(Math.floor(Date.now() / 1000) + 30 * 60);
+
+      // Prepare the parameters for the createTraderPosition function
+      const tradeParams = {
+        marketId: numericMarketId,
+        size,
+        maxCollateral: limitCollateral,
+        deadline,
+      };
+
       // Call the contract function
       const hash = await writeContractAsync({
         address: marketAddress,
         abi: marketAbi,
         functionName: 'createTraderPosition',
         chainId,
-        // Pass arguments as a flat array based on expected signature
-        args: [numericMarketId, size, limitCollateral, deadline],
+        args: [tradeParams],
         // Consider adding gas estimation or manual limit if needed
       });
 

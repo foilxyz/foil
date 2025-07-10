@@ -1,4 +1,4 @@
-import { useFoilAbi } from '@sapience/ui/hooks/useFoilAbi';
+import { useSapienceAbi } from '@sapience/ui/hooks/useSapienceAbi';
 import type { Address, Abi } from 'viem';
 import { useReadContract } from 'wagmi';
 
@@ -13,7 +13,7 @@ export const useMarketGroupLatestEpoch = (
   marketGroupAddress?: Address,
   chainId?: number
 ) => {
-  const { abi } = useFoilAbi();
+  const { abi } = useSapienceAbi();
 
   const {
     data: latestEpochData,

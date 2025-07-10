@@ -1,10 +1,10 @@
-import Foil from '@sapience/protocol/deployments/Foil.json';
+import Sapience from '@sapience/protocol/deployments/Sapience.json';
 import { Router } from 'express';
-import prisma from '../db';
 import { formatUnits, parseUnits } from 'viem';
 import { z } from 'zod';
-import { getProviderForChain } from '../utils/utils';
 import type { Prisma } from '../../generated/prisma';
+import prisma from '../db';
+import { getProviderForChain } from '../utils/utils';
 
 const router = Router();
 const MAX_ITERATIONS = 10;
@@ -18,9 +18,9 @@ const querySchema = z.object({
 });
 
 // This route returns the max size for the available collateral
-router.get('/:chainId/:marketAddress/:epochId/', async (req, res) => {
+router.get('/:chainId/:marketAddress/:marketId/', async (req, res) => {
   try {
-    const { chainId, marketAddress, epochId } = req.params;
+    const { chainId, marketAddress, marketId } = req.params;
     const query = querySchema.parse(req.query);
 
     if (query.maxIterations === undefined) {
@@ -34,8 +34,7 @@ router.get('/:chainId/:marketAddress/:epochId/', async (req, res) => {
         .json({ error: 'maxIterations must be between 1 and 5' });
     }
 
-    // Get the epoch data
-    const market = await getMarket(chainId, marketAddress, epochId);
+    const market = await getMarket(chainId, marketAddress, marketId);
     if (!market || !market.market_group || !market.market_group.address) {
       return res.status(404).json({ error: 'Market not found' });
     }
@@ -74,7 +73,7 @@ router.get('/:chainId/:marketAddress/:epochId/', async (req, res) => {
     const maxSize = await getMaxSizeForCollateral({
       chainId,
       marketAddress,
-      epochId,
+      marketId,
       currentPrice: currentPriceDecimal,
       priceLimit,
       expectedPrice: expectedPriceDecimal,
@@ -112,7 +111,7 @@ router.get('/:chainId/:marketAddress/:epochId/', async (req, res) => {
 interface GetMaxSizeForCollateralParams {
   chainId: string;
   marketAddress: string;
-  epochId: string;
+  marketId: string;
   currentPrice: number;
   priceLimit?: number;
   expectedPrice: number;
@@ -127,7 +126,7 @@ async function getMaxSizeForCollateral(
   const {
     chainId,
     marketAddress,
-    epochId,
+    marketId,
     currentPrice,
     priceLimit,
     expectedPrice,
@@ -181,9 +180,9 @@ async function getMaxSizeForCollateral(
       // Test this size with contract call
       const result = await client.simulateContract({
         address: marketAddress as `0x${string}`,
-        abi: Foil.abi,
+        abi: Sapience.abi,
         functionName: 'quoteCreateTraderPosition',
-        args: [BigInt(epochId), signedTestSize],
+        args: [BigInt(marketId), signedTestSize],
       });
 
       // Extract the relevant values from the result
@@ -292,7 +291,7 @@ async function getCurrentPrice(
   const client = getProviderForChain(chainId);
   const price = await client.readContract({
     address: marketAddress as `0x${string}`,
-    abi: Foil.abi,
+    abi: Sapience.abi,
     functionName: 'getReferencePrice',
     args: [BigInt(epochId)],
   });

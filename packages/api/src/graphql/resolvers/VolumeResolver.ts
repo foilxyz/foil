@@ -15,7 +15,7 @@ export class VolumeResolver {
     @Arg('marketAddress', () => String) marketAddress: string,
     @Arg('marketId', () => Int) marketId: number
   ): Promise<number> {
-    // 1. Get epoch start and end timestamps (Needs implementation or existing function)
+    // 1. Get market start and end timestamps (Needs implementation or existing function)
     const { startTimestamp, endTimestamp } = await getMarketStartEndTimestamps(
       marketId,
       chainId,

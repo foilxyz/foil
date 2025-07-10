@@ -124,11 +124,18 @@ export function useModifyTrade({
       setError(null);
       const deadline = BigInt(Math.floor(Date.now() / 1000) + 30 * 60); // 30 minutes deadline
 
+      const modifyTradeParams = {
+        positionId,
+        size: newSize,
+        deltaCollateralLimit: collateralDeltaLimit(),
+        deadline,
+      };
+
       const hash = await writeContractAsync({
         address: marketAddress,
         abi: marketAbi,
         functionName: 'modifyTraderPosition',
-        args: [positionId, newSize, collateralDeltaLimit(), deadline],
+        args: [modifyTradeParams],
         chainId,
       });
       setTxHash(hash);

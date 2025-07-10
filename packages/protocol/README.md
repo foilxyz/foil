@@ -1,4 +1,4 @@
-# Foil Protocol
+# Sapience Protocol
 
 See [deployments](https://usecannon.com/packages/foil)
 

@@ -14,35 +14,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@sapience/ui/components/ui/dialog';
+import { sapienceAbi } from '@sapience/ui/lib/abi';
 import type { MarketType } from '@sapience/ui/types';
 import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { toBytes, bytesToHex } from 'viem';
 import type { Address } from 'viem';
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-
-// ABI for the createEpoch function (from CreateMarketDialog originally)
-const createEpochAbiFragment = [
-  {
-    type: 'function',
-    name: 'createEpoch',
-    inputs: [
-      { name: 'startTime', type: 'uint256', internalType: 'uint256' },
-      { name: 'endTime', type: 'uint256', internalType: 'uint256' },
-      {
-        name: 'startingSqrtPriceX96',
-        type: 'uint160',
-        internalType: 'uint160',
-      },
-      { name: 'baseAssetMinPriceTick', type: 'int24', internalType: 'int24' },
-      { name: 'baseAssetMaxPriceTick', type: 'int24', internalType: 'int24' },
-      { name: 'salt', type: 'uint256', internalType: 'uint256' },
-      { name: 'claimStatement', type: 'bytes', internalType: 'bytes' },
-    ],
-    outputs: [{ name: 'epochId', type: 'uint256', internalType: 'uint256' }],
-    stateMutability: 'nonpayable',
-  },
-] as const;
 
 interface MarketDeployButtonProps {
   market: MarketType; // Use the adjusted market type
@@ -120,8 +98,11 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
     ) {
       return 'Missing base asset maximum price tick.';
     }
-    if (!market.marketParamsClaimstatement) {
-      return 'Missing or invalid claim statement.';
+    if (!market.marketParamsClaimstatementYesOrNumeric) {
+      return 'Missing or invalid claim statement Yes or Numeric.';
+    }
+    if (!market.marketParamsClaimstatementNo) {
+      return 'Missing or invalid claim statement No.';
     }
     return null;
   };
@@ -140,9 +121,18 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
     }
 
     try {
-      const claimStatement = market.marketParamsClaimstatement;
-      const claimStatementBytes = toBytes(claimStatement as string);
-      const claimStatementHex = bytesToHex(claimStatementBytes);
+      const claimStatementYesOrNumeric =
+        market.marketParamsClaimstatementYesOrNumeric;
+      const claimStatementNo = market.marketParamsClaimstatementNo;
+      const claimStatementBytesYesOrNumeric = toBytes(
+        claimStatementYesOrNumeric as string
+      );
+      const claimStatementHexYesOrNumeric = bytesToHex(
+        claimStatementBytesYesOrNumeric
+      );
+
+      const claimStatementBytesNo = toBytes(claimStatementNo as string);
+      const claimStatementHexNo = bytesToHex(claimStatementBytesNo);
 
       // Ensure numeric values are correctly typed for BigInt/Number conversion
       const startTimeNum = Number(market.startTimestamp);
@@ -169,16 +159,17 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
         minPriceTickNum,
         maxPriceTickNum,
         salt,
-        claimStatementHex as `0x${string}`,
+        claimStatementHexYesOrNumeric as `0x${string}`,
+        claimStatementHexNo as `0x${string}`,
       ] as const;
 
-      console.log('Calling writeContract (createEpoch) with args:', args);
+      console.log('Calling writeContract (createMarket) with args:', args);
       console.log('Target contract:', marketGroupAddress);
 
       writeContract({
         address: marketGroupAddress as Address,
-        abi: createEpochAbiFragment,
-        functionName: 'createEpoch',
+        abi: sapienceAbi().abi,
+        functionName: 'createMarket',
         args,
       });
     } catch (err) {
@@ -257,8 +248,12 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
                 {market.baseAssetMaxPriceTick?.toString() ?? 'N/A'}
               </p>
               <p>
-                <strong>claimStatement (bytes):</strong>{' '}
-                {market.marketParamsClaimstatement ?? 'N/A'}
+                <strong>claimStatement Yes (bytes):</strong>{' '}
+                {market.marketParamsClaimstatementYesOrNumeric ?? 'N/A'}
+              </p>
+              <p>
+                <strong>claimStatement No (bytes):</strong>{' '}
+                {market.marketParamsClaimstatementNo ?? 'N/A'}
               </p>
               <p>
                 <strong>salt (uint256):</strong> {'<generated on deploy>'}

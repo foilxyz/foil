@@ -97,7 +97,8 @@ const createEmptyMarket = (id: number): MarketInput => {
     startingPrice: '0.5',
     lowTickPrice: '0.00009908435194807992',
     highTickPrice: '1',
-    claimStatement: '',
+    claimStatementYesOrNumeric: '',
+    claimStatementNo: '',
     rules: '',
   };
 };

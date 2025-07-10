@@ -159,7 +159,8 @@ const MarketItem = ({
   const shouldShowDeployButton =
     marketId > currentEpochId &&
     !!market.startingSqrtPriceX96 &&
-    !!market.marketParamsClaimstatement;
+    !!market.marketParamsClaimstatementYesOrNumeric &&
+    !!market.marketParamsClaimstatementNo;
 
   const isDeployed = !!market.poolAddress;
   const isFutureEndTime = (market.endTimestamp ?? 0) * 1000 > Date.now();

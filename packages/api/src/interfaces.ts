@@ -9,22 +9,22 @@ export enum EventType {
   TraderPositionCreated = 'TraderPositionCreated',
   TraderPositionModified = 'TraderPositionModified',
   Transfer = 'Transfer',
-  MarketInitialized = 'MarketInitialized',
-  MarketUpdated = 'MarketUpdated',
-  EpochCreated = 'EpochCreated',
-  EpochSettled = 'EpochSettled',
+  MarketGroupInitialized = 'MarketGroupInitialized',
+  MarketGroupUpdated = 'MarketGroupUpdated',
   PositionSettled = 'PositionSettled',
-  PositionUpdated = 'PositionUpdated',
+  MarketCreated = 'MarketCreated',
+  MarketSettled = 'MarketSettled',
+  // PositionUpdated = 'PositionUpdated',
 }
 
 export interface TradePositionEventLog {
-  epochId: string;
+  marketId: string;
   positionId: string;
   collateralAmount: string;
-  vEthAmount: string;
-  vGasAmount: string;
-  borrowedVEth: string;
-  borrowedVGas: string;
+  vQuoteAmount: string;
+  vBaseAmount: string;
+  borrowedVQuote: string;
+  borrowedVBase: string;
   initialPrice: string;
   finalPrice: string;
   tradeRatio: string;
@@ -72,19 +72,20 @@ export interface MarketParams {
   bondCurrency: string;
   feeRate: number;
   optimisticOracleV3: string;
-  claimStatement: string;
+  claimStatementYesOrNumeric: string;
+  claimStatementNo: string;
   uniswapPositionManager: string;
   uniswapQuoter: string;
   uniswapSwapRouter: string;
 }
 
-export interface EpochData {
-  epochId: string;
+export interface MarketData {
+  marketId: string;
   startTime: bigint;
   endTime: bigint;
   pool: `0x${string}`;
-  ethToken: string;
-  gasToken: string;
+  quoteToken: string;
+  baseToken: string;
   minPriceD18: bigint;
   maxPriceD18: bigint;
   baseAssetMinPriceTick: number;
@@ -93,20 +94,23 @@ export interface EpochData {
   settlementPriceD18: bigint;
 }
 
-export interface MarketCreatedUpdatedEventLog {
+export interface MarketGroupCreatedUpdatedEventLog {
   initialOwner?: string;
   uniswapPositionManager: string;
   collateralAsset?: string;
   uniswapSwapRouter: string;
   optimisticOracleV3: string;
+  isBridged: boolean;
   marketParams: MarketParams;
 }
 
-export interface EpochCreatedEventLog {
-  epochId: string;
+export interface MarketCreatedEventLog {
+  marketId: string;
   startTime: string;
   endTime: string;
   startingSqrtPriceX96: string;
+  claimStatementYesOrNumeric: string;
+  claimStatementNo: string;
 }
 
 export interface Deployment {
@@ -136,15 +140,15 @@ export enum EventTransactionType {
 
 export interface PositionUpdatedEventLog {
   sender: string;
-  epochId: string;
+  marketId: string;
   positionId: string;
   transactionType: EventTransactionType;
   deltaCollateral: string;
   collateralAmount: string;
-  vEthAmount: string;
-  vGasAmount: string;
-  borrowedVEth: string;
-  borrowedVGas: string;
+  vQuoteAmount: string;
+  vBaseAmount: string;
+  borrowedVQuote: string;
+  borrowedVBase: string;
 }
 export interface IResourcePriceIndexer {
   client?: PublicClient;
@@ -190,7 +194,7 @@ export interface MarketInfo {
     } | null;
     [key: string]: unknown;
   };
-  vaultAddress?: string;
-  isYin?: boolean;
+
   isCumulative?: boolean;
+  isBridged?: boolean;
 }

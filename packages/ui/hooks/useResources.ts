@@ -51,8 +51,7 @@ const RESOURCES_QUERY = gql`
       marketGroups {
         id
         address
-        isYin
-        vaultAddress
+        isBridged
         chainId
         markets {
           id

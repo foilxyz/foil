@@ -1,12 +1,12 @@
 import { Pool } from '@uniswap/v3-sdk';
 
 export type Market = {
-  epochId: string;
+  marketId: string;
   startTime: bigint;
   endTime: bigint;
   poolAddress: `0x${string}`;
-  ethToken: string;
-  gasToken: string;
+  quoteToken: string;
+  baseToken: string;
   minPriceD18: bigint;
   maxPriceD18: bigint;
   baseAssetMinPriceTick: number;

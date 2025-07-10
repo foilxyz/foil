@@ -62,7 +62,7 @@ const DEFAULT_MIN_TRADE_SIZE = '10000';
 const DEFAULT_SQRT_PRICE = '56022770974786143748341366784';
 const DEFAULT_MIN_PRICE_TICK = '-92200';
 const DEFAULT_MAX_PRICE_TICK = '0';
-const DEFAULT_FACTORY_ADDRESS = '0x5d9aAECe6Af4FfFC5Dca37a753339Ef440B6Be37';
+const DEFAULT_FACTORY_ADDRESS = '0x2492c9d2955448181a3CD2a3d5207714949ED0f6';
 
 // Type definitions (MarketInput is now imported)
 interface MarketParamsInput {
@@ -229,7 +229,8 @@ const createEmptyMarket = (id: number): MarketInput => {
     startingPrice: '0.5',
     lowTickPrice: '0.00009908435194807992',
     highTickPrice: '1',
-    claimStatement: '',
+    claimStatementYesOrNumeric: '',
+    claimStatementNo: '',
     rules: '', // Initialize optional field
   };
 };
@@ -251,7 +252,8 @@ const createMarketFromPrevious = (
     startingPrice: previousMarket.startingPrice,
     lowTickPrice: previousMarket.lowTickPrice,
     highTickPrice: previousMarket.highTickPrice,
-    claimStatement: previousMarket.claimStatement, // Copy claim statement
+    claimStatementYesOrNumeric: previousMarket.claimStatementYesOrNumeric, // Copy claim statement
+    claimStatementNo: previousMarket.claimStatementNo, // Copy claim statement
     rules: previousMarket.rules || '', // Copy rules if they exist
   };
 };
@@ -292,6 +294,7 @@ const CombinedMarketDialog = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>(
     DEFAULT_FOCUS_AREA.id
   );
+  const [isBridged, setIsBridged] = useState<boolean>(true);
   const [baseTokenName, setBaseTokenName] = useState<string>('Yes');
   const [quoteTokenName, setQuoteTokenName] = useState<string>('sUSDS');
   const [selectedResourceId, setSelectedResourceId] = useState<number | null>(
@@ -487,6 +490,7 @@ const CombinedMarketDialog = () => {
       chainId,
       question,
       category: selectedCategory,
+      isBridged,
       baseTokenName,
       quoteTokenName,
       ...(selectedResourceId && {
@@ -884,6 +888,17 @@ const CombinedMarketDialog = () => {
                           required
                         />
                       </div>
+                    </div>
+                    {/* isBridged toggle */}
+                    <div className="flex items-center gap-2 py-2">
+                      <Label htmlFor="isBridged" className="font-medium">
+                        Bridged
+                      </Label>
+                      <Switch
+                        id="isBridged"
+                        checked={isBridged}
+                        onCheckedChange={setIsBridged}
+                      />
                     </div>
                     {/* Owner, Nonce, Collateral Asset, Min Trade Size */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

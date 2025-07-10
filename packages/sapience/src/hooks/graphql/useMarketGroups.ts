@@ -118,8 +118,6 @@ const MARKETS_QUERY = gql`
       id
       address
       chainId
-      isYin
-      vaultAddress
       owner
       collateralAsset
       question
@@ -133,6 +131,7 @@ const MARKETS_QUERY = gql`
       deployTimestamp
       deployTxnBlockNumber
       isCumulative
+      isBridged
       resource {
         id
         name
@@ -142,7 +141,8 @@ const MARKETS_QUERY = gql`
       marketParamsAssertionliveness
       marketParamsBondcurrency
       marketParamsBondamount
-      marketParamsClaimstatement
+      marketParamsClaimstatementYesOrNumeric
+      marketParamsClaimstatementNo
       marketParamsUniswappositionmanager
       marketParamsUniswapswaprouter
       marketParamsUniswapquoter
@@ -171,7 +171,8 @@ const MARKETS_QUERY = gql`
         marketParamsAssertionliveness
         marketParamsBondcurrency
         marketParamsBondamount
-        marketParamsClaimstatement
+        marketParamsClaimstatementYesOrNumeric
+        marketParamsClaimstatementNo
         marketParamsUniswappositionmanager
         marketParamsUniswapswaprouter
         marketParamsUniswapquoter

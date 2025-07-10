@@ -6,7 +6,7 @@ import { Input } from '@sapience/ui/components/ui/input'; // Import Input
 import { Label } from '@sapience/ui/components/ui/label'; // Import Label
 import { Separator } from '@sapience/ui/components/ui/separator'; // Import Separator
 import { useToast } from '@sapience/ui/hooks/use-toast'; // Import useToast
-import { useFoilAbi } from '@sapience/ui/hooks/useFoilAbi'; // Import the hook
+import { useSapienceAbi } from '@sapience/ui/hooks/useSapienceAbi'; // Import the hook
 import type {
   MarketType as Market,
   MarketGroupType as MarketGroup,
@@ -176,7 +176,7 @@ const SettleMarketDialog = ({
   const [isApproving, setIsApproving] = useState(false);
 
   // 1. Get the ABI using the hook
-  const { abi: foilAbi } = useFoilAbi();
+  const { abi: sapienceAbi } = useSapienceAbi();
 
   // 2. Fetch epoch data (which includes marketParams and claimStatement) using the ABI
   const {
@@ -185,14 +185,14 @@ const SettleMarketDialog = ({
     error: epochAndMarketDataError,
   } = useReadContract({
     address: marketGroup.address as `0x${string}`,
-    abi: foilAbi, // Use the fetched ABI
+    abi: sapienceAbi, // Use the fetched ABI
     functionName: 'getEpoch',
     args: [BigInt(market.marketId)], // market.marketId is the epochId
     chainId: marketGroup.chainId,
     query: {
       enabled:
-        !!foilAbi &&
-        foilAbi.length > 0 &&
+        !!sapienceAbi &&
+        sapienceAbi.length > 0 &&
         !!marketGroup?.address &&
         !!marketGroup?.chainId &&
         market.marketId !== undefined && // Ensure marketId is available
@@ -373,7 +373,7 @@ const SettleMarketDialog = ({
 
       settleWrite({
         address: marketGroup.address as `0x${string}`, // Settle is called on the market group address
-        abi: foilAbi, // Use the dynamically loaded ABI
+        abi: sapienceAbi, // Use the dynamically loaded ABI
         functionName: 'submitSettlementPrice', // Corrected function name
         args: [epochId, connectedAddress, price], // Add asserter (connectedAddress)
         chainId: marketGroup.chainId,

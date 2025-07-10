@@ -15,7 +15,8 @@ interface MarketDataPayload {
   startingSqrtPriceX96: string;
   baseAssetMinPriceTick: string | number;
   baseAssetMaxPriceTick: string | number;
-  claimStatement: string;
+  claimStatementYesOrNumeric: string;
+  claimStatementNo: string | null;
   rules?: string | null;
 }
 
@@ -33,14 +34,15 @@ async function createSingleMarket(
     startingSqrtPriceX96,
     baseAssetMinPriceTick,
     baseAssetMaxPriceTick,
-    claimStatement,
+    claimStatementYesOrNumeric,
+    claimStatementNo,
     rules,
   } = marketData;
 
   // Validate required market fields
   if (
     !marketQuestion ||
-    !claimStatement ||
+    !claimStatementYesOrNumeric ||
     startTime === undefined ||
     endTime === undefined ||
     !startingSqrtPriceX96 ||
@@ -57,7 +59,8 @@ async function createSingleMarket(
       question: marketQuestion,
       optionName: optionName || null,
       rules: rules || null,
-      marketParamsClaimstatement: claimStatement,
+      marketParamsClaimstatementYesOrNumeric: claimStatementYesOrNumeric,
+      marketParamsClaimstatementNo: claimStatementNo,
       startTimestamp: parseInt(String(startTime), 10),
       endTimestamp: parseInt(String(endTime), 10),
       startingSqrtPriceX96: startingSqrtPriceX96,
@@ -95,6 +98,7 @@ router.post('/', async (req: Request, res: Response) => {
       markets,
       signature,
       signatureTimestamp,
+      isBridged,
     } = req.body as { markets: MarketDataPayload[] } & Omit<
       Request['body'],
       'markets'
@@ -199,13 +203,16 @@ router.post('/', async (req: Request, res: Response) => {
         marketParamsAssertionliveness: marketParams.assertionliveness,
         marketParamsBondcurrency: marketParams.bondcurrency,
         marketParamsBondamount: marketParams.bondamount,
-        marketParamsClaimstatement: marketParams.claimstatement,
+        marketParamsClaimstatementYesOrNumeric:
+          marketParams.claimstatementYesOrNumeric,
+        marketParamsClaimstatementNo: marketParams.claimstatementNo,
         marketParamsUniswappositionmanager: marketParams.uniswappositionmanager,
         marketParamsUniswapswaprouter: marketParams.uniswapswaprouter,
         marketParamsUniswapquoter: marketParams.uniswapquoter,
         marketParamsOptimisticoraclev3: marketParams.optimisticoraclev3,
         resourceId: resource ? resource.id : null,
         isCumulative: isCumulative !== undefined ? isCumulative : false,
+        isBridged: isBridged !== undefined ? isBridged : false,
       },
     });
 
