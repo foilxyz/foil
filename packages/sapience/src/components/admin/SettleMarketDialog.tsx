@@ -7,10 +7,7 @@ import { Label } from '@sapience/ui/components/ui/label'; // Import Label
 import { Separator } from '@sapience/ui/components/ui/separator'; // Import Separator
 import { useToast } from '@sapience/ui/hooks/use-toast'; // Import useToast
 import { useSapienceAbi } from '@sapience/ui/hooks/useSapienceAbi'; // Import the hook
-import type {
-  MarketType as Market,
-  MarketGroupType as MarketGroup,
-} from '@sapience/ui/types'; // Import types
+import type { MarketType as Market } from '@sapience/ui/types'; // Import types
 import { Loader2 } from 'lucide-react'; // Import Loader2
 import { useState } from 'react'; // Import useState and useMemo
 import { erc20Abi, fromHex, zeroAddress } from 'viem'; // Import Abi type and fromHex
