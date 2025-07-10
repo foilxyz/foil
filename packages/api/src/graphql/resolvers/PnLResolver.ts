@@ -1,5 +1,5 @@
 import { Resolver, Query, Arg, Int } from 'type-graphql';
-import { PnLType } from '../types';
+import { PnLType } from '../types/PnLType';
 import { EpochPnL } from '../../helpers/epochPnL';
 
 @Resolver(() => PnLType)

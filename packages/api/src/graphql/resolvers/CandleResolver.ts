@@ -1,6 +1,6 @@
 import { Resolver, Query, Arg, Int } from 'type-graphql';
 import prisma from '../../db';
-import { CandleType } from '../types';
+import { CandleType } from '../types/CandleType';
 import { CandleCacheRetriever } from 'src/candle-cache/candleCacheRetriever';
 import { CandleAndTimestampType } from '../types/CandleAndTimestampType';
 
