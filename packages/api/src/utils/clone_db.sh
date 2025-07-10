@@ -1,7 +1,66 @@
 #!/bin/bash
 
+
+# Define tables that should be filtered by timestamp
+TIMESTAMP_FILTER_TABLES=()
 # Reset environment variables if they are already set
 unset DB_HOST DB_NAME DB_NAME_LOCAL DB_USER DB_PASSWORD LOCAL_USER
+
+# Parse command line arguments
+SKIP_IF_EXISTS=false
+TIMESTAMP_FROM=""
+TIMESTAMP_TO=""
+INCLUDE_CANDLES=false
+INCLUDE_PRICES=false
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --skip-if-exists)
+            SKIP_IF_EXISTS=true
+            shift
+            ;;
+        --timestamp-from)
+            TIMESTAMP_FROM="$2"
+            shift 2
+            ;;
+        --timestamp-to)
+            TIMESTAMP_TO="$2"
+            shift 2
+            ;;
+        --include-candles)
+            INCLUDE_CANDLES=true
+            shift
+            ;;
+        --include-prices)
+            INCLUDE_PRICES=true
+            shift
+            ;;
+        --help|-h)
+            echo "Usage: $0 [OPTIONS]"
+            echo ""
+            echo "Options:"
+            echo "  --skip-if-exists        Stop execution if dump file already exists (exit code 1)"
+            echo "  --timestamp-from TIME   Filter timestamp and createdAt columns from this time (Unix timestamp)"
+            echo "  --timestamp-to TIME     Filter timestamp and createdAt columns to this time (Unix timestamp)"
+            echo "  --include-candles       Include cache_candle table in timestamp filtering"
+            echo "  --include-prices        Include resource_price table in timestamp filtering"
+            echo "  --help, -h              Show this help message"
+            echo ""
+            echo "Examples:"
+            echo "  $0                                    # Download fresh schema dump"
+            echo "  $0 --skip-if-exists                   # Stop if dump exists, otherwise download"
+            echo "  $0 --timestamp-from 1640995200 --timestamp-to 1641081600  # Filter by timestamp range"
+            echo "  $0 --include-candles --include-prices # Include both tables in filtering"
+            echo "  $0 --timestamp-from 1749352892 --timestamp-to 1751858492 --include-prices --include-candles # Filter by timestamp range and include both tables"
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Use --help for usage information"
+            exit 1
+            ;;
+    esac
+done
 
 # Load environment variables from .env file
 if [ -f ".env" ]; then
@@ -25,79 +84,210 @@ if [ -z "$DB_HOST" ] || [ -z "$DB_NAME" ] || [ -z "$DB_NAME_LOCAL" ] || [ -z "$D
     exit 1
 fi
 
-# Create backup directory if it doesn't exist
-mkdir -p ~/db_backups
-cd ~/db_backups
-echo "===== Starting database backup and restore process ====="
+# Build the timestamp filter tables array based on flags
+if [ "$INCLUDE_CANDLES" = true ]; then
+    echo "Including cache_candle table in timestamp filtering"
+    TIMESTAMP_FILTER_TABLES+=("cache_candle")
+else
+    echo "Excluding cache_candle table from timestamp filtering"
+fi
 
-# Step 1: Export database schema and data, ignoring the problematic sequences
-echo "Exporting database with schema and data..."
-PGSSLMODE=require PGPASSWORD=$DB_PASSWORD pg_dump -C --no-owner --no-acl --no-comments -U $DB_USER -h $DB_HOST -d $DB_NAME \
-  --exclude-table-data="*_seq" -f complete_dump.sql -v
+if [ "$INCLUDE_PRICES" = true ]; then
+    echo "Including resource_price table in timestamp filtering"
+    TIMESTAMP_FILTER_TABLES+=("resource_price")
+else
+    echo "Excluding resource_price table from timestamp filtering"
+fi
+
+echo "Timestamp filter tables: ${TIMESTAMP_FILTER_TABLES[*]}"
+
+# Create backup directory if it doesn't exist
+mkdir -p ./db_backups
+cd ./db_backups
+echo "===== Starting database cloning process ====="
+
+# Check if dump file already exists
+if [ -f "complete_dump.sql" ]; then
+    if [ "$SKIP_IF_EXISTS" = true ]; then
+        echo "Dump file complete_dump.sql already exists and --skip-if-exists flag is set."
+        echo "Stopping execution as requested."
+        exit 1
+    else
+        echo "Dump file complete_dump.sql already exists. Overwriting with fresh dump..."
+    fi
+else
+    echo "No existing dump file found. Creating new dump..."
+fi
+
+# Export database schema only (no data), including indices and constraints
+echo "Exporting database schema, indices, and constraints (no data)..."
+PGSSLMODE=require PGPASSWORD=$DB_PASSWORD pg_dump -C --no-owner --no-acl --no-comments --schema-only -U $DB_USER -h $DB_HOST -d $DB_NAME \
+  -f complete_dump.sql  --exclude-table-data="*_seq" -v
+
+# Extract constraints to add back later
+echo "Extracting constraints for later addition..."
+PGSSLMODE=require PGPASSWORD=$DB_PASSWORD pg_dump -C --no-owner --no-acl --no-comments --schema-only -U $DB_USER -h $DB_HOST -d $DB_NAME \
+  --exclude-table-data="*_seq" | awk '/^(ALTER TABLE|CREATE UNIQUE INDEX|CREATE INDEX)/ { 
+      line = $0; 
+      while (!match(line, /;$/)) { 
+        getline next_line; 
+        line = line "\n" next_line; 
+      } 
+      print line; 
+    }' > constraints.sql
 
 # Check if the dump file was created
 if [ ! -f "complete_dump.sql" ]; then
-  echo "ERROR: Database dump failed. Trying alternative approach..."
-
-  # Alternative: Try to export just tables and their data
-  echo "Exporting tables only (no sequences)..."
-  PGSSLMODE=require PGPASSWORD=$DB_PASSWORD pg_dump -C --no-owner --no-acl --no-comments -U $DB_USER -h $DB_HOST -d $DB_NAME \
-    --schema=public --exclude-schema="pg_*" -f table_dump.sql -v
-
-  if [ -f "table_dump.sql" ]; then
-    echo "Tables exported successfully. Using table_dump.sql instead."
-    mv table_dump.sql complete_dump.sql
-  else
-    echo "ERROR: All export attempts failed. Please check your credentials and permissions."
-    exit 1
-  fi
+  echo "ERROR: Database schema dump failed. Please check your credentials and permissions."
+  exit 1
 fi
 
-# Step 2: Fix locale issues in dump file
-
+# Fix locale issues in dump file
 echo "Fixing locale settings in dump file..."
 sed -i '' 's/en_US.UTF8/en_US.UTF-8/g' complete_dump.sql 2>/dev/null || true
 
-# Step 3: Drop and recreate local database
-echo "Dropping and recreating local database..."
-psql -U $LOCAL_USER -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$DB_NAME_LOCAL';"
-psql -U $LOCAL_USER -c "DROP DATABASE IF EXISTS $DB_NAME_LOCAL;"
-psql -U $LOCAL_USER -c "CREATE DATABASE $DB_NAME_LOCAL;"
+# Remove constraints from the dump file to avoid constraint violations during data insertion
+echo "Removing constraints from dump file..."
+awk '
+/^(ALTER TABLE|CREATE UNIQUE INDEX|CREATE INDEX)/ {
+    # Skip this line and continue reading until we find a semicolon
+    while (!match($0, /;$/)) {
+        getline;
+    }
+    next;  # Skip the line with semicolon too
+}
+{ print }  # Print all other lines
+' complete_dump.sql > complete_dump_temp.sql && mv complete_dump_temp.sql complete_dump.sql
+
+# Remove the backslash from the last line with visible characters before adding data
+echo "Preparing dump file for data addition..."
+
+# remove backslash line
+sed -i '$ d' complete_dump.sql
 
 
-# Step 4: Restore the database
-echo "Restoring database to local server..."
-psql -U $LOCAL_USER -d $DB_NAME_LOCAL -f complete_dump.sql
+# Fetch data for tables with timestamp columns and other tables
+echo "Fetching filtered data for tables..."
 
-# Step 5: Manually reset sequences to match current data
-echo "Manually resetting sequences..."
-psql -U $LOCAL_USER -d $DB_NAME_LOCAL <<EOF
-DO \$\$
-DECLARE
-  r RECORD;
-BEGIN
-  FOR r IN (
-    SELECT
-      table_name,
-      column_name,
-      pg_get_serial_sequence(table_name, column_name) as seq_name
-    FROM
-      information_schema.columns
-    WHERE
-      table_schema = 'public'
-      AND column_default LIKE 'nextval%'
-  ) LOOP
-    IF r.seq_name IS NOT NULL THEN
-      EXECUTE format(
-        'SELECT setval(%L, COALESCE((SELECT MAX(%I) FROM %I.%I), 1))',
-        r.seq_name, r.column_name, 'public', r.table_name
-      );
-    END IF;
-  END LOOP;
-END \$\$;
-EOF
 
-echo "===== Database backup and restore completed ====="
-echo "Your production database has been copied to your local PostgreSQL server."
-echo "Use the following connection string in your .env file:"
-echo "DATABASE_URL=postgresql://$LOCAL_USER@localhost:5432/$DB_NAME_LOCAL"
+
+# Get list of tables with timestamp columns and their data types
+echo "Identifying tables with timestamp columns and their types..."
+TIMESTAMP_TABLES_INFO=$(PGSSLMODE=require PGPASSWORD=$DB_PASSWORD psql -U $DB_USER -h $DB_HOST -d $DB_NAME -t -c "
+SELECT table_name, data_type 
+FROM information_schema.columns 
+WHERE column_name = 'timestamp' 
+    AND table_schema = 'public'
+ORDER BY table_name;" | awk -F'|' 'NF {gsub(/^[ \t]+|[ \t]+$/, "", $1); gsub(/^[ \t]+|[ \t]+$/, "", $2); print $1 "|" $2}')
+
+ALL_TABLES=$(PGSSLMODE=require PGPASSWORD=$DB_PASSWORD psql -U $DB_USER -h $DB_HOST -d $DB_NAME -t -c "
+SELECT DISTINCT table_name 
+FROM information_schema.tables 
+WHERE table_schema = 'public' 
+    AND table_type = 'BASE TABLE'
+    AND table_name NOT LIKE 'pg_%'
+    AND table_name NOT LIKE 'information_schema%'
+ORDER BY table_name;")
+
+echo -e "ALL_TABLES: \n $ALL_TABLES" 
+echo -e "TIMESTAMP_TABLES_INFO: \n $TIMESTAMP_TABLES_INFO" 
+
+# Process tables with timestamp columns
+while IFS='|' read -r table data_type; do
+    if [ -n "$table" ] && [ -n "$data_type" ]; then
+        table=$(echo $table | xargs)  # Remove whitespace
+        data_type=$(echo $data_type | xargs)  # Remove whitespace
+        
+        # Check if this table is in our filter list
+        should_filter=false
+        for filter_table in "${TIMESTAMP_FILTER_TABLES[@]}"; do
+            if [ "$table" = "$filter_table" ]; then
+                should_filter=true
+                break
+            fi
+        done
+        
+        echo "Processing table: $table (timestamp type: $data_type, should filter: $should_filter)"
+        
+        # Build appropriate WHERE clause based on data type and filter list
+        TIMESTAMP_WHERE=""
+        if [ "$should_filter" = true ] && ([ -n "$TIMESTAMP_FROM" ] || [ -n "$TIMESTAMP_TO" ]); then
+            if [ "$data_type" = "timestamp" ] || [ "$data_type" = "timestamp without time zone" ]; then
+                # For timestamp columns, convert Unix timestamp to timestamp
+                if [ -n "$TIMESTAMP_FROM" ] && [ -n "$TIMESTAMP_TO" ]; then
+                    TIMESTAMP_WHERE="WHERE timestamp >= to_timestamp($TIMESTAMP_FROM) AND timestamp <= to_timestamp($TIMESTAMP_TO)"
+                elif [ -n "$TIMESTAMP_FROM" ]; then
+                    TIMESTAMP_WHERE="WHERE timestamp >= to_timestamp($TIMESTAMP_FROM)"
+                elif [ -n "$TIMESTAMP_TO" ]; then
+                    TIMESTAMP_WHERE="WHERE timestamp <= to_timestamp($TIMESTAMP_TO)"
+                fi
+            else
+                # For integer/bigint columns, compare directly
+                if [ -n "$TIMESTAMP_FROM" ] && [ -n "$TIMESTAMP_TO" ]; then
+                    TIMESTAMP_WHERE="WHERE timestamp >= $TIMESTAMP_FROM AND timestamp <= $TIMESTAMP_TO"
+                elif [ -n "$TIMESTAMP_FROM" ]; then
+                    TIMESTAMP_WHERE="WHERE timestamp >= $TIMESTAMP_FROM"
+                elif [ -n "$TIMESTAMP_TO" ]; then
+                    TIMESTAMP_WHERE="WHERE timestamp <= $TIMESTAMP_TO"
+                fi
+            fi
+        fi
+        
+        # Create COPY statement for timestamp-filtered data
+        echo "\\copy public.\"$table\" FROM stdin;" >> complete_dump.sql
+        
+        # Export data with timestamp filtering
+        if [ -n "$TIMESTAMP_WHERE" ]; then
+            PGSSLMODE=require PGPASSWORD=$DB_PASSWORD psql -U $DB_USER -h $DB_HOST -d $DB_NAME -c "
+                COPY (SELECT * FROM public.\"$table\" $TIMESTAMP_WHERE) TO STDOUT;
+            " --csv >> complete_dump.sql
+        else
+            # No timestamp filter, get all data
+            PGSSLMODE=require PGPASSWORD=$DB_PASSWORD psql -U $DB_USER -h $DB_HOST -d $DB_NAME -c "
+                COPY public.\"$table\" TO STDOUT;
+            " --csv >> complete_dump.sql
+        fi
+        
+        echo "\\." >> complete_dump.sql
+    fi
+done <<< "$TIMESTAMP_TABLES_INFO"
+
+# Process other tables (without timestamp column)
+echo '-- Data for tables without timestamp columns' >> complete_dump.sql
+
+for table in $ALL_TABLES; do
+    table=$(echo $table | xargs)  # Remove whitespace
+    if [ -n "$table" ]; then
+        # Check if this table has a timestamp column
+        has_timestamp=$(echo "$TIMESTAMP_TABLES_INFO" | grep -w "$table" || echo "")
+        
+        if [ -z "$has_timestamp" ]; then
+            echo "Fetching data for table: $table"
+            
+            # Create COPY statement for data
+            echo "\\copy public.\"$table\" FROM stdin;" >> complete_dump.sql
+            
+            # Export all data
+            PGSSLMODE=require PGPASSWORD=$DB_PASSWORD psql -U $DB_USER -h $DB_HOST -d $DB_NAME -c "
+                COPY public.\"$table\" TO STDOUT;
+            " --csv >> complete_dump.sql
+            
+            echo "\\." >> complete_dump.sql
+        fi
+    fi
+done
+
+# Add constraints back after data insertion
+echo "Adding constraints back to dump file..."
+cat constraints.sql >> complete_dump.sql
+
+# Add final backslash to indicate dump is complete
+# echo "\\" >> complete_dump.sql
+
+# Clean up constraints file
+rm -f constraints.sql
+
+echo "===== Database schema and filtered data cloning completed ====="
+echo "Schema and data dump file created: ./db_backups/complete_dump.sql"
+echo "Run restore_db.sh to restore the database locally."
+cd ..
