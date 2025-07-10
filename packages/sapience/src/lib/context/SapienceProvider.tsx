@@ -62,8 +62,7 @@ export interface MarketGroup {
     name: string;
     slug: string;
   };
-  markets: ApiMarket[]; // Use the new Market interface
-  currentMarket: ApiMarket | null; // Use the new Market interface
+  market: ApiMarket | null; // Use the new Market interface
   nextMarket: ApiMarket | null; // Use the new Market interface
   question?: string; // Added group-level question
 }
@@ -101,7 +100,7 @@ const MARKET_GROUPS_QUERY = gql`
       question
       baseTokenName
       quoteTokenName
-      markets {
+      market {
         id
         marketId
         question
@@ -113,7 +112,6 @@ const MARKET_GROUPS_QUERY = gql`
         baseAssetMinPriceTick
         baseAssetMaxPriceTick
         poolAddress
-        currentPrice
         marketParamsClaimstatementYesOrNumeric
         marketParamsClaimstatementNo
       }
@@ -145,7 +143,7 @@ interface ApiMarketGroupResponse {
   question?: string;
   baseTokenName?: string;
   quoteTokenName?: string;
-  markets: ApiMarketResponse[];
+  market: ApiMarketResponse;
 }
 
 export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -218,30 +216,28 @@ export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
         return apiMarketGroups.map((marketGroup: ApiMarketGroupResponse) => {
           // Use ApiMarketGroupResponse type
           // Transform the structure to match the expected Market interface
-          const markets: ApiMarket[] = marketGroup.markets.map(
-            (market: ApiMarketResponse): ApiMarket => ({
-              // Use ApiMarketResponse type
-              id: market.id,
-              marketId: market.marketId,
-              startTimestamp: market.startTimestamp,
-              endTimestamp: market.endTimestamp,
-              // Adjust public logic based on settled field if it exists in response
-              public: market.settled !== undefined ? !market.settled : true,
-              question: market.question,
-              startingSqrtPriceX96: market.startingSqrtPriceX96,
-              baseAssetMinPriceTick: market.baseAssetMinPriceTick,
-              baseAssetMaxPriceTick: market.baseAssetMaxPriceTick,
-              poolAddress: market.poolAddress,
-              claimStatementYesOrNumeric:
-                market.marketParamsClaimstatementYesOrNumeric,
-              claimStatementNo: market.marketParamsClaimstatementNo,
-              // Add other fields required by ApiMarket if they exist in ApiMarketResponse
-              settled: market.settled,
-              optionName: market.optionName,
-            })
-          );
+          const market: ApiMarket = {
+            // Use ApiMarketResponse type
+            id: marketGroup.market.id,
+            marketId: marketGroup.market.marketId,
+            startTimestamp: marketGroup.market.startTimestamp,
+            endTimestamp: marketGroup.market.endTimestamp,
+            // Adjust public logic based on settled field if it exists in response
+            public: marketGroup.market.settled !== undefined ? !marketGroup.market.settled : true,
+            question: marketGroup.market.question,
+            startingSqrtPriceX96: marketGroup.market.startingSqrtPriceX96,
+            baseAssetMinPriceTick: marketGroup.market.baseAssetMinPriceTick,
+            baseAssetMaxPriceTick: marketGroup.market.baseAssetMaxPriceTick,
+            poolAddress: marketGroup.market.poolAddress,
+            claimStatementYesOrNumeric:
+              marketGroup.market.marketParamsClaimstatementYesOrNumeric,
+            claimStatementNo: marketGroup.market.marketParamsClaimstatementNo,
+            // Add other fields required by ApiMarket if they exist in ApiMarketResponse
+            settled: marketGroup.market.settled,
+            optionName: marketGroup.market.optionName,
+          };
 
-          const sortedMarkets = [...markets].sort(
+          const sortedMarkets = [...[market]].sort(
             (a, b) => a.startTimestamp - b.startTimestamp
           );
 
@@ -276,7 +272,7 @@ export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
               name: 'Unknown',
               slug: 'unknown',
             }, // Default resource info
-            markets,
+            market,
             currentMarket,
             nextMarket,
           };

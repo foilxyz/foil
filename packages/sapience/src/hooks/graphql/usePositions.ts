@@ -39,7 +39,7 @@ export const POSITIONS_QUERY = gql`
           question
           collateralSymbol
           collateralDecimals
-          markets {
+          market {
             id
           }
           baseTokenName

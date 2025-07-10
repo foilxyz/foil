@@ -31,7 +31,7 @@ const MARKET_QUERY = gql`
         resource {
           slug
         }
-        markets {
+        market {
           id
           marketId
           question

@@ -15,7 +15,7 @@ const GET_MARKET_GROUPS = `
     marketGroups {
       address
       chainId
-      markets {
+      market {
         marketId
         public
       }

@@ -27,7 +27,7 @@ const MARKET_GROUP_QUERY = gql`
       quoteTokenName
       collateralSymbol
       collateralAsset
-      markets {
+      market {
         optionName
         id
         marketId

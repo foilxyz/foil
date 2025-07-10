@@ -77,7 +77,7 @@ export interface MarketWithContext extends GraphQLMarketType {
   collateralAsset: string;
   categorySlug: string;
   categoryId: string;
-  currentPrice?: string | null;
+  // currentPrice?: string | null; // Removed
 }
 
 // Interface for the final grouped market data structure
