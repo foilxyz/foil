@@ -311,7 +311,6 @@ export const useEnrichedMarketGroups = () => {
             })
           );
 
-          
           const classification = marketGroup.classification || '3'; // Default to NUMERIC if not provided
 
           // Return the enriched group WITHOUT fetching epochId here

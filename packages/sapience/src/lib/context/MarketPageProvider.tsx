@@ -163,7 +163,10 @@ export function MarketPageProvider({
       return null;
     }
 
-    return (marketData.marketGroup?.classification as MarketGroupClassification) || null;
+    return (
+      (marketData.marketGroup?.classification as MarketGroupClassification) ||
+      null
+    );
   }, [marketData]);
 
   const value = {

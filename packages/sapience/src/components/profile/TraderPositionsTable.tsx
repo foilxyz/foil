@@ -37,7 +37,10 @@ function PositionCell({ position }: { position: PositionType }) {
   const value = Number(formatEther(netPositionBI));
   const absValue = Math.abs(value);
   const baseTokenName = position.market?.marketGroup?.baseTokenName;
-  const marketClassification = (position.market?.marketGroup?.classification as MarketGroupClassification) || MarketGroupClassification.NUMERIC;
+  const marketClassification =
+    (position.market?.marketGroup
+      ?.classification as MarketGroupClassification) ||
+    MarketGroupClassification.NUMERIC;
 
   // For non-numeric markets, show just the number and Yes/No without badge
   if (marketClassification !== MarketGroupClassification.NUMERIC) {

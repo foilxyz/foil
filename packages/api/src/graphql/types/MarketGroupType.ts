@@ -92,4 +92,7 @@ export class MarketGroupType {
 
   @Field(() => String, { nullable: true })
   quoteTokenName: string | null;
+
+  @Field(() => String)
+  classification: string;
 }

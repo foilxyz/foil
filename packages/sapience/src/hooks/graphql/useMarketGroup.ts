@@ -96,7 +96,9 @@ export const useMarketGroup = ({
     }
   }, [marketGroupData]);
 
-  const marketClassification = marketGroupData?.classification as MarketGroupClassification | undefined;
+  const marketClassification = marketGroupData?.classification as
+    | MarketGroupClassification
+    | undefined;
 
   return {
     marketGroupData,

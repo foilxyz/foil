@@ -103,6 +103,7 @@ export type MarketGroup = {
   baseTokenName?: Maybe<Scalars['String']['output']>;
   category?: Maybe<Category>;
   chainId: Scalars['Int']['output'];
+  classification: Scalars['String']['output'];
   collateralAsset?: Maybe<Scalars['String']['output']>;
   collateralDecimals?: Maybe<Scalars['Int']['output']>;
   collateralSymbol?: Maybe<Scalars['String']['output']>;
@@ -111,6 +112,7 @@ export type MarketGroup = {
   factoryAddress?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   initializationNonce?: Maybe<Scalars['String']['output']>;
+  isBridged: Scalars['Boolean']['output'];
   isCumulative: Scalars['Boolean']['output'];
   marketParamsAssertionliveness?: Maybe<Scalars['String']['output']>;
   marketParamsBondamount?: Maybe<Scalars['String']['output']>;
@@ -659,6 +661,7 @@ export type MarketGroupResolvers<
     ContextType
   >;
   chainId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  classification?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   collateralAsset?: Resolver<
     Maybe<ResolversTypes['String']>,
     ParentType,
@@ -695,6 +698,7 @@ export type MarketGroupResolvers<
     ParentType,
     ContextType
   >;
+  isBridged?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   isCumulative?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   marketParamsAssertionliveness?: Resolver<
     Maybe<ResolversTypes['String']>,
