@@ -1,6 +1,6 @@
-import { Resolver, Query, Arg, Int, FieldResolver, Root } from 'type-graphql';
-import prisma from '../../db';
+import { Arg, FieldResolver, Int, Query, Resolver, Root } from 'type-graphql';
 import type { market } from '../../../generated/prisma';
+import prisma from '../../db';
 import { Market } from '../types/PrismaTypes';
 
 @Resolver(() => Market)
@@ -77,5 +77,11 @@ export class MarketResolver {
       console.error(`Error fetching currentPrice for market ${market.id}:`, e);
       return null;
     }
+  }
+
+  @FieldResolver(() => String, { nullable: true })
+  async startingSqrtPriceX96(@Root() market: market): Promise<string | null> {
+    // Explicitly convert Prisma Decimal to string to avoid scientific notation
+    return market.startingSqrtPriceX96?.toString() || null;
   }
 }
