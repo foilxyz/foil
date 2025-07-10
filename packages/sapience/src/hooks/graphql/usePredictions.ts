@@ -1,6 +1,4 @@
-import { gql } from '@apollo/client';
 import { useQuery } from '@tanstack/react-query';
-import { print } from 'graphql';
 import React from 'react';
 import { getAddress } from 'viem';
 
@@ -16,7 +14,7 @@ interface RawAttestation {
 }
 
 // Parameterized version of the query
-const GET_ATTESTATIONS_QUERY = gql`
+const GET_ATTESTATIONS_QUERY = `
   query FindAttestations(
     $schemaId: String!
     $take: Int!
@@ -26,10 +24,9 @@ const GET_ATTESTATIONS_QUERY = gql`
     attestations(
       where: {
         schemaId: { equals: $schemaId }
-        # Conditionally include filters based on provided parameters
         AND: [
-          { decodedDataJson: { contains: $marketAddress } } # Filter by market if provided
-          { attester: { equals: $attesterAddress } } # Filter by attester if provided
+          { decodedDataJson: { contains: $marketAddress } }
+          { attester: { equals: $attesterAddress } }
         ]
       }
       orderBy: { time: desc }
@@ -43,6 +40,11 @@ const GET_ATTESTATIONS_QUERY = gql`
     }
   }
 `;
+
+// Type definition for GraphQL response
+type AttestationsQueryResponse = {
+  attestations: RawAttestation[];
+};
 
 export interface DecodedField {
   name: string;
@@ -259,7 +261,7 @@ export const usePredictions = ({
     isLoading,
     error,
     refetch,
-  } = useQuery<{ attestations: RawAttestation[] } | undefined>({
+  } = useQuery<AttestationsQueryResponse | undefined>({
     queryKey: [
       'attestations',
       schemaId,
@@ -302,23 +304,23 @@ export const usePredictions = ({
         variables.attesterAddress = normalizedAttesterAddress;
       }
 
-      // Make the request to the EAS GraphQL API
+      // Make the request to the external EAS GraphQL API
       const response = await fetch('https://base.easscan.org/graphql', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          query: print(GET_ATTESTATIONS_QUERY),
+          query: GET_ATTESTATIONS_QUERY,
           variables,
         }),
       });
 
-      const result = await response.json();
-
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
+
+      const result = await response.json();
 
       // Check if we have data in the expected structure
       if (result.data?.attestations) {

@@ -1,15 +1,12 @@
-import { gql } from '@apollo/client';
+import { graphqlRequest } from '@sapience/ui/lib';
 import type { CandleType } from '@sapience/ui/types/graphql';
 import { useQuery } from '@tanstack/react-query';
-import { print } from 'graphql';
-
-import { foilApi } from '~/lib/utils/util';
 
 // --- Constants ---
 const WEI_PER_ETHER = 1e18;
 
 // --- GraphQL Query for Market Candles ---
-const MARKET_CANDLES_QUERY = gql`
+const MARKET_CANDLES_QUERY = `
   query GetMarketCandlesFromCache(
     $address: String!
     $chainId: Int!
@@ -53,7 +50,6 @@ export function useMarketPrice(
     Boolean(marketIdNumber);
 
   return useQuery<number>({
-    // Specify the return type for clarity
     queryKey: [
       'marketPrice',
       marketGroupAddress,
@@ -71,25 +67,26 @@ export function useMarketPrice(
       const interval = 60; // 1 minute intervals
 
       try {
-        const { data, errors } = await foilApi.post('/graphql', {
-          query: print(MARKET_CANDLES_QUERY),
-          variables: {
+        type MarketCandlesQueryResult = {
+          marketCandlesFromCache: {
+            data: CandleType[];
+            lastUpdateTimestamp: number;
+          };
+        };
+
+        const data = await graphqlRequest<MarketCandlesQueryResult>(
+          MARKET_CANDLES_QUERY,
+          {
             address: marketGroupAddress,
             chainId: chainIdNumber,
             marketId: String(marketIdNumber),
             interval,
             from,
             to,
-          },
-        });
+          }
+        );
 
-        if (errors) {
-          console.error('GraphQL errors fetching market candles:', errors);
-          // Consider throwing a more specific error or returning a specific state
-          throw new Error(errors[0].message);
-        }
-
-        const candles = data?.marketCandlesFromCache?.data as CandleType[];
+        const candles = data?.marketCandlesFromCache?.data;
         if (candles && candles.length > 0) {
           // Sort by timestamp descending to ensure we get the latest candle
           candles.sort(
@@ -108,7 +105,6 @@ export function useMarketPrice(
         return 0;
       } catch (error) {
         console.error('Error in useMarketPrice queryFn:', error);
-        // Depending on requirements, could throw error or return default/error state
         return 0; // Return 0 on error
       }
     },
@@ -116,7 +112,5 @@ export function useMarketPrice(
     staleTime: 60000, // 1 minute
     refetchInterval: 60000, // Refetch every minute
     placeholderData: 0, // Default price while loading
-    // Consider adding error handling state if needed
-    // initialData: 0, // Can set an initial default value
   });
 }

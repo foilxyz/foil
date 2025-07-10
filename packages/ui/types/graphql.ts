@@ -4568,3 +4568,37 @@ export type Transaction_Type_Enum =
   | 'removeLiquidity'
   | 'settledPosition'
   | 'short';
+
+export type GetResourcesQueryVariables = Exact<{
+  where?: InputMaybe<ResourceWhereInput>;
+  orderBy?: InputMaybe<Array<ResourceOrderByWithRelationInput> | ResourceOrderByWithRelationInput>;
+  cursor?: InputMaybe<ResourceWhereUniqueInput>;
+  take?: InputMaybe<Scalars['Int']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  distinct?: InputMaybe<Array<ResourceScalarFieldEnum> | ResourceScalarFieldEnum>;
+}>;
+
+
+export type GetResourcesQuery = { __typename?: 'Query', resources: Array<{ __typename?: 'Resource', id: number, name: string, slug: string, marketGroups: Array<{ __typename?: 'MarketGroup', id: number, address?: string | null, isBridged: boolean, chainId: number, market: Array<{ __typename?: 'Market', id: number, marketId: number, startTimestamp?: number | null, endTimestamp?: number | null, public: boolean, question?: string | null }> }> }> };
+
+export type GetResourceCandlesQueryVariables = Exact<{
+  slug: Scalars['String']['input'];
+  from: Scalars['Int']['input'];
+  to: Scalars['Int']['input'];
+  interval: Scalars['Int']['input'];
+}>;
+
+
+export type GetResourceCandlesQuery = { __typename?: 'Query', resourceCandlesFromCache: { __typename?: 'CandleAndTimestampType', lastUpdateTimestamp: number, data: Array<{ __typename?: 'CandleType', timestamp: number, open: string, high: string, low: string, close: string }> } };
+
+export type GetIndexCandlesQueryVariables = Exact<{
+  address: Scalars['String']['input'];
+  chainId: Scalars['Int']['input'];
+  marketId: Scalars['String']['input'];
+  from: Scalars['Int']['input'];
+  to: Scalars['Int']['input'];
+  interval: Scalars['Int']['input'];
+}>;
+
+
+export type GetIndexCandlesQuery = { __typename?: 'Query', indexCandlesFromCache: { __typename?: 'CandleAndTimestampType', lastUpdateTimestamp: number, data: Array<{ __typename?: 'CandleType', timestamp: number, open: string, high: string, low: string, close: string }> } };

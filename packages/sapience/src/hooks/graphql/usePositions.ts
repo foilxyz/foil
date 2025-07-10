@@ -1,12 +1,9 @@
-import { gql } from '@apollo/client';
+import { graphqlRequest } from '@sapience/ui/lib';
 import type { Position as PositionType } from '@sapience/ui/types/graphql';
 import { useQuery } from '@tanstack/react-query';
-import { print } from 'graphql';
-
-import { foilApi } from '~/lib/utils/util';
 
 // GraphQL query to fetch positions by owner address and optional market address
-export const POSITIONS_QUERY = gql`
+export const POSITIONS_QUERY = `
   query GetPositions($owner: String, $marketAddress: String, $chainId: Int) {
     positions(owner: $owner, marketAddress: $marketAddress, chainId: $chainId) {
       id
@@ -95,14 +92,14 @@ export function usePositions({
         variables.chainId = chainId;
       }
 
-      const { data, errors } = await foilApi.post('/graphql', {
-        query: print(POSITIONS_QUERY),
-        variables,
-      });
+      type PositionsQueryResult = {
+        positions: PositionType[];
+      };
 
-      if (errors) {
-        throw new Error(errors[0].message);
-      }
+      const data = await graphqlRequest<PositionsQueryResult>(
+        POSITIONS_QUERY,
+        variables
+      );
 
       return data.positions || [];
     },

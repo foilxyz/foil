@@ -1,13 +1,12 @@
 'use client';
 
-import { gql } from '@apollo/client';
 import { useToast } from '@sapience/ui/hooks/use-toast';
+import { graphqlRequest } from '@sapience/ui/lib';
 import type {
   QueryObserverResult,
   RefetchOptions,
 } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
-import { print } from 'graphql';
 import type React from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
 
@@ -91,7 +90,7 @@ const SapienceContext = createContext<SapienceContextType | undefined>(
 );
 
 // Define GraphQL query for market groups
-const MARKET_GROUPS_QUERY = gql`
+const MARKET_GROUPS_QUERY = `
   query GetMarketGroups {
     marketGroups {
       id
@@ -145,6 +144,11 @@ interface ApiMarketGroupResponse {
   quoteTokenName?: string;
   market: ApiMarketResponse;
 }
+
+// Type definition for GraphQL response
+type MarketGroupsQueryResponse = {
+  marketGroups: ApiMarketGroupResponse[];
+};
 
 export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -201,16 +205,15 @@ export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
     queryKey: ['marketGroups'],
     queryFn: async () => {
       try {
-        const response = await foilApi.post('/graphql', {
-          query: print(MARKET_GROUPS_QUERY),
-        });
+        const data =
+          await graphqlRequest<MarketGroupsQueryResponse>(MARKET_GROUPS_QUERY);
 
         // Use renamed variable and check response.data existence
-        if (!response.data || !response.data.marketGroups) {
-          console.error('No marketGroups data in response:', response.data);
+        if (!data || !data.marketGroups) {
+          console.error('No marketGroups data in response:', data);
           return []; // Return empty array if data is missing
         }
-        const apiMarketGroup = response.data.marketGroups; // Rename destructured variable
+        const apiMarketGroup = data.marketGroups; // Rename destructured variable
         const currentTimestamp = Math.floor(Date.now() / 1000);
 
         return apiMarketGroup.map((marketGroup: ApiMarketGroupResponse) => {
