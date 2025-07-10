@@ -281,13 +281,13 @@ const OwnerCell = ({ group }: { group: EnrichedMarketGroup }) => {
 const SettlementPriceCell = ({ group }: { group: EnrichedMarketGroup }) => {
   // Find the current/active market or the most recent settled market
   const now = Math.floor(Date.now() / 1000);
-  const currentMarket = group.markets.find((m) => {
+  const currentMarket = group.market.find((m) => {
     const start = m.startTimestamp ?? 0;
     const end = m.endTimestamp ?? 0;
     return start <= now && now <= end;
   });
 
-  const mostRecentSettledMarket = group.markets
+  const mostRecentSettledMarket = group.market
     .filter((m) => (m.endTimestamp ?? 0) < now)
     .sort((a, b) => (b.endTimestamp ?? 0) - (a.endTimestamp ?? 0))[0];
 
@@ -364,8 +364,8 @@ const ActionsCell = ({ group }: { group: EnrichedMarketGroup }) => {
               </div>
             </DialogHeader>
             <div className="space-y-3 max-h-[60vh] overflow-y-auto">
-              {group.markets.length > 0 ? (
-                group.markets
+              {group.market.length > 0 ? (
+                group.market
                   .sort((a, b) => {
                     const aId = a.marketId ? Number(a.marketId) : Number(a.id);
                     const bId = b.marketId ? Number(b.marketId) : Number(b.id);
@@ -411,29 +411,29 @@ const ActionsCell = ({ group }: { group: EnrichedMarketGroup }) => {
 const StatusBadges = ({ group }: { group: EnrichedMarketGroup }) => {
   const nowSeconds = Date.now() / 1000;
 
-  const needsSettlement = group.markets.some((m) => {
+  const needsSettlement = group.market.some((m) => {
     const isDeployed = !!m.poolAddress;
     const isPastEnd = (m.endTimestamp ?? 0) < nowSeconds;
     const notSettled = !(m.settled ?? false);
     return isDeployed && isPastEnd && notSettled;
   });
 
-  const activeMarket = group.markets.some((m) => {
+  const activeMarket = group.market.some((m) => {
     const start = m.startTimestamp ?? 0;
     const end = m.endTimestamp ?? 0;
     return start < nowSeconds && end > nowSeconds;
   });
 
-  const upcomingMarket = group.markets.some((m) => {
+  const upcomingMarket = group.market.some((m) => {
     const start = m.startTimestamp ?? 0;
     return start > nowSeconds;
   });
 
   const needsDeployment =
-    !group.address || group.markets.some((m) => !m.poolAddress);
+    !group.address || group.market.some((m) => !m.poolAddress);
 
   const allSettled =
-    group.markets.length > 0 &&
+    group.market.length > 0 &&
     !needsSettlement &&
     !activeMarket &&
     !upcomingMarket;

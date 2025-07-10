@@ -150,7 +150,7 @@ type Category {
   _count: CategoryCount
   createdAt: DateTimeISO!
   id: Int!
-  market_group(cursor: MarketGroupWhereUniqueInput, distinct: [MarketGroupScalarFieldEnum!], orderBy: [MarketGroupOrderByWithRelationInput!], skip: Int, take: Int, where: MarketGroupWhereInput): [MarketGroup!]!
+  marketGroups(cursor: MarketGroupWhereUniqueInput, distinct: [MarketGroupScalarFieldEnum!], orderBy: [MarketGroupOrderByWithRelationInput!], skip: Int, take: Int, where: MarketGroupWhereInput): [MarketGroup!]!
   name: String!
   resource(cursor: ResourceWhereUniqueInput, distinct: [ResourceScalarFieldEnum!], orderBy: [ResourceOrderByWithRelationInput!], skip: Int, take: Int, where: ResourceWhereInput): [Resource!]!
   slug: String!
@@ -244,7 +244,7 @@ input CategoryOrderByWithAggregationInput {
 input CategoryOrderByWithRelationInput {
   createdAt: SortOrder
   id: SortOrder
-  market_group: MarketGroupOrderByRelationAggregateInput
+  marketGroups: MarketGroupOrderByRelationAggregateInput
   name: SortOrder
   resource: ResourceOrderByRelationAggregateInput
   slug: SortOrder
@@ -281,7 +281,7 @@ input CategoryWhereInput {
   OR: [CategoryWhereInput!]
   createdAt: DateTimeFilter
   id: IntFilter
-  market_group: MarketGroupListRelationFilter
+  marketGroups: MarketGroupListRelationFilter
   name: StringFilter
   resource: ResourceListRelationFilter
   slug: StringFilter
@@ -293,7 +293,7 @@ input CategoryWhereUniqueInput {
   OR: [CategoryWhereInput!]
   createdAt: DateTimeFilter
   id: Int
-  market_group: MarketGroupListRelationFilter
+  marketGroups: MarketGroupListRelationFilter
   name: String
   resource: ResourceListRelationFilter
   slug: String
@@ -587,8 +587,8 @@ type Event {
   id: Int!
   logData: JSON!
   logIndex: Int!
+  marketGroup(where: MarketGroupWhereInput): MarketGroup
   marketGroupId: Int
-  market_group(where: MarketGroupWhereInput): MarketGroup
   timestamp: BigInt!
   transaction(where: TransactionWhereInput): Transaction
   transactionHash: String!
@@ -615,8 +615,8 @@ input EventOrderByWithRelationInput {
   id: SortOrder
   logData: SortOrder
   logIndex: SortOrder
+  marketGroup: MarketGroupOrderByWithRelationInput
   marketGroupId: SortOrderInput
-  market_group: MarketGroupOrderByWithRelationInput
   timestamp: SortOrder
   transaction: TransactionOrderByWithRelationInput
   transactionHash: SortOrder
@@ -649,8 +649,8 @@ input EventWhereInput {
   id: IntFilter
   logData: JsonFilter
   logIndex: IntFilter
+  marketGroup: MarketGroupNullableRelationFilter
   marketGroupId: IntNullableFilter
-  market_group: MarketGroupNullableRelationFilter
   timestamp: BigIntFilter
   transaction: TransactionNullableRelationFilter
   transactionHash: StringFilter
@@ -665,8 +665,8 @@ input EventWhereUniqueInput {
   id: Int
   logData: JsonFilter
   logIndex: IntFilter
+  marketGroup: MarketGroupNullableRelationFilter
   marketGroupId: IntNullableFilter
-  market_group: MarketGroupNullableRelationFilter
   timestamp: BigIntFilter
   transaction: TransactionNullableRelationFilter
   transactionHash: StringFilter
@@ -782,6 +782,7 @@ type Market {
   createdAt: DateTimeISO!
   endTimestamp: Int
   id: Int!
+  marketGroup(where: MarketGroupWhereInput): MarketGroup
   marketGroupId: Int
   marketId: Int!
   marketParamsAssertionliveness: Decimal
@@ -794,7 +795,6 @@ type Market {
   marketParamsUniswappositionmanager: String
   marketParamsUniswapquoter: String
   marketParamsUniswapswaprouter: String
-  market_group(where: MarketGroupWhereInput): MarketGroup
   maxPriceD18: Decimal
   minPriceD18: Decimal
   optionName: String
@@ -1713,6 +1713,7 @@ input MarketOrderByWithRelationInput {
   createdAt: SortOrder
   endTimestamp: SortOrderInput
   id: SortOrder
+  marketGroup: MarketGroupOrderByWithRelationInput
   marketGroupId: SortOrderInput
   marketId: SortOrder
   marketParamsAssertionliveness: SortOrderInput
@@ -1725,7 +1726,6 @@ input MarketOrderByWithRelationInput {
   marketParamsUniswappositionmanager: SortOrderInput
   marketParamsUniswapquoter: SortOrderInput
   marketParamsUniswapswaprouter: SortOrderInput
-  market_group: MarketGroupOrderByWithRelationInput
   maxPriceD18: SortOrderInput
   minPriceD18: SortOrderInput
   optionName: SortOrderInput
@@ -1999,6 +1999,7 @@ input MarketWhereInput {
   createdAt: DateTimeFilter
   endTimestamp: IntNullableFilter
   id: IntFilter
+  marketGroup: MarketGroupNullableRelationFilter
   marketGroupId: IntNullableFilter
   marketId: IntFilter
   marketParamsAssertionliveness: DecimalNullableFilter
@@ -2011,7 +2012,6 @@ input MarketWhereInput {
   marketParamsUniswappositionmanager: StringNullableFilter
   marketParamsUniswapquoter: StringNullableFilter
   marketParamsUniswapswaprouter: StringNullableFilter
-  market_group: MarketGroupNullableRelationFilter
   maxPriceD18: DecimalNullableFilter
   minPriceD18: DecimalNullableFilter
   optionName: StringNullableFilter
@@ -2035,6 +2035,7 @@ input MarketWhereUniqueInput {
   createdAt: DateTimeFilter
   endTimestamp: IntNullableFilter
   id: Int
+  marketGroup: MarketGroupNullableRelationFilter
   marketGroupId: IntNullableFilter
   marketGroupId_marketId: MarketMarketGroupIdMarketIdCompoundUniqueInput
   marketId: IntFilter
@@ -2048,7 +2049,6 @@ input MarketWhereUniqueInput {
   marketParamsUniswappositionmanager: StringNullableFilter
   marketParamsUniswapquoter: StringNullableFilter
   marketParamsUniswapswaprouter: StringNullableFilter
-  market_group: MarketGroupNullableRelationFilter
   maxPriceD18: DecimalNullableFilter
   minPriceD18: DecimalNullableFilter
   optionName: StringNullableFilter
@@ -2847,7 +2847,7 @@ type Resource {
   categoryId: Int
   createdAt: DateTimeISO!
   id: Int!
-  market_group(cursor: MarketGroupWhereUniqueInput, distinct: [MarketGroupScalarFieldEnum!], orderBy: [MarketGroupOrderByWithRelationInput!], skip: Int, take: Int, where: MarketGroupWhereInput): [MarketGroup!]!
+  marketGroups(cursor: MarketGroupWhereUniqueInput, distinct: [MarketGroupScalarFieldEnum!], orderBy: [MarketGroupOrderByWithRelationInput!], skip: Int, take: Int, where: MarketGroupWhereInput): [MarketGroup!]!
   name: String!
   resource_price(cursor: ResourcePriceWhereUniqueInput, distinct: [ResourcePriceScalarFieldEnum!], orderBy: [ResourcePriceOrderByWithRelationInput!], skip: Int, take: Int, where: ResourcePriceWhereInput): [ResourcePrice!]!
   slug: String!
@@ -2963,7 +2963,7 @@ input ResourceOrderByWithRelationInput {
   categoryId: SortOrderInput
   createdAt: SortOrder
   id: SortOrder
-  market_group: MarketGroupOrderByRelationAggregateInput
+  marketGroups: MarketGroupOrderByRelationAggregateInput
   name: SortOrder
   resource_price: ResourcePriceOrderByRelationAggregateInput
   slug: SortOrder
@@ -3240,7 +3240,7 @@ input ResourceWhereInput {
   categoryId: IntNullableFilter
   createdAt: DateTimeFilter
   id: IntFilter
-  market_group: MarketGroupListRelationFilter
+  marketGroups: MarketGroupListRelationFilter
   name: StringFilter
   resource_price: ResourcePriceListRelationFilter
   slug: StringFilter
@@ -3254,7 +3254,7 @@ input ResourceWhereUniqueInput {
   categoryId: IntNullableFilter
   createdAt: DateTimeFilter
   id: Int
-  market_group: MarketGroupListRelationFilter
+  marketGroups: MarketGroupListRelationFilter
   name: String
   resource_price: ResourcePriceListRelationFilter
   slug: String

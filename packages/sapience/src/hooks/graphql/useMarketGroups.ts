@@ -78,9 +78,9 @@ export const useCategories = () => {
 };
 
 export interface EnrichedMarketGroup
-  extends Omit<MarketGroupType, 'category' | 'markets'> {
+  extends Omit<MarketGroupType, 'category' | 'market'> {
   category: CategoryType & { iconSvg?: string; color?: string };
-  markets: MarketType[];
+  market: MarketType[];
   latestEpochId?: bigint;
   marketClassification: MarketGroupClassification;
 }
@@ -152,7 +152,7 @@ const MARKETS_QUERY = gql`
         name
         slug
       }
-      markets {
+      market {
         id
         marketId
         startTimestamp
@@ -268,7 +268,7 @@ export const useEnrichedMarketGroups = () => {
         query: print(MARKETS_QUERY),
       });
 
-      if (!apiResponseData || !apiResponseData.market_groups) {
+      if (!apiResponseData || !apiResponseData.marketGroups) {
         console.error(
           '[useEnrichedMarketGroups] No market groups data received from API or data structure invalid.'
         );
@@ -276,7 +276,7 @@ export const useEnrichedMarketGroups = () => {
       }
 
       // --- Process market groups (enrichment only) ---
-      return apiResponseData.market_groups.map(
+      return apiResponseData.marketGroups.map(
         (marketGroup: MarketGroupType): EnrichedMarketGroup => {
           // marketGroup is now MarketGroupType
           let categoryInfo: CategoryType & { iconSvg?: string; color?: string };
@@ -317,7 +317,7 @@ export const useEnrichedMarketGroups = () => {
           return {
             ...marketGroup,
             category: categoryInfo,
-            markets: mappedMarkets,
+            market: mappedMarkets,
             marketClassification: classification,
           };
         }

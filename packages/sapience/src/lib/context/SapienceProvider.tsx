@@ -80,7 +80,7 @@ interface SapienceContextType {
   marketGroups: MarketGroup[];
   isMarketsLoading: boolean;
   marketsError: Error | null;
-  refetchMarketGroups: (
+  refetchMarketGroup: (
     options?: RefetchOptions
   ) => Promise<QueryObserverResult<MarketGroup[], Error>>;
   stEthPerToken: number | undefined;
@@ -196,7 +196,7 @@ export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
     data: marketGroups,
     isLoading: isMarketsLoading,
     error: marketsError,
-    refetch: refetchMarketGroups,
+    refetch: refetchMarketGroup,
   } = useQuery<MarketGroup[], Error>({
     queryKey: ['marketGroups'],
     queryFn: async () => {
@@ -210,10 +210,10 @@ export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
           console.error('No marketGroups data in response:', response.data);
           return []; // Return empty array if data is missing
         }
-        const apiMarketGroups = response.data.marketGroups; // Rename destructured variable
+        const apiMarketGroup = response.data.marketGroups; // Rename destructured variable
         const currentTimestamp = Math.floor(Date.now() / 1000);
 
-        return apiMarketGroups.map((marketGroup: ApiMarketGroupResponse) => {
+        return apiMarketGroup.map((marketGroup: ApiMarketGroupResponse) => {
           // Use ApiMarketGroupResponse type
           // Transform the structure to match the expected Market interface
           const market: ApiMarket = {
@@ -366,7 +366,7 @@ export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
         marketGroups: marketGroups || [],
         isMarketsLoading,
         marketsError,
-        refetchMarketGroups,
+        refetchMarketGroup,
         stEthPerToken,
       }}
     >
