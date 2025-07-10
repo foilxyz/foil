@@ -12,7 +12,7 @@ import Sentry from './instrument';
 import { NextFunction, Request, Response } from 'express';
 import { initializeFixtures } from './fixtures';
 import { handleMcpAppRequests } from './routes/mcp';
-
+import prisma from './db';
 const PORT = 3001;
 
 // Load environment variables
@@ -45,6 +45,7 @@ const startServer = async () => {
     expressMiddleware(apolloServer, {
       context: async () => ({
         loaders: createLoaders(),
+        prisma,
       }),
     })
   );
