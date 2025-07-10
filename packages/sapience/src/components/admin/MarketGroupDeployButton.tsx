@@ -16,10 +16,10 @@ import {
 } from '@sapience/ui/components/ui/dialog';
 import { sapienceFactoryAbi } from '@sapience/ui/lib/abi';
 import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { parseAbiItem, decodeEventLog } from 'viem';
-import type { Address, AbiEvent } from 'viem';
-import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useEffect, useState } from 'react';
+import type { AbiEvent, Address } from 'viem';
+import { decodeEventLog, parseAbiItem } from 'viem';
+import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 
 import type { EnrichedMarketGroup } from '~/hooks/graphql/useMarketGroups';
 
@@ -120,7 +120,6 @@ const MarketGroupDeployButton: React.FC<MarketGroupDeployButtonProps> = ({
     setDeployError(null);
     setDeployedAddress(null);
     resetWriteContract(); // Reset previous states
-
     // --- Validation ---
     if (
       !group.factoryAddress ||
