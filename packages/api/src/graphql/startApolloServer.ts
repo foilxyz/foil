@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
 import { relationResolvers } from '@generated/type-graphql';
-import { prisma } from './generatedResolvers';
+import { prisma } from './resolvers/GeneratedResolvers';
 import { SharedSchema } from './sharedSchema';
 import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
