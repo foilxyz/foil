@@ -53,7 +53,6 @@ export interface MarketGroup {
   name: string;
   chainId: number;
   address: string;
-  vaultAddress: string;
   collateralAsset: string;
   baseTokenName?: string;
   owner: string;
@@ -267,7 +266,6 @@ export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
             name: marketGroup.question || `Market ${marketGroup.id}`, // Use question as name fallback
             chainId: marketGroup.chainId,
             address: marketGroup.address,
-            vaultAddress: marketGroup.address, // Fallback
             collateralAsset: marketGroup.baseTokenName || 'ETH', // Fallback
             baseTokenName: marketGroup.baseTokenName,
             owner: marketGroup.address, // Fallback
