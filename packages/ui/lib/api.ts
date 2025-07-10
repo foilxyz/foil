@@ -1,7 +1,24 @@
 import { GraphQLClient } from 'graphql-request';
 
+// Build the GraphQL endpoint URL
+const getGraphQLEndpoint = () => {
+  const baseUrl = process.env.NEXT_PUBLIC_FOIL_API_URL;
+  if (baseUrl) {
+    return `${baseUrl}/graphql`;
+  }
+  
+  // Fallback for development or when env var is not set
+  if (typeof window !== 'undefined') {
+    // Client-side: use current origin
+    return `${window.location.origin}/graphql`;
+  } else {
+    // Server-side: use localhost for development
+    return 'http://localhost:3001/graphql';
+  }
+};
+
 // Base client for legacy usage
-const client = new GraphQLClient('/graphql');
+const client = new GraphQLClient(getGraphQLEndpoint());
 
 // Generic request function (current implementation)
 export async function graphqlRequest<T>(

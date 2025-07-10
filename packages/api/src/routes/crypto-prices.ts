@@ -132,10 +132,17 @@ router.get('/', async (req, res) => {
     });
 
     // 5. Update DB with fresh prices (only those successfully fetched)
-    const pricesToSave: { ticker: string; price: number }[] = [];
+    const pricesToSave: { ticker: string; price: number; timestamp: Date }[] =
+      [];
+    const currentTimestamp = new Date();
+
     TICKERS.forEach((ticker) => {
       if (freshPrices[ticker] !== null) {
-        pricesToSave.push({ ticker, price: freshPrices[ticker]! });
+        pricesToSave.push({
+          ticker,
+          price: freshPrices[ticker]!,
+          timestamp: currentTimestamp,
+        });
       }
     });
 
@@ -147,6 +154,9 @@ router.get('/', async (req, res) => {
         })
         .then(() => {
           console.log('[DB CACHE UPDATED]');
+        })
+        .catch((error) => {
+          console.error('[ERROR UPDATING DB CACHE]', error);
         });
     }
 
