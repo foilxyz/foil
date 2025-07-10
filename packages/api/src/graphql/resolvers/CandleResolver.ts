@@ -42,7 +42,7 @@ const groupPricesByInterval = (
     timestamp <= normalizedEndTimestamp;
     timestamp += intervalSeconds
   ) {
-    const pricesInInterval = prices.filter((p: any) => {
+    const pricesInInterval = prices.filter((p: PricePoint) => {
       const priceInterval =
         Math.floor(p.timestamp / intervalSeconds) * intervalSeconds;
       return priceInterval === timestamp;
@@ -50,7 +50,7 @@ const groupPricesByInterval = (
 
     if (pricesInInterval.length > 0) {
       // Create candle with actual price data
-      const values = pricesInInterval.map((p: any) => BigInt(p.value));
+      const values = pricesInInterval.map((p: PricePoint) => BigInt(p.value));
       const currentOpen = lastClose || values[0].toString(); // Use previous close as open, or first value if no previous close
       lastClose = values[values.length - 1].toString();
 
@@ -173,7 +173,7 @@ export class CandleResolver {
       });
 
       return getIndexPriceAtTime(
-        pricesInRange.map((p: any) => ({
+        pricesInRange.map((p) => ({
           timestamp: Number(p.timestamp),
           value: p.value.toString(),
           used: p.used.toString(),
@@ -309,7 +309,7 @@ export class CandleResolver {
       const lastKnownPrice = lastPriceBefore?.value?.toString();
 
       return groupPricesByInterval(
-        prices.map((p: any) => ({
+        prices.map((p) => ({
           timestamp: Number(p.timestamp),
           value: p.value.toString(),
         })),

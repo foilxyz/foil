@@ -1,7 +1,12 @@
 import prisma from 'src/db';
 import { ReducedMarketPrice } from './types';
 import { CANDLE_TYPES } from './config';
-import type { ResourcePrice, CacheCandle, MarketGroup, Prisma } from '../../generated/prisma';
+import type {
+  ResourcePrice,
+  CacheCandle,
+  MarketGroup,
+  Prisma,
+} from '../../generated/prisma';
 
 export interface ResourcePriceParams {
   initialTimestamp: number;
@@ -140,6 +145,20 @@ export async function getLatestResourcePrice(
   return resourcePrice;
 }
 
+type MarketPriceWithIncludes = Prisma.MarketPriceGetPayload<{
+  include: {
+    transaction: {
+      include: {
+        position: {
+          include: {
+            market: true;
+          };
+        };
+      };
+    };
+  };
+}>;
+
 export async function getmarketPrices({
   initialTimestamp,
   quantity,
@@ -168,19 +187,23 @@ export async function getmarketPrices({
     },
   });
 
-  const cleanedmarketPrices = marketPrices.filter((item: any) => {
-    return (
-      item.transaction !== null &&
-      item.transaction.position !== null &&
-      item.transaction.position.market !== null
-    );
-  });
+  const cleanedmarketPrices = marketPrices.filter(
+    (item: MarketPriceWithIncludes) => {
+      return (
+        item.transaction !== null &&
+        item.transaction.position !== null &&
+        item.transaction.position.market !== null
+      );
+    }
+  );
 
-  const reducedmarketPrices = cleanedmarketPrices.map((item: any) => ({
-    value: item.value.toString(),
-    timestamp: Number(item.timestamp),
-    market: item.transaction!.position!.market!.id,
-  }));
+  const reducedmarketPrices = cleanedmarketPrices.map(
+    (item: MarketPriceWithIncludes) => ({
+      value: item.value.toString(),
+      timestamp: Number(item.timestamp),
+      market: item.transaction!.position!.market!.id,
+    })
+  );
 
   return {
     prices: reducedmarketPrices,

@@ -1,7 +1,4 @@
-import type {
-  MarketType,
-  TransactionType,
-} from '@sapience/ui/types';
+import type { MarketType, TransactionType } from '@sapience/ui/types';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { createPublicClient, formatEther, http } from 'viem';
@@ -314,6 +311,44 @@ export const parseUrlParameter = (
 // --- Function: Calculate Effective Entry Price ---
 
 /**
+ * Helper function to check if position direction has flipped
+ */
+function hasPositionFlipped(
+  isLong: boolean,
+  totalBaseTokenDelta: number
+): boolean {
+  return (
+    (isLong && totalBaseTokenDelta <= 0) ||
+    (!isLong && totalBaseTokenDelta >= 0)
+  );
+}
+
+/**
+ * Helper function to calculate final entry price
+ */
+function calculateFinalPrice(
+  totalBaseTokenDelta: number,
+  totalQuoteTokenDelta: number,
+  isLong: boolean
+): number {
+  if (totalBaseTokenDelta === 0) {
+    return 0; // Avoid division by zero
+  }
+
+  // For short positions, we negate both values to get the correct ratio
+  let adjustedBase = totalBaseTokenDelta;
+  let adjustedQuote = totalQuoteTokenDelta;
+
+  if (!isLong) {
+    adjustedBase = -totalBaseTokenDelta;
+    adjustedQuote = -totalQuoteTokenDelta;
+  }
+
+  // Calculate the entry price as the ratio of quote tokens to base tokens
+  return Math.abs(adjustedQuote / adjustedBase);
+}
+
+/**
  * Calculate the effective entry price for a position based on its transactions
  * Uses the UI package TransactionType
  */
@@ -353,31 +388,15 @@ export function calculateEffectiveEntryPrice(
       totalBaseTokenDelta += baseTokenDelta;
       totalQuoteTokenDelta += quoteTokenDelta;
 
-      // If we've reached a point where the position is flipped (long to short or vice versa),
-      // we should reset our calculations as the effective entry price changes
-      if (
-        (isLong && totalBaseTokenDelta <= 0) ||
-        (!isLong && totalBaseTokenDelta >= 0)
-      ) {
+      // If we've reached a point where the position is flipped, reset calculations
+      if (hasPositionFlipped(isLong, totalBaseTokenDelta)) {
         totalBaseTokenDelta = 0;
         totalQuoteTokenDelta = 0;
       }
     }
   }
 
-  // Calculate final entry price based on accumulated deltas
-  if (totalBaseTokenDelta === 0) {
-    return 0; // Avoid division by zero
-  }
-
-  // For short positions, we negate both values to get the correct ratio
-  if (!isLong) {
-    totalBaseTokenDelta = -totalBaseTokenDelta;
-    totalQuoteTokenDelta = -totalQuoteTokenDelta;
-  }
-
-  // Calculate the entry price as the ratio of quote tokens to base tokens
-  return Math.abs(totalQuoteTokenDelta / totalBaseTokenDelta);
+  return calculateFinalPrice(totalBaseTokenDelta, totalQuoteTokenDelta, isLong);
 }
 
 /**

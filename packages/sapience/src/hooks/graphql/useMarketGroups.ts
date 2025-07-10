@@ -303,7 +303,7 @@ export const useEnrichedMarketGroups = () => {
           }
 
           const mappedMarkets = (marketGroup.market || []).map(
-            (market: any): MarketType => ({
+            (market: MarketType): MarketType => ({
               ...market,
               id: market.id,
               position: market.position || [],

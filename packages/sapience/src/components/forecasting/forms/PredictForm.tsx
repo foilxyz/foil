@@ -78,7 +78,7 @@ export default function PredictForm({
       default:
         return '';
     }
-  }, [marketClassification, marketGroupData, lowerBound, upperBound]);
+  }, [marketClassification, firstMarket?.marketId, lowerBound, upperBound]);
 
   // Set up form with dynamic schema
   const methods = useForm({
@@ -101,7 +101,7 @@ export default function PredictForm({
       return Number(predictionValue);
     }
     return firstMarket?.marketId ?? 0;
-  }, [marketClassification, predictionValue, marketGroupData.market]);
+  }, [marketClassification, predictionValue, firstMarket?.marketId]);
 
   const submissionValue = useMemo(() => {
     switch (marketClassification) {
