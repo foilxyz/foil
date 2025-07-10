@@ -11,7 +11,6 @@ import { formatUnits } from 'viem';
 
 import { FOCUS_AREAS, DEFAULT_FOCUS_AREA } from '~/lib/constants/focusAreas';
 import type { MarketGroupClassification } from '~/lib/types';
-import { getMarketGroupClassification } from '~/lib/utils/marketUtils';
 import { foilApi } from '~/lib/utils/util';
 
 // Define the structure of the data returned by the category query
@@ -132,6 +131,7 @@ const MARKETS_QUERY = gql`
       deployTxnBlockNumber
       isCumulative
       isBridged
+      classification
       resource {
         id
         name
@@ -311,15 +311,15 @@ export const useEnrichedMarketGroups = () => {
             })
           );
 
-          // Get classification
-          const classification = getMarketGroupClassification(marketGroup);
+          
+          const classification = marketGroup.classification || '3'; // Default to NUMERIC if not provided
 
           // Return the enriched group WITHOUT fetching epochId here
           return {
             ...marketGroup,
             category: categoryInfo,
             markets: mappedMarkets,
-            marketClassification: classification,
+            marketClassification: classification as MarketGroupClassification,
           };
         }
       );

@@ -39,6 +39,7 @@ export const POSITIONS_QUERY = gql`
           question
           collateralSymbol
           collateralDecimals
+          classification
           markets {
             id
           }

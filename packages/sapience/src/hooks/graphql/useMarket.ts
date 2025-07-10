@@ -28,6 +28,7 @@ const MARKET_QUERY = gql`
         baseTokenName
         quoteTokenName
         collateralAsset
+        classification
         resource {
           slug
         }
