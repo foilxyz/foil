@@ -286,7 +286,7 @@ const ForecastingTable = () => {
         }
 
         // Filter and map markets within this marketGroup
-        return marketGroup.markets
+        return marketGroup.market
           .filter(
             (
               market // market is GraphQLMarketType
@@ -751,7 +751,7 @@ const ForecastingTable = () => {
                                 marketGroup.displayQuestion || 'Loading...'
                               }
                               color={marketGroup.color}
-                              markets={marketGroup.markets}
+                              market={marketGroup.markets}
                               isActive={marketGroup.isActive}
                               marketClassification={
                                 marketGroup.marketClassification

@@ -154,7 +154,7 @@ const ForecastContent = () => {
   });
 
   // Extract resource slug
-  const resourceSlug = marketData?.market_group?.resource?.slug;
+  const resourceSlug = marketData?.marketGroup?.resource?.slug;
 
   // Determine the selected position if positionId exists
   const selectedPosition = positionId ? getPositionById(positionId) : null;
@@ -228,8 +228,8 @@ const ForecastContent = () => {
           <div>
             {marketClassification ===
               MarketGroupClassification.MULTIPLE_CHOICE &&
-              marketData?.market_group?.market &&
-              marketData.market_group.market.length > 1 && (
+              marketData?.marketGroup?.market &&
+              marketData.marketGroup.market.length > 1 && (
                 <div className="mb-6">
                   <Tabs
                     defaultValue={
@@ -242,7 +242,7 @@ const ForecastContent = () => {
                     }}
                   >
                     <TabsList className="gap-1 py-6">
-                      {marketData.market_group.market
+                      {marketData.marketGroup.market
                         .filter(
                           (
                             market: GqlMarketType // market.id is string, numericMarketId is number | null, market.marketId is number
@@ -302,7 +302,7 @@ const ForecastContent = () => {
                             chainId: chainId!,
                             address: marketAddress!,
                             quoteTokenName:
-                              marketData?.market_group?.quoteTokenName ||
+                              marketData?.marketGroup?.quoteTokenName ||
                               undefined,
                             startTimestamp: marketData?.startTimestamp,
                             endTimestamp: marketData?.endTimestamp,
@@ -383,7 +383,7 @@ const ForecastContent = () => {
                               setSelectedInterval={setSelectedInterval}
                             />
                           </motion.div>
-                          {marketData?.market_group?.resource?.slug && (
+                          {marketData?.marketGroup?.resource?.slug && (
                             <motion.div
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}

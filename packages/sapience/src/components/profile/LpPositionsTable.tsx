@@ -38,8 +38,8 @@ function MarketCell({ position }: { position: PositionType }) {
 
 // Helper component for Collateral Cell
 function CollateralCell({ position }: { position: PositionType }) {
-  const decimals = position.market?.market_group?.collateralDecimals || 18; // Default to 18 if not provided
-  const symbol = position.market?.market_group?.collateralSymbol || 'Tokens';
+  const decimals = position.market?.marketGroup?.collateralDecimals || 18; // Default to 18 if not provided
+  const symbol = position.market?.marketGroup?.collateralSymbol || 'Tokens';
   const displayValue = Number(position.collateral) / 10 ** decimals;
 
   return (
@@ -126,7 +126,7 @@ export default function LpPositionsTable({
     (p) =>
       p &&
       p.market &&
-      p.market?.market_group &&
+      p.market?.marketGroup &&
       p.id &&
       p.isLP && // Ensure it's an LP position
       p.lowPriceTick !== undefined && // Check necessary fields exist
@@ -149,9 +149,9 @@ export default function LpPositionsTable({
     // Market group page (parentMarketAddress & parentChainId are present, but parentMarketId is not)
     displayQuestionColumn = validPositions.some(
       (p) =>
-        p.market?.market_group &&
-        p.market?.market_group?.market &&
-        p.market?.market_group?.market.length > 1
+        p.market?.marketGroup &&
+        p.market?.marketGroup?.market &&
+        p.market?.marketGroup?.market.length > 1
     );
   }
 
@@ -177,7 +177,7 @@ export default function LpPositionsTable({
           </TableHeader>
           <TableBody>
             {validPositions.map((position: PositionType) => {
-              const { market_group: marketGroup } = position.market || {};
+              const { marketGroup } = position.market || {};
               const baseUnit = `${marketGroup?.baseTokenName || 'Base'}`;
               const quoteUnit = `${marketGroup?.collateralSymbol || 'Quote'}`;
               const priceUnit = `${marketGroup?.collateralSymbol || 'Quote'}/${marketGroup?.baseTokenName || 'Base'}`;

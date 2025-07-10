@@ -285,7 +285,7 @@ export const useEnrichedMarketGroups = () => {
             const focusAreaData = focusAreaMap.get(marketGroup.category.slug);
             categoryInfo = {
               ...marketGroup.category,
-              market_group: marketGroup.category.market_group,
+              marketGroups: marketGroup.category.marketGroups,
               iconSvg: focusAreaData?.iconSvg || DEFAULT_FOCUS_AREA.iconSvg,
               color: focusAreaData?.color || '#9CA3AF', // Tailwind gray-400
             };
@@ -296,7 +296,7 @@ export const useEnrichedMarketGroups = () => {
               slug: 'unknown',
               createdAt: new Date().toISOString(),
               resource: [],
-              market_group: [],
+              marketGroups: [],
               iconSvg: DEFAULT_FOCUS_AREA.iconSvg,
               color: '#9CA3AF', // Tailwind gray-400
             };

@@ -216,7 +216,7 @@ const MarketHeader: React.FC<MarketHeaderProps> = ({
 
   const displayQuestion =
     marketData?.question ||
-    `${marketData?.market_group?.resource?.name} Market ${marketData?.marketId}`;
+    `${marketData?.marketGroup?.resource?.name} Market ${marketData?.marketId}`;
 
   return (
     <div className="w-full pt-6 pb-4 md:py-6">

@@ -37,9 +37,9 @@ function PositionCell({ position }: { position: PositionType }) {
   const netPositionBI = baseTokenBI - borrowedBaseTokenBI;
   const value = Number(formatEther(netPositionBI));
   const absValue = Math.abs(value);
-  const baseTokenName = position.market?.market_group?.baseTokenName;
-  const marketClassification = position.market?.market_group
-    ? getMarketGroupClassification(position.market.market_group)
+  const baseTokenName = position.market?.marketGroup?.baseTokenName;
+  const marketClassification = position.market?.marketGroup
+    ? getMarketGroupClassification(position.market.marketGroup)
     : MarketGroupClassification.NUMERIC;
 
   // For non-numeric markets, show just the number and Yes/No without badge
@@ -83,8 +83,8 @@ function PositionCell({ position }: { position: PositionType }) {
 }
 
 function MaxPayoutCell({ position }: { position: PositionType }) {
-  const baseTokenName = position.market?.market_group?.baseTokenName;
-  const collateralSymbol = position.market?.market_group?.collateralSymbol;
+  const baseTokenName = position.market?.marketGroup?.baseTokenName;
+  const collateralSymbol = position.market?.marketGroup?.collateralSymbol;
 
   if (baseTokenName === 'Yes') {
     const baseTokenBI = BigInt(position.baseToken || '0');
@@ -113,7 +113,7 @@ function MaxPayoutCell({ position }: { position: PositionType }) {
 function PositionValueCell({ position }: { position: PositionType }) {
   const { transaction: transactions } = position;
   const marketId = position.market?.marketId;
-  const marketGroup = position.market?.market_group;
+  const marketGroup = position.market?.marketGroup;
   const address = marketGroup?.address || '';
   const chainId = marketGroup?.chainId || 0;
   const baseTokenName = marketGroup?.baseTokenName;
@@ -234,9 +234,9 @@ export default function TraderPositionsTable({
     // Market group page (parentMarketAddress & parentChainId are present, but parentMarketId is not)
     displayQuestionColumn = validPositions.some(
       (p) =>
-        p.market?.market_group &&
-        p.market?.market_group?.market &&
-        p.market?.market_group?.market.length > 1
+        p.market?.marketGroup &&
+        p.market?.marketGroup?.market &&
+        p.market?.marketGroup?.market.length > 1
     );
   }
 
@@ -277,9 +277,9 @@ export default function TraderPositionsTable({
 
               const isClosed = Number(position.collateral) === 0;
               const chainShortName = getChainShortName(
-                position.market.market_group?.chainId || 0
+                position.market.marketGroup?.chainId || 0
               );
-              const marketAddress = position.market.market_group?.address || '';
+              const marketAddress = position.market.marketGroup?.address || '';
 
               // Determine if the position is expired and settled
               const endTimestamp = position.market?.endTimestamp;
@@ -316,7 +316,7 @@ export default function TraderPositionsTable({
                             formatEther(BigInt(position.collateral || '0'))
                           )}
                         />{' '}
-                        {position.market.market_group?.collateralSymbol ||
+                        {position.market.marketGroup?.collateralSymbol ||
                           'Unknown'}
                       </TableCell>
                       <TableCell>
@@ -333,7 +333,7 @@ export default function TraderPositionsTable({
                                 positionId={position.positionId.toString()}
                                 marketAddress={marketAddress}
                                 chainId={
-                                  position.market.market_group?.chainId || 0
+                                  position.market.marketGroup?.chainId || 0
                                 }
                                 onSuccess={() => {
                                   console.log(
