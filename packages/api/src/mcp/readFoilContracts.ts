@@ -471,13 +471,13 @@ export const getPosition = {
               {
                 id: position.id.toString(),
                 kind: position.kind,
-                marketId: position.epochId.toString(),
+                marketId: position.marketId.toString(),
                 depositedCollateralAmount:
                   position.depositedCollateralAmount.toString(),
-                borrowedVEth: position.borrowedVEth.toString(),
-                borrowedVGas: position.borrowedVGas.toString(),
-                vEthAmount: position.vEthAmount.toString(),
-                vGasAmount: position.vGasAmount.toString(),
+                borrowedVQuote: position.borrowedVQuote.toString(),
+                borrowedVBase: position.borrowedVBase.toString(),
+                vQuoteAmount: position.vQuoteAmount.toString(),
+                vBaseAmount: position.vBaseAmount.toString(),
                 uniswapPositionId: position.uniswapPositionId.toString(),
                 isSettled: position.isSettled,
               },
