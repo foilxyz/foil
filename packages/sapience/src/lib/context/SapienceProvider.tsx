@@ -223,7 +223,10 @@ export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
             startTimestamp: marketGroup.market.startTimestamp,
             endTimestamp: marketGroup.market.endTimestamp,
             // Adjust public logic based on settled field if it exists in response
-            public: marketGroup.market.settled !== undefined ? !marketGroup.market.settled : true,
+            public:
+              marketGroup.market.settled !== undefined
+                ? !marketGroup.market.settled
+                : true,
             question: marketGroup.market.question,
             startingSqrtPriceX96: marketGroup.market.startingSqrtPriceX96,
             baseAssetMinPriceTick: marketGroup.market.baseAssetMinPriceTick,
