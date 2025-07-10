@@ -1,6 +1,6 @@
 import { Resolver, Query, Arg, Int } from 'type-graphql';
 import { PnLType } from '../types/PnLType';
-import { EpochPnL } from '../../helpers/epochPnL';
+import { MarketPnL } from '../../helpers/marketPnL';
 
 @Resolver(() => PnLType)
 export class PnLResolver {
@@ -11,8 +11,8 @@ export class PnLResolver {
     @Arg('marketId', () => String) marketId: string
   ): Promise<PnLType[]> {
     try {
-      const pnlPerformance = EpochPnL.getInstance();
-      const pnlData = await pnlPerformance.getEpochPnLs(
+      const pnlPerformance = MarketPnL.getInstance();
+      const pnlData = await pnlPerformance.getMarketPnLs(
         chainId,
         address,
         parseInt(marketId)

@@ -34,7 +34,7 @@ router.get(
 
     // Add optional filters
     if (epochId) {
-      // Note: In the new schema, there's no direct epoch relationship
+      // Note: In the new schema, there's no direct market relationship
       // This might need to be adjusted based on your business logic
       // For now, we'll use marketId as a substitute if that's what epochId represents
       if (whereClause.position && whereClause.position.market) {

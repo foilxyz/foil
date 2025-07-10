@@ -1,4 +1,4 @@
-import { foilAbi } from '@sapience/ui/lib/abi';
+import { sapienceAbi } from '@sapience/ui/lib/abi';
 import type { Abi } from 'abitype';
 import { useCallback, useState } from 'react';
 import { useSimulateContract, useWriteContract } from 'wagmi';
@@ -30,7 +30,7 @@ export function useSettlePosition({
     refetch: simulateSettlement,
   } = useSimulateContract({
     address: marketAddress as `0x${string}`,
-    abi: foilAbi().abi as Abi,
+    abi: sapienceAbi().abi as Abi,
     functionName: 'settlePosition',
     args: positionId ? [BigInt(positionId)] : undefined,
     chainId,
@@ -49,7 +49,7 @@ export function useSettlePosition({
       // Call settle position function
       const hash = await writeContractAsync({
         address: marketAddress as `0x${string}`,
-        abi: foilAbi().abi as Abi,
+        abi: sapienceAbi().abi as Abi,
         functionName: 'settlePosition',
         args: [BigInt(positionId)],
         chainId,

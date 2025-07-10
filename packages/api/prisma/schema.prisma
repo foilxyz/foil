@@ -129,7 +129,8 @@ model Market {
   marketParamsAssertionliveness      Decimal?      @db.Decimal(78, 0)
   marketParamsBondcurrency           String?       @db.VarChar
   marketParamsBondamount             Decimal?      @db.Decimal(78, 0)
-  marketParamsClaimstatement         String?       @db.VarChar
+  marketParamsClaimstatementYesOrNumeric         String?       @db.VarChar
+  marketParamsClaimstatementNo       String?       @db.VarChar
   marketParamsUniswappositionmanager String?       @db.VarChar
   marketParamsUniswapswaprouter      String?       @db.VarChar
   marketParamsUniswapquoter          String?       @db.VarChar
@@ -155,8 +156,6 @@ model MarketGroup {
   id                                 Int       @id(map: "PK_1e9a2963edfd331d92018e3abac") @default(autoincrement())
   createdAt                          DateTime  @default(now()) @db.Timestamp(6)
   address                            String?   @db.VarChar
-  vaultAddress                       String?   @db.VarChar
-  isYin                              Boolean   @default(false)
   chainId                            Int
   deployTimestamp                    Int?
   deployTxnBlockNumber               Int?
@@ -167,11 +166,13 @@ model MarketGroup {
   marketParamsAssertionliveness      Decimal?  @db.Decimal(78, 0)
   marketParamsBondcurrency           String?   @db.VarChar
   marketParamsBondamount             Decimal?  @db.Decimal(78, 0)
-  marketParamsClaimstatement         String?   @db.VarChar
+  marketParamsClaimstatementYesOrNumeric         String?   @db.VarChar
+  marketParamsClaimstatementNo       String?   @db.VarChar
   marketParamsUniswappositionmanager String?   @db.VarChar
   marketParamsUniswapswaprouter      String?   @db.VarChar
   marketParamsUniswapquoter          String?   @db.VarChar
   marketParamsOptimisticoraclev3     String?   @db.VarChar
+  isBridged                          Boolean   @default(false)
   isCumulative                       Boolean   @default(false)
   categoryId                         Int?
   question                           String?

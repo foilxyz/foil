@@ -1,27 +1,26 @@
-import { initializeDataSource } from '../../db';
+import Sapience from '@sapience/protocol/deployments/Sapience.json';
+import * as Sentry from '@sentry/node';
+import { Abi } from 'viem';
 import {
   initializeMarket,
-  reindexMarketEvents,
+  reindexMarketGroupEvents,
 } from '../../controllers/market';
-import * as Sentry from '@sentry/node';
-import prisma from '../../db';
+import prisma, { initializeDataSource } from '../../db';
 import { INDEXERS } from '../../fixtures';
-import { Abi } from 'viem';
-import Foil from '@sapience/protocol/deployments/Foil.json';
 
 export async function reindexMarket(
   chainId: number,
   address: string,
-  epochId: string
+  marketId: string
 ) {
   try {
     console.log(
-      'reindexing market',
+      'reindexing market group',
       address,
       'on chain',
       chainId,
-      'epoch',
-      epochId
+      'market',
+      marketId
     );
 
     await initializeDataSource();
@@ -48,14 +47,13 @@ export async function reindexMarket(
       marketChainId: chainId,
       deployment: {
         address,
-        abi: Foil.abi as Abi,
+        abi: Sapience.abi as Abi,
         deployTimestamp: marketEntity.deployTimestamp?.toString() || '0',
         deployTxnBlockNumber:
           marketEntity.deployTxnBlockNumber?.toString() || '0',
       },
-      vaultAddress: marketEntity.vaultAddress || '',
-      isYin: marketEntity.isYin || false,
       isCumulative: marketEntity.isCumulative || false,
+      isBridged: marketEntity.isBridged || false,
       resource: {
         name: marketEntity.resource?.name,
         priceIndexer: marketEntity.resource
@@ -67,8 +65,8 @@ export async function reindexMarket(
     const market = await initializeMarket(marketInfo);
 
     await Promise.all([
-      // Pass only the two required arguments: Market
-      reindexMarketEvents(market),
+      // Pass only the two required arguments: market
+      reindexMarketGroupEvents(market),
     ]);
 
     console.log('finished reindexing market', address, 'on chain', chainId);
@@ -77,7 +75,7 @@ export async function reindexMarket(
     Sentry.withScope((scope: Sentry.Scope) => {
       scope.setExtra('chainId', chainId);
       scope.setExtra('address', address);
-      scope.setExtra('epochId', epochId);
+      scope.setExtra('marketId', marketId);
       Sentry.captureException(error);
     });
     throw error;

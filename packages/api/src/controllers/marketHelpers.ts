@@ -12,15 +12,15 @@ import type {
 import { transaction_type_enum as TransactionType } from '../../generated/prisma';
 import {
   Deployment,
-  EpochCreatedEventLog,
-  MarketCreatedUpdatedEventLog,
+  MarketCreatedEventLog,
+  MarketGroupCreatedUpdatedEventLog,
   TradePositionEventLog,
-  EpochData,
+  MarketData,
   EventType,
   MarketParams,
 } from '../interfaces';
 import { getBlockByTimestamp, getProviderForChain } from '../utils/utils';
-import Foil from '@sapience/protocol/deployments/Foil.json';
+import Sapience from '@sapience/protocol/deployments/Sapience.json';
 
 /**
  * Handles a Transfer event by updating the owner of the corresponding Position.
@@ -108,10 +108,10 @@ export const createOrModifyPositionFromTransaction = async (
 ) => {
   try {
     const eventArgs = getLogDataArgs(transaction.event.logData);
-    let epochId = eventArgs.epochId;
-    let epoch: Market | undefined;
+    let marketId = eventArgs.marketId;
+    let market: Market | undefined;
 
-    if (!epochId) {
+    if (!marketId) {
       const positionId = eventArgs.positionId;
 
       const markets = await prisma.market.findMany({
@@ -127,13 +127,13 @@ export const createOrModifyPositionFromTransaction = async (
       });
 
       let found = false;
-      for (const market of markets) {
-        const position = market.position.find(
+      for (const currentMarket of markets) {
+        const position = currentMarket.position.find(
           (p: Position) => p.positionId === Number(positionId)
         );
         if (position) {
-          epoch = market;
-          epochId = market.marketId;
+          market = currentMarket;
+          marketId = currentMarket.marketId;
           found = true;
           break;
         }
@@ -143,28 +143,28 @@ export const createOrModifyPositionFromTransaction = async (
         throw new Error(`Market not found for position id ${positionId}`);
       }
     } else {
-      const foundEpoch = await prisma.market.findFirst({
+      const foundMarket = await prisma.market.findFirst({
         where: {
-          marketId: Number(epochId),
+          marketId: Number(marketId),
           market_group: {
             address: transaction.event.market_group.address?.toLowerCase(),
           },
         },
       });
 
-      if (!foundEpoch) {
+      if (!foundMarket) {
         console.error(
           'Epoch not found: ',
-          epochId,
+          marketId,
           'market:',
           transaction.event.market_group.address
         );
-        throw new Error(`Epoch not found: ${epochId}`);
+        throw new Error(`Epoch not found: ${marketId}`);
       }
-      epoch = foundEpoch;
+      market = foundMarket;
     }
 
-    if (!epoch) {
+    if (!market) {
       throw new Error('Epoch is undefined');
     }
 
@@ -177,7 +177,7 @@ export const createOrModifyPositionFromTransaction = async (
     const existingPosition = await prisma.position.findFirst({
       where: {
         market: {
-          marketId: Number(epochId),
+          marketId: Number(marketId),
           market_group: {
             address: transaction.event.market_group.address?.toLowerCase(),
           },
@@ -210,7 +210,7 @@ export const createOrModifyPositionFromTransaction = async (
         where: { id: existingPosition.id },
         data: {
           positionId: positionId,
-          marketId: epoch.id,
+          marketId: market.id,
           owner: (
             (eventArgs.sender as string) ||
             existingPosition.owner ||
@@ -244,7 +244,7 @@ export const createOrModifyPositionFromTransaction = async (
       savedPosition = await prisma.position.create({
         data: {
           positionId: positionId,
-          marketId: epoch.id,
+          marketId: market.id,
           owner: ((eventArgs.sender as string) || '').toLowerCase(),
           isLP: isLpPosition(transaction),
           baseToken: toDecimal(eventArgs.positionVgasAmount || '0'),
@@ -422,76 +422,78 @@ export const updateCollateralData = async (
   }
 };
 
-export const createOrUpdateMarketFromContract = async (
+export const createOrUpdateMarketGroupFromContract = async (
   client: PublicClient,
   contractDeployment: Deployment,
   chainId: number,
-  initialMarket?: MarketGroup
+  initialMarketGroup?: MarketGroup
 ) => {
   const address = contractDeployment.address.toLowerCase();
-  // get market and epoch from contract
-  const MarketReadResult = await client.readContract({
+  // get market group and market from contract
+  const marketGroupReadResult = await client.readContract({
     address: address as `0x${string}`,
     abi: contractDeployment.abi,
-    functionName: 'getMarket',
+    functionName: 'getMarketGroup',
   });
-  console.log('MarketReadResult', MarketReadResult);
+  console.log('marketGroupReadResult', marketGroupReadResult);
 
-  let updatedMarket: MarketGroup;
+  let updatedMarketGroup: MarketGroup;
 
-  if (initialMarket) {
-    updatedMarket = initialMarket;
+  if (initialMarketGroup) {
+    updatedMarketGroup = initialMarketGroup;
   } else {
     // check if market already exists in db
-    const existingMarket = await prisma.marketGroup.findFirst({
+    const existingMarketGroup = await prisma.marketGroup.findFirst({
       where: { address: address.toLowerCase(), chainId },
       include: {
         market: true,
       },
     });
 
-    if (existingMarket) {
-      updatedMarket = existingMarket;
+    if (existingMarketGroup) {
+      updatedMarketGroup = existingMarketGroup;
     } else {
       // Create new market
-      updatedMarket = await prisma.marketGroup.create({
+      updatedMarketGroup = await prisma.marketGroup.create({
         data: {
           address: address.toLowerCase(),
           deployTxnBlockNumber: Number(contractDeployment.deployTxnBlockNumber),
           deployTimestamp: Number(contractDeployment.deployTimestamp),
           chainId,
           owner: (
-            (MarketReadResult as MarketReadResult)[0] as string
+            (marketGroupReadResult as MarketGroupReadResult)[0] as string
           ).toLowerCase(),
-          collateralAsset: (MarketReadResult as MarketReadResult)[1],
+          collateralAsset: (marketGroupReadResult as MarketGroupReadResult)[1],
         },
       });
     }
   }
 
   // Update collateral data
-  await updateCollateralData(client, updatedMarket);
+  await updateCollateralData(client, updatedMarketGroup);
 
-  const marketParamsRaw = (MarketReadResult as MarketReadResult)[4];
+  const marketParamsRaw = (marketGroupReadResult as MarketGroupReadResult)[4];
 
   // Update market with new data
-  updatedMarket = await prisma.marketGroup.update({
-    where: { id: updatedMarket.id },
+  updatedMarketGroup = await prisma.marketGroup.update({
+    where: { id: updatedMarketGroup.id },
     data: {
       address: address.toLowerCase(),
       deployTxnBlockNumber: Number(contractDeployment.deployTxnBlockNumber),
       deployTimestamp: Number(contractDeployment.deployTimestamp),
       chainId,
       owner: (
-        (MarketReadResult as MarketReadResult)[0] as string
+        (marketGroupReadResult as MarketGroupReadResult)[0] as string
       ).toLowerCase(),
-      collateralAsset: (MarketReadResult as MarketReadResult)[1],
+      collateralAsset: (marketGroupReadResult as MarketGroupReadResult)[1],
       marketParamsFeerate: marketParamsRaw.feeRate || null,
       marketParamsAssertionliveness:
         marketParamsRaw.assertionLiveness?.toString() || null,
       marketParamsBondcurrency: marketParamsRaw.bondCurrency || null,
       marketParamsBondamount: marketParamsRaw.bondAmount?.toString() || null,
-      marketParamsClaimstatement: marketParamsRaw.claimStatement || null,
+      marketParamsClaimstatementYesOrNumeric:
+        marketParamsRaw.claimStatementYesOrNumeric || null,
+      marketParamsClaimstatementNo: marketParamsRaw.claimStatementNo || null,
       marketParamsUniswappositionmanager:
         marketParamsRaw.uniswapPositionManager || null,
       marketParamsUniswapswaprouter: marketParamsRaw.uniswapSwapRouter || null,
@@ -501,88 +503,98 @@ export const createOrUpdateMarketFromContract = async (
     },
   });
 
-  return updatedMarket;
+  return updatedMarketGroup;
 };
 
-export const createOrUpdateEpochFromContract = async (
-  market: MarketGroup,
-  epochId?: number
+export const createOrUpdateMarketFromContract = async (
+  marketGroup: MarketGroup,
+  marketId?: number
 ) => {
-  const functionName = epochId ? 'getEpoch' : 'getLatestEpoch';
-  const args = epochId ? [epochId] : [];
+  const functionName = marketId ? 'getMarket' : 'getLatestMarket';
+  const args = marketId ? [marketId] : [];
 
-  const client = getProviderForChain(market.chainId);
-  // get epoch from contract
-  const epochReadResult = await client.readContract({
-    address: market.address as `0x${string}`,
-    abi: Foil.abi,
+  const client = getProviderForChain(marketGroup.chainId);
+  // get market from contract
+  const marketReadResult = await client.readContract({
+    address: marketGroup.address as `0x${string}`,
+    abi: Sapience.abi,
     functionName,
     args,
   });
-  const epochData: EpochData = (epochReadResult as EpochReadResult)[0];
+  const marketData: MarketData = (marketReadResult as MarketReadResult)[0];
 
-  const _epochId = epochId || Number(epochData.epochId);
+  const _marketId = marketId || Number(marketData.marketId);
 
-  // check if epoch already exists in db
-  const existingEpoch = await prisma.market.findFirst({
+  // check if market already exists in db
+  const existingMarket = await prisma.market.findFirst({
     where: {
-      market_group: { address: market.address?.toLowerCase() },
-      marketId: _epochId,
+      market_group: { address: marketGroup.address?.toLowerCase() },
+      marketId: _marketId,
     },
   });
 
-  if (existingEpoch) {
-    // Update existing epoch
+  if (existingMarket) {
+    // Update existing market
     await prisma.market.update({
-      where: { id: existingEpoch.id },
+      where: { id: existingMarket.id },
       data: {
-        marketId: _epochId,
-        startTimestamp: Number(epochData.startTime.toString()),
-        endTimestamp: Number(epochData.endTime.toString()),
-        settled: epochData.settled,
-        settlementPriceD18: toDecimal(epochData.settlementPriceD18.toString()),
-        baseAssetMinPriceTick: epochData.baseAssetMinPriceTick,
-        baseAssetMaxPriceTick: epochData.baseAssetMaxPriceTick,
-        maxPriceD18: toDecimal(epochData.maxPriceD18.toString()),
-        minPriceD18: toDecimal(epochData.minPriceD18.toString()),
-        poolAddress: epochData.pool,
-        marketParamsFeerate: market.marketParamsFeerate,
-        marketParamsAssertionliveness: market.marketParamsAssertionliveness,
-        marketParamsBondcurrency: market.marketParamsBondcurrency,
-        marketParamsBondamount: market.marketParamsBondamount,
-        marketParamsClaimstatement: market.marketParamsClaimstatement,
+        marketId: _marketId,
+        startTimestamp: Number(marketData.startTime.toString()),
+        endTimestamp: Number(marketData.endTime.toString()),
+        settled: marketData.settled,
+        settlementPriceD18: toDecimal(marketData.settlementPriceD18.toString()),
+        baseAssetMinPriceTick: marketData.baseAssetMinPriceTick,
+        baseAssetMaxPriceTick: marketData.baseAssetMaxPriceTick,
+        maxPriceD18: toDecimal(marketData.maxPriceD18.toString()),
+        minPriceD18: toDecimal(marketData.minPriceD18.toString()),
+        poolAddress: marketData.pool,
+        marketParamsFeerate: marketGroup.marketParamsFeerate,
+        marketParamsAssertionliveness:
+          marketGroup.marketParamsAssertionliveness,
+        marketParamsBondcurrency: marketGroup.marketParamsBondcurrency,
+        marketParamsBondamount: marketGroup.marketParamsBondamount,
+        marketParamsClaimstatementYesOrNumeric:
+          marketGroup.marketParamsClaimstatementYesOrNumeric,
+        marketParamsClaimstatementNo: marketGroup.marketParamsClaimstatementNo,
         marketParamsUniswappositionmanager:
-          market.marketParamsUniswappositionmanager,
-        marketParamsUniswapswaprouter: market.marketParamsUniswapswaprouter,
-        marketParamsUniswapquoter: market.marketParamsUniswapquoter,
-        marketParamsOptimisticoraclev3: market.marketParamsOptimisticoraclev3,
+          marketGroup.marketParamsUniswappositionmanager,
+        marketParamsUniswapswaprouter:
+          marketGroup.marketParamsUniswapswaprouter,
+        marketParamsUniswapquoter: marketGroup.marketParamsUniswapquoter,
+        marketParamsOptimisticoraclev3:
+          marketGroup.marketParamsOptimisticoraclev3,
       },
     });
   } else {
-    // Create new epoch
+    // Create new market
     await prisma.market.create({
       data: {
-        marketId: _epochId,
-        startTimestamp: Number(epochData.startTime.toString()),
-        endTimestamp: Number(epochData.endTime.toString()),
-        settled: epochData.settled,
-        settlementPriceD18: toDecimal(epochData.settlementPriceD18.toString()),
-        baseAssetMinPriceTick: epochData.baseAssetMinPriceTick,
-        baseAssetMaxPriceTick: epochData.baseAssetMaxPriceTick,
-        maxPriceD18: toDecimal(epochData.maxPriceD18.toString()),
-        minPriceD18: toDecimal(epochData.minPriceD18.toString()),
-        poolAddress: epochData.pool,
-        marketGroupId: market.id,
-        marketParamsFeerate: market.marketParamsFeerate,
-        marketParamsAssertionliveness: market.marketParamsAssertionliveness,
-        marketParamsBondcurrency: market.marketParamsBondcurrency,
-        marketParamsBondamount: market.marketParamsBondamount,
-        marketParamsClaimstatement: market.marketParamsClaimstatement,
+        marketId: _marketId,
+        startTimestamp: Number(marketData.startTime.toString()),
+        endTimestamp: Number(marketData.endTime.toString()),
+        settled: marketData.settled,
+        settlementPriceD18: toDecimal(marketData.settlementPriceD18.toString()),
+        baseAssetMinPriceTick: marketData.baseAssetMinPriceTick,
+        baseAssetMaxPriceTick: marketData.baseAssetMaxPriceTick,
+        maxPriceD18: toDecimal(marketData.maxPriceD18.toString()),
+        minPriceD18: toDecimal(marketData.minPriceD18.toString()),
+        poolAddress: marketData.pool,
+        marketGroupId: marketGroup.id,
+        marketParamsFeerate: marketGroup.marketParamsFeerate,
+        marketParamsAssertionliveness:
+          marketGroup.marketParamsAssertionliveness,
+        marketParamsBondcurrency: marketGroup.marketParamsBondcurrency,
+        marketParamsBondamount: marketGroup.marketParamsBondamount,
+        marketParamsClaimstatementYesOrNumeric:
+          marketGroup.marketParamsClaimstatementYesOrNumeric,
+        marketParamsClaimstatementNo: marketGroup.marketParamsClaimstatementNo,
         marketParamsUniswappositionmanager:
-          market.marketParamsUniswappositionmanager,
-        marketParamsUniswapswaprouter: market.marketParamsUniswapswaprouter,
-        marketParamsUniswapquoter: market.marketParamsUniswapquoter,
-        marketParamsOptimisticoraclev3: market.marketParamsOptimisticoraclev3,
+          marketGroup.marketParamsUniswappositionmanager,
+        marketParamsUniswapswaprouter:
+          marketGroup.marketParamsUniswapswaprouter,
+        marketParamsUniswapquoter: marketGroup.marketParamsUniswapquoter,
+        marketParamsOptimisticoraclev3:
+          marketGroup.marketParamsOptimisticoraclev3,
       },
     });
   }
@@ -597,30 +609,33 @@ export const createOrUpdateEpochFromContract = async (
  * @param originalMarket The original Market entity to be updated, if any.
  * @returns The saved Market entity.
  */
-export const createOrUpdateMarketFromEvent = async (
-  eventArgs: MarketCreatedUpdatedEventLog,
+export const createOrUpdateMarketGroupFromEvent = async (
+  eventArgs: MarketGroupCreatedUpdatedEventLog,
   chainId: number,
   address: string,
   originalMarket?: MarketGroup | null
 ) => {
-  let market: MarketGroup;
+  let marketGroup: MarketGroup;
 
   if (originalMarket) {
-    market = originalMarket;
+    marketGroup = originalMarket;
   } else {
     // Create new market
-    market = await prisma.marketGroup.create({
+    marketGroup = await prisma.marketGroup.create({
       data: {
         chainId,
         address: address.toLowerCase(),
+        isBridged: eventArgs?.isBridged || false,
         marketParamsFeerate: Number(eventArgs.marketParams.feeRate) || null,
         marketParamsAssertionliveness:
           eventArgs?.marketParams?.assertionLiveness?.toString() || null,
         marketParamsBondcurrency: eventArgs?.marketParams?.bondCurrency || null,
         marketParamsBondamount:
           eventArgs?.marketParams?.bondAmount?.toString() || null,
-        marketParamsClaimstatement:
-          eventArgs?.marketParams?.claimStatement || null,
+        marketParamsClaimstatementYesOrNumeric:
+          eventArgs?.marketParams?.claimStatementYesOrNumeric || null,
+        marketParamsClaimstatementNo:
+          eventArgs?.marketParams?.claimStatementNo || null,
         marketParamsUniswappositionmanager:
           eventArgs?.uniswapPositionManager || null,
         marketParamsUniswapswaprouter: eventArgs?.uniswapSwapRouter || null,
@@ -642,13 +657,13 @@ export const createOrUpdateMarketFromEvent = async (
   }
 
   if (Object.keys(updateData).length > 0) {
-    market = await prisma.marketGroup.update({
-      where: { id: market.id },
+    marketGroup = await prisma.marketGroup.update({
+      where: { id: marketGroup.id },
       data: updateData,
     });
   }
 
-  return market;
+  return marketGroup;
 };
 
 export const getTradeTypeFromEvent = (eventArgs: TradePositionEventLog) => {
@@ -927,92 +942,102 @@ export const updateTransactionFromPositionSettledEvent = async (
 };
 
 /**
- * Creates a new Epoch from a given event
- * @param eventArgs The event arguments from the EpochCreated event.
- * @param market The market associated with the epoch.
- * @returns The newly created or updated epoch.
+ * Creates a new Market from a given event
+ * @param eventArgs The event arguments from the MarketCreated event.
+ * @param marketGroup The market group associated with the market.
+ * @returns The newly created or updated market.
  */
-export const createEpochFromEvent = async (
-  eventArgs: EpochCreatedEventLog,
-  market: MarketGroup
+export const createMarketFromEvent = async (
+  eventArgs: MarketCreatedEventLog,
+  marketGroup: MarketGroup
 ) => {
-  // first check if there's an existing epoch in the database before creating a new one
-  const existingEpoch = await prisma.market.findFirst({
+  // first check if there's an existing market in the database before creating a new one
+  const existingMarket = await prisma.market.findFirst({
     where: {
-      marketId: Number(eventArgs.epochId),
+      marketId: Number(eventArgs.marketId),
       market_group: {
-        address: market.address?.toLowerCase(),
-        chainId: market.chainId,
+        address: marketGroup.address?.toLowerCase(),
+        chainId: marketGroup.chainId,
       },
     },
   });
 
-  if (existingEpoch) {
-    // Update existing epoch
+  if (existingMarket) {
+    // Update existing market
     await prisma.market.update({
-      where: { id: existingEpoch.id },
+      where: { id: existingMarket.id },
       data: {
-        marketId: Number(eventArgs.epochId),
+        marketId: Number(eventArgs.marketId),
         startTimestamp: Number(eventArgs.startTime),
         endTimestamp: Number(eventArgs.endTime),
         startingSqrtPriceX96: toDecimal(eventArgs.startingSqrtPriceX96),
-        marketParamsFeerate: market.marketParamsFeerate,
-        marketParamsAssertionliveness: market.marketParamsAssertionliveness,
-        marketParamsBondcurrency: market.marketParamsBondcurrency,
-        marketParamsBondamount: market.marketParamsBondamount,
-        marketParamsClaimstatement: market.marketParamsClaimstatement,
+        marketParamsFeerate: marketGroup.marketParamsFeerate,
+        marketParamsAssertionliveness:
+          marketGroup.marketParamsAssertionliveness,
+        marketParamsBondcurrency: marketGroup.marketParamsBondcurrency,
+        marketParamsBondamount: marketGroup.marketParamsBondamount,
+        marketParamsClaimstatementYesOrNumeric:
+          marketGroup.marketParamsClaimstatementYesOrNumeric,
+        marketParamsClaimstatementNo: marketGroup.marketParamsClaimstatementNo,
         marketParamsUniswappositionmanager:
-          market.marketParamsUniswappositionmanager,
-        marketParamsUniswapswaprouter: market.marketParamsUniswapswaprouter,
-        marketParamsUniswapquoter: market.marketParamsUniswapquoter,
-        marketParamsOptimisticoraclev3: market.marketParamsOptimisticoraclev3,
+          marketGroup.marketParamsUniswappositionmanager,
+        marketParamsUniswapswaprouter:
+          marketGroup.marketParamsUniswapswaprouter,
+        marketParamsUniswapquoter: marketGroup.marketParamsUniswapquoter,
+        marketParamsOptimisticoraclev3:
+          marketGroup.marketParamsOptimisticoraclev3,
       },
     });
-    return existingEpoch;
+    return existingMarket;
   } else {
-    // Create new epoch
-    const newEpoch = await prisma.market.create({
+    // Create new market
+    const newMarket = await prisma.market.create({
       data: {
-        marketId: Number(eventArgs.epochId),
-        marketGroupId: market.id,
+        marketId: Number(eventArgs.marketId),
+        marketGroupId: marketGroup.id,
         startTimestamp: Number(eventArgs.startTime),
         endTimestamp: Number(eventArgs.endTime),
         startingSqrtPriceX96: toDecimal(eventArgs.startingSqrtPriceX96),
-        marketParamsFeerate: market.marketParamsFeerate,
-        marketParamsAssertionliveness: market.marketParamsAssertionliveness,
-        marketParamsBondcurrency: market.marketParamsBondcurrency,
-        marketParamsBondamount: market.marketParamsBondamount,
-        marketParamsClaimstatement: market.marketParamsClaimstatement,
+        marketParamsFeerate: marketGroup.marketParamsFeerate,
+        marketParamsAssertionliveness:
+          marketGroup.marketParamsAssertionliveness,
+        marketParamsBondcurrency: marketGroup.marketParamsBondcurrency,
+        marketParamsBondamount: marketGroup.marketParamsBondamount,
+        marketParamsClaimstatementYesOrNumeric:
+          marketGroup.marketParamsClaimstatementYesOrNumeric,
+        marketParamsClaimstatementNo: marketGroup.marketParamsClaimstatementNo,
         marketParamsUniswappositionmanager:
-          market.marketParamsUniswappositionmanager,
-        marketParamsUniswapswaprouter: market.marketParamsUniswapswaprouter,
-        marketParamsUniswapquoter: market.marketParamsUniswapquoter,
-        marketParamsOptimisticoraclev3: market.marketParamsOptimisticoraclev3,
+          marketGroup.marketParamsUniswappositionmanager,
+        marketParamsUniswapswaprouter:
+          marketGroup.marketParamsUniswapswaprouter,
+        marketParamsUniswapquoter: marketGroup.marketParamsUniswapquoter,
+        marketParamsOptimisticoraclev3:
+          marketGroup.marketParamsOptimisticoraclev3,
       },
     });
-    return newEpoch;
+    return newMarket;
   }
 };
 
 export const getMarketStartEndBlock = async (
-  market: MarketGroup,
-  epochId: string,
+  marketGroup: MarketGroup,
+  marketId: string,
   overrideClient?: PublicClient
 ) => {
-  const epoch = await prisma.market.findFirst({
-    where: { market_group: { id: market.id }, marketId: Number(epochId) },
+  const market = await prisma.market.findFirst({
+    where: { market_group: { id: marketGroup.id }, marketId: Number(marketId) },
   });
 
-  if (!epoch) {
-    return { error: 'Epoch not found' };
+  if (!market) {
+    return { error: 'Market not found' };
   }
 
   const now = Math.floor(Date.now() / 1000);
-  const startTimestamp = Number(epoch.startTimestamp);
-  const endTimestamp = Math.min(Number(epoch.endTimestamp), now);
+  const startTimestamp = Number(market.startTimestamp);
+  const endTimestamp = Math.min(Number(market.endTimestamp), now);
 
   // Get the client for the specified chain ID
-  const client = overrideClient || getProviderForChain(market.chainId);
+  const client = overrideClient || getProviderForChain(marketGroup.chainId);
 
   // Get the blocks corresponding to the start and end timestamps
   const startBlock = await getBlockByTimestamp(client, startTimestamp);
@@ -1073,7 +1098,7 @@ const getLogDataArgs = (logData: unknown): Record<string, unknown> => {
 };
 
 // Define contract return types as tuples with specific types
-type MarketReadResult = readonly [
+type MarketGroupReadResult = readonly [
   owner: string,
   collateralAsset: string,
   paused: boolean,
@@ -1081,7 +1106,7 @@ type MarketReadResult = readonly [
   marketParams: MarketParams,
 ];
 
-type EpochReadResult = readonly [
-  epochData: EpochData,
+type MarketReadResult = readonly [
+  marketData: MarketData,
   marketParams: MarketParams,
 ];

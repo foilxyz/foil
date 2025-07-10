@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { NumberDisplay } from '@sapience/ui/components/NumberDisplay';
 import { Button } from '@sapience/ui/components/ui/button';
 import { useToast } from '@sapience/ui/hooks/use-toast';
-import { foilAbi } from '@sapience/ui/lib/abi';
+import { sapienceAbi } from '@sapience/ui/lib/abi';
 import type { MarketGroupType } from '@sapience/ui/types';
 import { useEffect, useMemo, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -70,7 +70,7 @@ export default function MultipleChoiceWagerForm({
     reset: resetTrade,
   } = useCreateTrade({
     marketAddress: marketGroupData.address as `0x${string}`,
-    marketAbi: foilAbi().abi,
+    marketAbi: sapienceAbi().abi,
     chainId: marketGroupData.chainId,
     numericMarketId: Number(predictionValue),
     size: BigInt(quoteData?.maxSize || 0), // The size to buy (from the quote)

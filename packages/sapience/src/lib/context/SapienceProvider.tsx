@@ -42,7 +42,8 @@ export interface ApiMarket {
   baseAssetMinPriceTick: number; // Added
   baseAssetMaxPriceTick: number; // Added
   poolAddress?: string | null; // Added
-  claimStatement?: string | null; // Added
+  claimStatementYesOrNumeric?: string | null; // Added
+  claimStatementNo?: string | null; // Added
   settled?: boolean | null;
   optionName?: string | null;
 }
@@ -52,7 +53,6 @@ export interface MarketGroup {
   name: string;
   chainId: number;
   address: string;
-  vaultAddress: string;
   collateralAsset: string;
   baseTokenName?: string;
   owner: string;
@@ -114,7 +114,8 @@ const MARKET_GROUPS_QUERY = gql`
         baseAssetMaxPriceTick
         poolAddress
         currentPrice
-        marketParamsClaimstatement
+        marketParamsClaimstatementYesOrNumeric
+        marketParamsClaimstatementNo
       }
     }
   }
@@ -133,7 +134,8 @@ interface ApiMarketResponse {
   baseAssetMinPriceTick: number;
   baseAssetMaxPriceTick: number;
   poolAddress?: string | null;
-  marketParamsClaimstatement?: string | null;
+  marketParamsClaimstatementYesOrNumeric?: string | null;
+  marketParamsClaimstatementNo?: string | null;
 }
 
 interface ApiMarketGroupResponse {
@@ -230,7 +232,9 @@ export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
               baseAssetMinPriceTick: market.baseAssetMinPriceTick,
               baseAssetMaxPriceTick: market.baseAssetMaxPriceTick,
               poolAddress: market.poolAddress,
-              claimStatement: market.marketParamsClaimstatement,
+              claimStatementYesOrNumeric:
+                market.marketParamsClaimstatementYesOrNumeric,
+              claimStatementNo: market.marketParamsClaimstatementNo,
               // Add other fields required by ApiMarket if they exist in ApiMarketResponse
               settled: market.settled,
               optionName: market.optionName,
@@ -262,7 +266,6 @@ export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
             name: marketGroup.question || `Market ${marketGroup.id}`, // Use question as name fallback
             chainId: marketGroup.chainId,
             address: marketGroup.address,
-            vaultAddress: marketGroup.address, // Fallback
             collateralAsset: marketGroup.baseTokenName || 'ETH', // Fallback
             baseTokenName: marketGroup.baseTokenName,
             owner: marketGroup.address, // Fallback

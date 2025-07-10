@@ -28,7 +28,7 @@ interface UsePositionsProps {
   marketAddress?: `0x${string}`;
   marketId?: string | number;
   chainId?: number;
-  foilAbi: Abi;
+  sapienceAbi: Abi;
   enabled?: boolean;
 }
 
@@ -49,7 +49,7 @@ export interface UsePositionsResult {
  * @param marketAddress - The address of the market contract
  * @param marketId - Optional market ID to filter positions by
  * @param chainId - The chain ID where the market exists
- * @param foilAbi - The ABI of the Foil contract
+ * @param sapienceAbi - The ABI of the Sapience contract
  * @param enabled - Whether to enable the queries
  * @returns {UsePositionsResult} Object containing:
  *   - lpPositions: Object map of liquidity positions by position ID
@@ -66,7 +66,7 @@ export function usePositions({
   marketAddress,
   marketId,
   chainId,
-  foilAbi,
+  sapienceAbi,
   enabled = true,
 }: UsePositionsProps): UsePositionsResult {
   const { address, isConnected } = useAccount();
@@ -79,7 +79,7 @@ export function usePositions({
     isRefetching: isRefetchingBalance,
     refetch: refetchBalance,
   } = useReadContract({
-    abi: foilAbi,
+    abi: sapienceAbi,
     address: marketAddress,
     functionName: 'balanceOf',
     args: [address as `0x${string}`],
@@ -101,13 +101,13 @@ export function usePositions({
       const tokenBalance = balanceData ? Number(balanceData.toString()) : 0;
 
       return times(tokenBalance).map((index) => ({
-        abi: foilAbi,
+        abi: sapienceAbi,
         address: marketAddress,
         functionName: 'tokenOfOwnerByIndex',
         args: [address as `0x${string}`, index],
         chainId,
       }));
-    }, [balanceData, foilAbi, marketAddress, address, chainId]),
+    }, [balanceData, sapienceAbi, marketAddress, address, chainId]),
     query: {
       enabled:
         enabled && isConnected && !!balanceData && Number(balanceData) > 0,
@@ -136,13 +136,13 @@ export function usePositions({
   } = useReadContracts({
     contracts: useMemo(() => {
       return tokenIds.map((tokenId) => ({
-        abi: foilAbi,
+        abi: sapienceAbi,
         address: marketAddress,
         functionName: 'getPosition',
         args: [tokenId],
         chainId,
       }));
-    }, [tokenIds, foilAbi, marketAddress, chainId]),
+    }, [tokenIds, sapienceAbi, marketAddress, chainId]),
     query: {
       enabled: enabled && tokenIds.length > 0 && !!marketAddress,
     },

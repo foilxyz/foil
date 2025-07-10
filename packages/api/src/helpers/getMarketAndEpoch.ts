@@ -35,14 +35,14 @@ export const getMarketAndEpoch = async (
 export const getMarketGroupAndMarket = async (
   chainId: number,
   marketAddress: string,
-  epochId: number
+  marketId: number
 ): Promise<{
   market: Prisma.MarketGetPayload<{ include: { market_group: true } }>;
   marketGroup: Prisma.MarketGroupGetPayload<object>;
 } | null> => {
   const market = await prisma.market.findFirst({
     where: {
-      marketId: epochId,
+      marketId: marketId,
       market_group: {
         address: marketAddress.toLowerCase(),
         chainId,

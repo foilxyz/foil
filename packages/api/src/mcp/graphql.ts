@@ -85,7 +85,6 @@ const getMarketGroup = {
           id
           isCumulative
           owner
-          vaultAddress
           markets {
             id
             marketId
@@ -207,7 +206,7 @@ const getMarket = {
 const getMarketGroups = {
   name: 'get_sapience_market_groups',
   description:
-    'Lists all market groups available in the Foil system, optionally filtering by chain ID or collateral asset.',
+    'Lists all market groups available in the Sapience system, optionally filtering by chain ID or collateral asset.',
   parameters: {
     properties: {
       chainId: z
@@ -232,7 +231,8 @@ const getMarketGroups = {
           address
           chainId
           baseTokenName
-          claimStatement
+          claimStatementYesOrNumeric
+          claimStatementNo
           collateralAsset
           collateralDecimals
           collateralSymbol
@@ -241,7 +241,7 @@ const getMarketGroups = {
           factoryAddress
           initializationNonce
           isCumulative
-          # isYin removed
+          isBridged
           minTradeSize
           owner
           question
@@ -255,7 +255,8 @@ const getMarketGroups = {
             assertionLiveness
             bondAmount
             bondCurrency
-            claimStatement # Specific to market params
+            claimStatementYesOrNumeric
+            claimStatementNo
             feeRate
             optimisticOracleV3
             uniswapPositionManager
@@ -576,11 +577,12 @@ const getResource = {
             id
             # Added more fields for context from MarketGroupType
             baseTokenName
-            claimStatement
+            claimStatementYesOrNumeric
+            claimStatementNo
             collateralAsset
             collateralSymbol
             isCumulative
-            # isYin removed
+            isBridged
             question
             quoteTokenName
           }
@@ -607,7 +609,7 @@ const getResource = {
 
 const getResources = {
   name: 'get_sapience_resources',
-  description: 'Lists all resources available in the Foil system',
+  description: 'Lists all resources available in the Sapience system',
   parameters: {
     properties: {},
   },
@@ -624,11 +626,12 @@ const getResources = {
             id
             # Added more fields for context from MarketGroupType
             baseTokenName
-            claimStatement
+            claimStatementYesOrNumeric
+            claimStatementNo
             collateralAsset
             collateralSymbol
             isCumulative
-            # isYin removed
+            isBridged
             question
             quoteTokenName
           }

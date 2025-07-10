@@ -1,4 +1,4 @@
-import { useFoilAbi } from '@sapience/ui/hooks/useFoilAbi';
+import { useSapienceAbi } from '@sapience/ui/hooks/useSapienceAbi';
 import type { MarketType } from '@sapience/ui/types';
 import type { ReactNode } from 'react';
 import { createContext, useContext, useMemo } from 'react';
@@ -108,7 +108,7 @@ export function MarketPageProvider({
   } = useMarket({ chainId, marketAddress, marketId });
 
   // Get ABI for contracts
-  const { abi } = useFoilAbi();
+  const { abi } = useSapienceAbi();
 
   // Get market data from the contract
   const {
@@ -141,7 +141,7 @@ export function MarketPageProvider({
   } = usePositions({
     marketAddress: marketAddress as `0x${string}`,
     chainId,
-    foilAbi: abi,
+    sapienceAbi: abi,
     marketId,
   });
 

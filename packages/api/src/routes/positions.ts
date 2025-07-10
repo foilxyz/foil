@@ -31,7 +31,7 @@ router.get(
       return;
     }
 
-    // Query for positions related to any epoch of this market
+    // Query for positions related to any market of this market group
     const whereCondition: Prisma.PositionWhereInput = {
       market: {
         marketGroupId: marketGroup.id,

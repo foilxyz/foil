@@ -857,7 +857,8 @@ export type Market = {
   marketParamsAssertionliveness?: Maybe<Scalars['Decimal']['output']>;
   marketParamsBondamount?: Maybe<Scalars['Decimal']['output']>;
   marketParamsBondcurrency?: Maybe<Scalars['String']['output']>;
-  marketParamsClaimstatement?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementNo?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementYesOrNumeric?: Maybe<Scalars['String']['output']>;
   marketParamsFeerate?: Maybe<Scalars['Int']['output']>;
   marketParamsOptimisticoraclev3?: Maybe<Scalars['String']['output']>;
   marketParamsUniswappositionmanager?: Maybe<Scalars['String']['output']>;
@@ -951,7 +952,8 @@ export type MarketCountAggregate = {
   marketParamsAssertionliveness: Scalars['Int']['output'];
   marketParamsBondamount: Scalars['Int']['output'];
   marketParamsBondcurrency: Scalars['Int']['output'];
-  marketParamsClaimstatement: Scalars['Int']['output'];
+  marketParamsClaimstatementNo: Scalars['Int']['output'];
+  marketParamsClaimstatementYesOrNumeric: Scalars['Int']['output'];
   marketParamsFeerate: Scalars['Int']['output'];
   marketParamsOptimisticoraclev3: Scalars['Int']['output'];
   marketParamsUniswappositionmanager: Scalars['Int']['output'];
@@ -981,7 +983,8 @@ export type MarketCountOrderByAggregateInput = {
   marketParamsAssertionliveness?: InputMaybe<SortOrder>;
   marketParamsBondamount?: InputMaybe<SortOrder>;
   marketParamsBondcurrency?: InputMaybe<SortOrder>;
-  marketParamsClaimstatement?: InputMaybe<SortOrder>;
+  marketParamsClaimstatementNo?: InputMaybe<SortOrder>;
+  marketParamsClaimstatementYesOrNumeric?: InputMaybe<SortOrder>;
   marketParamsFeerate?: InputMaybe<SortOrder>;
   marketParamsOptimisticoraclev3?: InputMaybe<SortOrder>;
   marketParamsUniswappositionmanager?: InputMaybe<SortOrder>;
@@ -1018,13 +1021,14 @@ export type MarketGroup = {
   factoryAddress?: Maybe<Scalars['String']['output']>;
   id: Scalars['Int']['output'];
   initializationNonce?: Maybe<Scalars['String']['output']>;
+  isBridged: Scalars['Boolean']['output'];
   isCumulative: Scalars['Boolean']['output'];
-  isYin: Scalars['Boolean']['output'];
   market: Array<Market>;
   marketParamsAssertionliveness?: Maybe<Scalars['Decimal']['output']>;
   marketParamsBondamount?: Maybe<Scalars['Decimal']['output']>;
   marketParamsBondcurrency?: Maybe<Scalars['String']['output']>;
-  marketParamsClaimstatement?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementNo?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementYesOrNumeric?: Maybe<Scalars['String']['output']>;
   marketParamsFeerate?: Maybe<Scalars['Int']['output']>;
   marketParamsOptimisticoraclev3?: Maybe<Scalars['String']['output']>;
   marketParamsUniswappositionmanager?: Maybe<Scalars['String']['output']>;
@@ -1036,7 +1040,6 @@ export type MarketGroup = {
   quoteTokenName?: Maybe<Scalars['String']['output']>;
   resource?: Maybe<Resource>;
   resourceId?: Maybe<Scalars['Int']['output']>;
-  vaultAddress?: Maybe<Scalars['String']['output']>;
 };
 
 
@@ -1120,7 +1123,8 @@ export type MarketGroupBy = {
   marketParamsAssertionliveness?: Maybe<Scalars['Decimal']['output']>;
   marketParamsBondamount?: Maybe<Scalars['Decimal']['output']>;
   marketParamsBondcurrency?: Maybe<Scalars['String']['output']>;
-  marketParamsClaimstatement?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementNo?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementYesOrNumeric?: Maybe<Scalars['String']['output']>;
   marketParamsFeerate?: Maybe<Scalars['Int']['output']>;
   marketParamsOptimisticoraclev3?: Maybe<Scalars['String']['output']>;
   marketParamsUniswappositionmanager?: Maybe<Scalars['String']['output']>;
@@ -1171,12 +1175,13 @@ export type MarketGroupCountAggregate = {
   factoryAddress: Scalars['Int']['output'];
   id: Scalars['Int']['output'];
   initializationNonce: Scalars['Int']['output'];
+  isBridged: Scalars['Int']['output'];
   isCumulative: Scalars['Int']['output'];
-  isYin: Scalars['Int']['output'];
   marketParamsAssertionliveness: Scalars['Int']['output'];
   marketParamsBondamount: Scalars['Int']['output'];
   marketParamsBondcurrency: Scalars['Int']['output'];
-  marketParamsClaimstatement: Scalars['Int']['output'];
+  marketParamsClaimstatementNo: Scalars['Int']['output'];
+  marketParamsClaimstatementYesOrNumeric: Scalars['Int']['output'];
   marketParamsFeerate: Scalars['Int']['output'];
   marketParamsOptimisticoraclev3: Scalars['Int']['output'];
   marketParamsUniswappositionmanager: Scalars['Int']['output'];
@@ -1187,7 +1192,6 @@ export type MarketGroupCountAggregate = {
   question: Scalars['Int']['output'];
   quoteTokenName: Scalars['Int']['output'];
   resourceId: Scalars['Int']['output'];
-  vaultAddress: Scalars['Int']['output'];
 };
 
 export type MarketGroupCountOrderByAggregateInput = {
@@ -1204,12 +1208,13 @@ export type MarketGroupCountOrderByAggregateInput = {
   factoryAddress?: InputMaybe<SortOrder>;
   id?: InputMaybe<SortOrder>;
   initializationNonce?: InputMaybe<SortOrder>;
+  isBridged?: InputMaybe<SortOrder>;
   isCumulative?: InputMaybe<SortOrder>;
-  isYin?: InputMaybe<SortOrder>;
   marketParamsAssertionliveness?: InputMaybe<SortOrder>;
   marketParamsBondamount?: InputMaybe<SortOrder>;
   marketParamsBondcurrency?: InputMaybe<SortOrder>;
-  marketParamsClaimstatement?: InputMaybe<SortOrder>;
+  marketParamsClaimstatementNo?: InputMaybe<SortOrder>;
+  marketParamsClaimstatementYesOrNumeric?: InputMaybe<SortOrder>;
   marketParamsFeerate?: InputMaybe<SortOrder>;
   marketParamsOptimisticoraclev3?: InputMaybe<SortOrder>;
   marketParamsUniswappositionmanager?: InputMaybe<SortOrder>;
@@ -1220,7 +1225,6 @@ export type MarketGroupCountOrderByAggregateInput = {
   question?: InputMaybe<SortOrder>;
   quoteTokenName?: InputMaybe<SortOrder>;
   resourceId?: InputMaybe<SortOrder>;
-  vaultAddress?: InputMaybe<SortOrder>;
 };
 
 export type MarketGroupGroupBy = {
@@ -1243,12 +1247,13 @@ export type MarketGroupGroupBy = {
   factoryAddress?: Maybe<Scalars['String']['output']>;
   id: Scalars['Int']['output'];
   initializationNonce?: Maybe<Scalars['String']['output']>;
+  isBridged: Scalars['Boolean']['output'];
   isCumulative: Scalars['Boolean']['output'];
-  isYin: Scalars['Boolean']['output'];
   marketParamsAssertionliveness?: Maybe<Scalars['Decimal']['output']>;
   marketParamsBondamount?: Maybe<Scalars['Decimal']['output']>;
   marketParamsBondcurrency?: Maybe<Scalars['String']['output']>;
-  marketParamsClaimstatement?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementNo?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementYesOrNumeric?: Maybe<Scalars['String']['output']>;
   marketParamsFeerate?: Maybe<Scalars['Int']['output']>;
   marketParamsOptimisticoraclev3?: Maybe<Scalars['String']['output']>;
   marketParamsUniswappositionmanager?: Maybe<Scalars['String']['output']>;
@@ -1259,7 +1264,6 @@ export type MarketGroupGroupBy = {
   question?: Maybe<Scalars['String']['output']>;
   quoteTokenName?: Maybe<Scalars['String']['output']>;
   resourceId?: Maybe<Scalars['Int']['output']>;
-  vaultAddress?: Maybe<Scalars['String']['output']>;
 };
 
 export type MarketGroupListRelationFilter = {
@@ -1283,12 +1287,13 @@ export type MarketGroupMaxAggregate = {
   factoryAddress?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['Int']['output']>;
   initializationNonce?: Maybe<Scalars['String']['output']>;
+  isBridged?: Maybe<Scalars['Boolean']['output']>;
   isCumulative?: Maybe<Scalars['Boolean']['output']>;
-  isYin?: Maybe<Scalars['Boolean']['output']>;
   marketParamsAssertionliveness?: Maybe<Scalars['Decimal']['output']>;
   marketParamsBondamount?: Maybe<Scalars['Decimal']['output']>;
   marketParamsBondcurrency?: Maybe<Scalars['String']['output']>;
-  marketParamsClaimstatement?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementNo?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementYesOrNumeric?: Maybe<Scalars['String']['output']>;
   marketParamsFeerate?: Maybe<Scalars['Int']['output']>;
   marketParamsOptimisticoraclev3?: Maybe<Scalars['String']['output']>;
   marketParamsUniswappositionmanager?: Maybe<Scalars['String']['output']>;
@@ -1299,7 +1304,6 @@ export type MarketGroupMaxAggregate = {
   question?: Maybe<Scalars['String']['output']>;
   quoteTokenName?: Maybe<Scalars['String']['output']>;
   resourceId?: Maybe<Scalars['Int']['output']>;
-  vaultAddress?: Maybe<Scalars['String']['output']>;
 };
 
 export type MarketGroupMaxOrderByAggregateInput = {
@@ -1316,12 +1320,13 @@ export type MarketGroupMaxOrderByAggregateInput = {
   factoryAddress?: InputMaybe<SortOrder>;
   id?: InputMaybe<SortOrder>;
   initializationNonce?: InputMaybe<SortOrder>;
+  isBridged?: InputMaybe<SortOrder>;
   isCumulative?: InputMaybe<SortOrder>;
-  isYin?: InputMaybe<SortOrder>;
   marketParamsAssertionliveness?: InputMaybe<SortOrder>;
   marketParamsBondamount?: InputMaybe<SortOrder>;
   marketParamsBondcurrency?: InputMaybe<SortOrder>;
-  marketParamsClaimstatement?: InputMaybe<SortOrder>;
+  marketParamsClaimstatementNo?: InputMaybe<SortOrder>;
+  marketParamsClaimstatementYesOrNumeric?: InputMaybe<SortOrder>;
   marketParamsFeerate?: InputMaybe<SortOrder>;
   marketParamsOptimisticoraclev3?: InputMaybe<SortOrder>;
   marketParamsUniswappositionmanager?: InputMaybe<SortOrder>;
@@ -1332,7 +1337,6 @@ export type MarketGroupMaxOrderByAggregateInput = {
   question?: InputMaybe<SortOrder>;
   quoteTokenName?: InputMaybe<SortOrder>;
   resourceId?: InputMaybe<SortOrder>;
-  vaultAddress?: InputMaybe<SortOrder>;
 };
 
 export type MarketGroupMinAggregate = {
@@ -1350,12 +1354,13 @@ export type MarketGroupMinAggregate = {
   factoryAddress?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['Int']['output']>;
   initializationNonce?: Maybe<Scalars['String']['output']>;
+  isBridged?: Maybe<Scalars['Boolean']['output']>;
   isCumulative?: Maybe<Scalars['Boolean']['output']>;
-  isYin?: Maybe<Scalars['Boolean']['output']>;
   marketParamsAssertionliveness?: Maybe<Scalars['Decimal']['output']>;
   marketParamsBondamount?: Maybe<Scalars['Decimal']['output']>;
   marketParamsBondcurrency?: Maybe<Scalars['String']['output']>;
-  marketParamsClaimstatement?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementNo?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementYesOrNumeric?: Maybe<Scalars['String']['output']>;
   marketParamsFeerate?: Maybe<Scalars['Int']['output']>;
   marketParamsOptimisticoraclev3?: Maybe<Scalars['String']['output']>;
   marketParamsUniswappositionmanager?: Maybe<Scalars['String']['output']>;
@@ -1366,7 +1371,6 @@ export type MarketGroupMinAggregate = {
   question?: Maybe<Scalars['String']['output']>;
   quoteTokenName?: Maybe<Scalars['String']['output']>;
   resourceId?: Maybe<Scalars['Int']['output']>;
-  vaultAddress?: Maybe<Scalars['String']['output']>;
 };
 
 export type MarketGroupMinOrderByAggregateInput = {
@@ -1383,12 +1387,13 @@ export type MarketGroupMinOrderByAggregateInput = {
   factoryAddress?: InputMaybe<SortOrder>;
   id?: InputMaybe<SortOrder>;
   initializationNonce?: InputMaybe<SortOrder>;
+  isBridged?: InputMaybe<SortOrder>;
   isCumulative?: InputMaybe<SortOrder>;
-  isYin?: InputMaybe<SortOrder>;
   marketParamsAssertionliveness?: InputMaybe<SortOrder>;
   marketParamsBondamount?: InputMaybe<SortOrder>;
   marketParamsBondcurrency?: InputMaybe<SortOrder>;
-  marketParamsClaimstatement?: InputMaybe<SortOrder>;
+  marketParamsClaimstatementNo?: InputMaybe<SortOrder>;
+  marketParamsClaimstatementYesOrNumeric?: InputMaybe<SortOrder>;
   marketParamsFeerate?: InputMaybe<SortOrder>;
   marketParamsOptimisticoraclev3?: InputMaybe<SortOrder>;
   marketParamsUniswappositionmanager?: InputMaybe<SortOrder>;
@@ -1399,7 +1404,6 @@ export type MarketGroupMinOrderByAggregateInput = {
   question?: InputMaybe<SortOrder>;
   quoteTokenName?: InputMaybe<SortOrder>;
   resourceId?: InputMaybe<SortOrder>;
-  vaultAddress?: InputMaybe<SortOrder>;
 };
 
 export type MarketGroupNullableRelationFilter = {
@@ -1430,12 +1434,13 @@ export type MarketGroupOrderByWithAggregationInput = {
   factoryAddress?: InputMaybe<SortOrderInput>;
   id?: InputMaybe<SortOrder>;
   initializationNonce?: InputMaybe<SortOrderInput>;
+  isBridged?: InputMaybe<SortOrder>;
   isCumulative?: InputMaybe<SortOrder>;
-  isYin?: InputMaybe<SortOrder>;
   marketParamsAssertionliveness?: InputMaybe<SortOrderInput>;
   marketParamsBondamount?: InputMaybe<SortOrderInput>;
   marketParamsBondcurrency?: InputMaybe<SortOrderInput>;
-  marketParamsClaimstatement?: InputMaybe<SortOrderInput>;
+  marketParamsClaimstatementNo?: InputMaybe<SortOrderInput>;
+  marketParamsClaimstatementYesOrNumeric?: InputMaybe<SortOrderInput>;
   marketParamsFeerate?: InputMaybe<SortOrderInput>;
   marketParamsOptimisticoraclev3?: InputMaybe<SortOrderInput>;
   marketParamsUniswappositionmanager?: InputMaybe<SortOrderInput>;
@@ -1446,7 +1451,6 @@ export type MarketGroupOrderByWithAggregationInput = {
   question?: InputMaybe<SortOrderInput>;
   quoteTokenName?: InputMaybe<SortOrderInput>;
   resourceId?: InputMaybe<SortOrderInput>;
-  vaultAddress?: InputMaybe<SortOrderInput>;
 };
 
 export type MarketGroupOrderByWithRelationInput = {
@@ -1465,13 +1469,14 @@ export type MarketGroupOrderByWithRelationInput = {
   factoryAddress?: InputMaybe<SortOrderInput>;
   id?: InputMaybe<SortOrder>;
   initializationNonce?: InputMaybe<SortOrderInput>;
+  isBridged?: InputMaybe<SortOrder>;
   isCumulative?: InputMaybe<SortOrder>;
-  isYin?: InputMaybe<SortOrder>;
   market?: InputMaybe<MarketOrderByRelationAggregateInput>;
   marketParamsAssertionliveness?: InputMaybe<SortOrderInput>;
   marketParamsBondamount?: InputMaybe<SortOrderInput>;
   marketParamsBondcurrency?: InputMaybe<SortOrderInput>;
-  marketParamsClaimstatement?: InputMaybe<SortOrderInput>;
+  marketParamsClaimstatementNo?: InputMaybe<SortOrderInput>;
+  marketParamsClaimstatementYesOrNumeric?: InputMaybe<SortOrderInput>;
   marketParamsFeerate?: InputMaybe<SortOrderInput>;
   marketParamsOptimisticoraclev3?: InputMaybe<SortOrderInput>;
   marketParamsUniswappositionmanager?: InputMaybe<SortOrderInput>;
@@ -1483,7 +1488,6 @@ export type MarketGroupOrderByWithRelationInput = {
   quoteTokenName?: InputMaybe<SortOrderInput>;
   resource?: InputMaybe<ResourceOrderByWithRelationInput>;
   resourceId?: InputMaybe<SortOrderInput>;
-  vaultAddress?: InputMaybe<SortOrderInput>;
 };
 
 export type MarketGroupScalarFieldEnum =
@@ -1500,12 +1504,13 @@ export type MarketGroupScalarFieldEnum =
   | 'factoryAddress'
   | 'id'
   | 'initializationNonce'
+  | 'isBridged'
   | 'isCumulative'
-  | 'isYin'
   | 'marketParamsAssertionliveness'
   | 'marketParamsBondamount'
   | 'marketParamsBondcurrency'
-  | 'marketParamsClaimstatement'
+  | 'marketParamsClaimstatementNo'
+  | 'marketParamsClaimstatementYesOrNumeric'
   | 'marketParamsFeerate'
   | 'marketParamsOptimisticoraclev3'
   | 'marketParamsUniswappositionmanager'
@@ -1515,8 +1520,7 @@ export type MarketGroupScalarFieldEnum =
   | 'owner'
   | 'question'
   | 'quoteTokenName'
-  | 'resourceId'
-  | 'vaultAddress';
+  | 'resourceId';
 
 export type MarketGroupScalarWhereWithAggregatesInput = {
   AND?: InputMaybe<Array<MarketGroupScalarWhereWithAggregatesInput>>;
@@ -1535,12 +1539,13 @@ export type MarketGroupScalarWhereWithAggregatesInput = {
   factoryAddress?: InputMaybe<StringNullableWithAggregatesFilter>;
   id?: InputMaybe<IntWithAggregatesFilter>;
   initializationNonce?: InputMaybe<StringNullableWithAggregatesFilter>;
+  isBridged?: InputMaybe<BoolWithAggregatesFilter>;
   isCumulative?: InputMaybe<BoolWithAggregatesFilter>;
-  isYin?: InputMaybe<BoolWithAggregatesFilter>;
   marketParamsAssertionliveness?: InputMaybe<DecimalNullableWithAggregatesFilter>;
   marketParamsBondamount?: InputMaybe<DecimalNullableWithAggregatesFilter>;
   marketParamsBondcurrency?: InputMaybe<StringNullableWithAggregatesFilter>;
-  marketParamsClaimstatement?: InputMaybe<StringNullableWithAggregatesFilter>;
+  marketParamsClaimstatementNo?: InputMaybe<StringNullableWithAggregatesFilter>;
+  marketParamsClaimstatementYesOrNumeric?: InputMaybe<StringNullableWithAggregatesFilter>;
   marketParamsFeerate?: InputMaybe<IntNullableWithAggregatesFilter>;
   marketParamsOptimisticoraclev3?: InputMaybe<StringNullableWithAggregatesFilter>;
   marketParamsUniswappositionmanager?: InputMaybe<StringNullableWithAggregatesFilter>;
@@ -1551,7 +1556,6 @@ export type MarketGroupScalarWhereWithAggregatesInput = {
   question?: InputMaybe<StringNullableWithAggregatesFilter>;
   quoteTokenName?: InputMaybe<StringNullableWithAggregatesFilter>;
   resourceId?: InputMaybe<IntNullableWithAggregatesFilter>;
-  vaultAddress?: InputMaybe<StringNullableWithAggregatesFilter>;
 };
 
 export type MarketGroupSumAggregate = {
@@ -1602,13 +1606,14 @@ export type MarketGroupWhereInput = {
   factoryAddress?: InputMaybe<StringNullableFilter>;
   id?: InputMaybe<IntFilter>;
   initializationNonce?: InputMaybe<StringNullableFilter>;
+  isBridged?: InputMaybe<BoolFilter>;
   isCumulative?: InputMaybe<BoolFilter>;
-  isYin?: InputMaybe<BoolFilter>;
   market?: InputMaybe<MarketListRelationFilter>;
   marketParamsAssertionliveness?: InputMaybe<DecimalNullableFilter>;
   marketParamsBondamount?: InputMaybe<DecimalNullableFilter>;
   marketParamsBondcurrency?: InputMaybe<StringNullableFilter>;
-  marketParamsClaimstatement?: InputMaybe<StringNullableFilter>;
+  marketParamsClaimstatementNo?: InputMaybe<StringNullableFilter>;
+  marketParamsClaimstatementYesOrNumeric?: InputMaybe<StringNullableFilter>;
   marketParamsFeerate?: InputMaybe<IntNullableFilter>;
   marketParamsOptimisticoraclev3?: InputMaybe<StringNullableFilter>;
   marketParamsUniswappositionmanager?: InputMaybe<StringNullableFilter>;
@@ -1620,7 +1625,6 @@ export type MarketGroupWhereInput = {
   quoteTokenName?: InputMaybe<StringNullableFilter>;
   resource?: InputMaybe<ResourceNullableRelationFilter>;
   resourceId?: InputMaybe<IntNullableFilter>;
-  vaultAddress?: InputMaybe<StringNullableFilter>;
 };
 
 export type MarketGroupWhereUniqueInput = {
@@ -1643,13 +1647,14 @@ export type MarketGroupWhereUniqueInput = {
   factoryAddress?: InputMaybe<StringNullableFilter>;
   id?: InputMaybe<Scalars['Int']['input']>;
   initializationNonce?: InputMaybe<StringNullableFilter>;
+  isBridged?: InputMaybe<BoolFilter>;
   isCumulative?: InputMaybe<BoolFilter>;
-  isYin?: InputMaybe<BoolFilter>;
   market?: InputMaybe<MarketListRelationFilter>;
   marketParamsAssertionliveness?: InputMaybe<DecimalNullableFilter>;
   marketParamsBondamount?: InputMaybe<DecimalNullableFilter>;
   marketParamsBondcurrency?: InputMaybe<StringNullableFilter>;
-  marketParamsClaimstatement?: InputMaybe<StringNullableFilter>;
+  marketParamsClaimstatementNo?: InputMaybe<StringNullableFilter>;
+  marketParamsClaimstatementYesOrNumeric?: InputMaybe<StringNullableFilter>;
   marketParamsFeerate?: InputMaybe<IntNullableFilter>;
   marketParamsOptimisticoraclev3?: InputMaybe<StringNullableFilter>;
   marketParamsUniswappositionmanager?: InputMaybe<StringNullableFilter>;
@@ -1661,7 +1666,6 @@ export type MarketGroupWhereUniqueInput = {
   quoteTokenName?: InputMaybe<StringNullableFilter>;
   resource?: InputMaybe<ResourceNullableRelationFilter>;
   resourceId?: InputMaybe<IntNullableFilter>;
-  vaultAddress?: InputMaybe<StringNullableFilter>;
 };
 
 export type MarketListRelationFilter = {
@@ -1687,7 +1691,8 @@ export type MarketMaxAggregate = {
   marketParamsAssertionliveness?: Maybe<Scalars['Decimal']['output']>;
   marketParamsBondamount?: Maybe<Scalars['Decimal']['output']>;
   marketParamsBondcurrency?: Maybe<Scalars['String']['output']>;
-  marketParamsClaimstatement?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementNo?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementYesOrNumeric?: Maybe<Scalars['String']['output']>;
   marketParamsFeerate?: Maybe<Scalars['Int']['output']>;
   marketParamsOptimisticoraclev3?: Maybe<Scalars['String']['output']>;
   marketParamsUniswappositionmanager?: Maybe<Scalars['String']['output']>;
@@ -1717,7 +1722,8 @@ export type MarketMaxOrderByAggregateInput = {
   marketParamsAssertionliveness?: InputMaybe<SortOrder>;
   marketParamsBondamount?: InputMaybe<SortOrder>;
   marketParamsBondcurrency?: InputMaybe<SortOrder>;
-  marketParamsClaimstatement?: InputMaybe<SortOrder>;
+  marketParamsClaimstatementNo?: InputMaybe<SortOrder>;
+  marketParamsClaimstatementYesOrNumeric?: InputMaybe<SortOrder>;
   marketParamsFeerate?: InputMaybe<SortOrder>;
   marketParamsOptimisticoraclev3?: InputMaybe<SortOrder>;
   marketParamsUniswappositionmanager?: InputMaybe<SortOrder>;
@@ -1748,7 +1754,8 @@ export type MarketMinAggregate = {
   marketParamsAssertionliveness?: Maybe<Scalars['Decimal']['output']>;
   marketParamsBondamount?: Maybe<Scalars['Decimal']['output']>;
   marketParamsBondcurrency?: Maybe<Scalars['String']['output']>;
-  marketParamsClaimstatement?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementNo?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementYesOrNumeric?: Maybe<Scalars['String']['output']>;
   marketParamsFeerate?: Maybe<Scalars['Int']['output']>;
   marketParamsOptimisticoraclev3?: Maybe<Scalars['String']['output']>;
   marketParamsUniswappositionmanager?: Maybe<Scalars['String']['output']>;
@@ -1778,7 +1785,8 @@ export type MarketMinOrderByAggregateInput = {
   marketParamsAssertionliveness?: InputMaybe<SortOrder>;
   marketParamsBondamount?: InputMaybe<SortOrder>;
   marketParamsBondcurrency?: InputMaybe<SortOrder>;
-  marketParamsClaimstatement?: InputMaybe<SortOrder>;
+  marketParamsClaimstatementNo?: InputMaybe<SortOrder>;
+  marketParamsClaimstatementYesOrNumeric?: InputMaybe<SortOrder>;
   marketParamsFeerate?: InputMaybe<SortOrder>;
   marketParamsOptimisticoraclev3?: InputMaybe<SortOrder>;
   marketParamsUniswappositionmanager?: InputMaybe<SortOrder>;
@@ -1822,7 +1830,8 @@ export type MarketOrderByWithAggregationInput = {
   marketParamsAssertionliveness?: InputMaybe<SortOrderInput>;
   marketParamsBondamount?: InputMaybe<SortOrderInput>;
   marketParamsBondcurrency?: InputMaybe<SortOrderInput>;
-  marketParamsClaimstatement?: InputMaybe<SortOrderInput>;
+  marketParamsClaimstatementNo?: InputMaybe<SortOrderInput>;
+  marketParamsClaimstatementYesOrNumeric?: InputMaybe<SortOrderInput>;
   marketParamsFeerate?: InputMaybe<SortOrderInput>;
   marketParamsOptimisticoraclev3?: InputMaybe<SortOrderInput>;
   marketParamsUniswappositionmanager?: InputMaybe<SortOrderInput>;
@@ -1852,7 +1861,8 @@ export type MarketOrderByWithRelationInput = {
   marketParamsAssertionliveness?: InputMaybe<SortOrderInput>;
   marketParamsBondamount?: InputMaybe<SortOrderInput>;
   marketParamsBondcurrency?: InputMaybe<SortOrderInput>;
-  marketParamsClaimstatement?: InputMaybe<SortOrderInput>;
+  marketParamsClaimstatementNo?: InputMaybe<SortOrderInput>;
+  marketParamsClaimstatementYesOrNumeric?: InputMaybe<SortOrderInput>;
   marketParamsFeerate?: InputMaybe<SortOrderInput>;
   marketParamsOptimisticoraclev3?: InputMaybe<SortOrderInput>;
   marketParamsUniswappositionmanager?: InputMaybe<SortOrderInput>;
@@ -2046,7 +2056,8 @@ export type MarketScalarFieldEnum =
   | 'marketParamsAssertionliveness'
   | 'marketParamsBondamount'
   | 'marketParamsBondcurrency'
-  | 'marketParamsClaimstatement'
+  | 'marketParamsClaimstatementNo'
+  | 'marketParamsClaimstatementYesOrNumeric'
   | 'marketParamsFeerate'
   | 'marketParamsOptimisticoraclev3'
   | 'marketParamsUniswappositionmanager'
@@ -2078,7 +2089,8 @@ export type MarketScalarWhereWithAggregatesInput = {
   marketParamsAssertionliveness?: InputMaybe<DecimalNullableWithAggregatesFilter>;
   marketParamsBondamount?: InputMaybe<DecimalNullableWithAggregatesFilter>;
   marketParamsBondcurrency?: InputMaybe<StringNullableWithAggregatesFilter>;
-  marketParamsClaimstatement?: InputMaybe<StringNullableWithAggregatesFilter>;
+  marketParamsClaimstatementNo?: InputMaybe<StringNullableWithAggregatesFilter>;
+  marketParamsClaimstatementYesOrNumeric?: InputMaybe<StringNullableWithAggregatesFilter>;
   marketParamsFeerate?: InputMaybe<IntNullableWithAggregatesFilter>;
   marketParamsOptimisticoraclev3?: InputMaybe<StringNullableWithAggregatesFilter>;
   marketParamsUniswappositionmanager?: InputMaybe<StringNullableWithAggregatesFilter>;
@@ -2146,7 +2158,8 @@ export type MarketWhereInput = {
   marketParamsAssertionliveness?: InputMaybe<DecimalNullableFilter>;
   marketParamsBondamount?: InputMaybe<DecimalNullableFilter>;
   marketParamsBondcurrency?: InputMaybe<StringNullableFilter>;
-  marketParamsClaimstatement?: InputMaybe<StringNullableFilter>;
+  marketParamsClaimstatementNo?: InputMaybe<StringNullableFilter>;
+  marketParamsClaimstatementYesOrNumeric?: InputMaybe<StringNullableFilter>;
   marketParamsFeerate?: InputMaybe<IntNullableFilter>;
   marketParamsOptimisticoraclev3?: InputMaybe<StringNullableFilter>;
   marketParamsUniswappositionmanager?: InputMaybe<StringNullableFilter>;
@@ -2182,7 +2195,8 @@ export type MarketWhereUniqueInput = {
   marketParamsAssertionliveness?: InputMaybe<DecimalNullableFilter>;
   marketParamsBondamount?: InputMaybe<DecimalNullableFilter>;
   marketParamsBondcurrency?: InputMaybe<StringNullableFilter>;
-  marketParamsClaimstatement?: InputMaybe<StringNullableFilter>;
+  marketParamsClaimstatementNo?: InputMaybe<StringNullableFilter>;
+  marketParamsClaimstatementYesOrNumeric?: InputMaybe<StringNullableFilter>;
   marketParamsFeerate?: InputMaybe<IntNullableFilter>;
   marketParamsOptimisticoraclev3?: InputMaybe<StringNullableFilter>;
   marketParamsUniswappositionmanager?: InputMaybe<StringNullableFilter>;
