@@ -23,17 +23,17 @@ import {
 import { Switch } from '@sapience/ui/components/ui/switch';
 import { useToast } from '@sapience/ui/hooks/use-toast';
 import { useMutation } from '@tanstack/react-query';
-import { AlertCircle, Loader2, Plus, Trash, ArrowLeft } from 'lucide-react';
+import { AlertCircle, ArrowLeft, Loader2, Plus, Trash } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { isAddress } from 'viem';
 import { useAccount, useChainId, useSignMessage } from 'wagmi';
 import { z } from 'zod';
 
 import {
-  FOCUS_AREAS,
   DEFAULT_FOCUS_AREA,
+  FOCUS_AREAS,
 } from '../../lib/constants/focusAreas';
 import { ADMIN_AUTHENTICATE_MSG } from '~/lib/constants';
 
@@ -137,7 +137,11 @@ const marketSchema = z
     // id is client-side, not validated here for API payload
     marketQuestion: z.string().trim().min(1, 'Market Question is required'),
     optionName: z.string().trim().optional(), // Align with MarketInput type
-    claimStatement: z.string().trim().min(1, 'Claim Statement is required'),
+    claimStatementYesOrNumeric: z
+      .string()
+      .trim()
+      .min(1, 'Claim Statement is required'),
+    claimStatementNo: z.string().trim().optional(),
     startTime: z.coerce
       .number()
       .int()
@@ -499,6 +503,7 @@ const CombinedMarketDialog = () => {
       }),
       markets: marketsToValidate, // Use the version without 'id'
     };
+    console.log('formData', formData, combinedSchema.parse(formData));
 
     try {
       combinedSchema.parse(formData);
