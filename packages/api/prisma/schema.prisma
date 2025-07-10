@@ -9,6 +9,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+generator typegraphql {
+  provider = "typegraphql-prisma"
+  contextPrismaKey = "customPrisma"
+}
+
 model cache_candle {
   id                     Int      @id(map: "PK_7cccb7fd4c9f01146f390945d47") @default(autoincrement())
   createdAt              DateTime @default(now()) @db.Timestamp(6)

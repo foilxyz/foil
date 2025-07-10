@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import { initializeDataSource } from './db';
+import prisma from './db';
 import { expressMiddleware } from '@apollo/server/express4';
 import { createLoaders } from './graphql/loaders';
 import { app } from './app';
@@ -45,6 +46,7 @@ const startServer = async () => {
     expressMiddleware(apolloServer, {
       context: async () => ({
         loaders: createLoaders(),
+        prisma: prisma,
       }),
     })
   );
