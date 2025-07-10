@@ -49,7 +49,7 @@ export interface UsePositionsResult {
  * @param marketAddress - The address of the market contract
  * @param marketId - Optional market ID to filter positions by
  * @param chainId - The chain ID where the market exists
- * @param sapienceAbi - The ABI of the Foil contract
+ * @param sapienceAbi - The ABI of the Sapience contract
  * @param enabled - Whether to enable the queries
  * @returns {UsePositionsResult} Object containing:
  *   - lpPositions: Object map of liquidity positions by position ID

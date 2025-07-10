@@ -13,12 +13,12 @@ const router = Router();
 router.post(
   '/estimate',
   handleAsyncErrors(async (req, res) => {
-    const { walletAddress, chainId, marketAddress, epochId } = req.body;
+    const { walletAddress, chainId, marketAddress, marketId } = req.body;
 
     const result = await getMarketGroupAndMarket(
       chainId,
       marketAddress.toLowerCase(),
-      epochId
+      marketId
     );
 
     if (!result) {

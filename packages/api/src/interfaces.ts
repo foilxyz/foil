@@ -18,13 +18,13 @@ export enum EventType {
 }
 
 export interface TradePositionEventLog {
-  epochId: string;
+  marketId: string;
   positionId: string;
   collateralAmount: string;
-  vEthAmount: string;
-  vGasAmount: string;
-  borrowedVEth: string;
-  borrowedVGas: string;
+  vQuoteAmount: string;
+  vBaseAmount: string;
+  borrowedVQuote: string;
+  borrowedVBase: string;
   initialPrice: string;
   finalPrice: string;
   tradeRatio: string;
@@ -84,8 +84,8 @@ export interface MarketData {
   startTime: bigint;
   endTime: bigint;
   pool: `0x${string}`;
-  ethToken: string;
-  gasToken: string;
+  quoteToken: string;
+  baseToken: string;
   minPriceD18: bigint;
   maxPriceD18: bigint;
   baseAssetMinPriceTick: number;
@@ -140,15 +140,15 @@ export enum EventTransactionType {
 
 export interface PositionUpdatedEventLog {
   sender: string;
-  epochId: string;
+  marketId: string;
   positionId: string;
   transactionType: EventTransactionType;
   deltaCollateral: string;
   collateralAmount: string;
-  vEthAmount: string;
-  vGasAmount: string;
-  borrowedVEth: string;
-  borrowedVGas: string;
+  vQuoteAmount: string;
+  vBaseAmount: string;
+  borrowedVQuote: string;
+  borrowedVBase: string;
 }
 export interface IResourcePriceIndexer {
   client?: PublicClient;
