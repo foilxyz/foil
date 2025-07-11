@@ -766,9 +766,7 @@ const getMarketCandles = {
       chainId: z
         .string()
         .describe('The chain ID where the market group exists'),
-      marketId: z
-        .string()
-        .describe('The market ID to get candles for'),
+      marketId: z.string().describe('The market ID to get candles for'),
       from: z.string().describe('Start timestamp in seconds'),
       to: z.string().describe('End timestamp in seconds'),
       interval: z.string().describe('Interval between candles in seconds'),
@@ -960,9 +958,7 @@ const getIndexCandles = {
       chainId: z
         .string()
         .describe('The chain ID where the market group exists'),
-      marketId: z
-        .string()
-        .describe('The market ID to get candles for'),
+      marketId: z.string().describe('The market ID to get candles for'),
       from: z.string().describe('Start timestamp in seconds'),
       to: z.string().describe('End timestamp in seconds'),
       interval: z.string().describe('Interval between candles in seconds'),

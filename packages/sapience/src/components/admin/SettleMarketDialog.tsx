@@ -274,7 +274,8 @@ const SettleMarketDialog = ({
 
   // Combined loading and error states
   const isLoading =
-    isLoadingMarketAndMarketGroupData || (!!connectedAddress && isLoadingAllowance); // Check connectedAddress existence
+    isLoadingMarketAndMarketGroupData ||
+    (!!connectedAddress && isLoadingAllowance); // Check connectedAddress existence
   const error = marketAndMarketGroupDataError || allowanceError;
 
   const requiresApproval =

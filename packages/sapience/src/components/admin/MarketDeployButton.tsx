@@ -159,7 +159,7 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
         startingSqrtPriceX96: BigInt(market.startingSqrtPriceX96!),
         baseAssetMinPriceTick: minPriceTickNum,
         baseAssetMaxPriceTick: maxPriceTickNum,
-        salt: salt,
+        salt,
         claimStatementYesOrNumeric:
           claimStatementHexYesOrNumeric as `0x${string}`,
         claimStatementNo: claimStatementHexNo as `0x${string}`,

@@ -166,7 +166,7 @@ export function useCreateLP({
 
       // Prepare the parameters for the createLiquidityPosition function
       const liquidityParams = {
-        marketId: marketId,
+        marketId,
         lowerTick: BigInt(lowPriceTick),
         upperTick: BigInt(highPriceTick),
         amountTokenA: adjustedBaseToken,
