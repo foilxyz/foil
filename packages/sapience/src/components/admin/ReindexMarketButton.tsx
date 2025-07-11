@@ -47,7 +47,7 @@ const ReindexMarketButton: React.FC<ReindexMarketButtonProps> = ({
           address: marketGroupAddress, // API expects 'address'
           signature,
           timestamp,
-          epochId: 0, // Pass 0 as epochId
+          marketId: 0,
         }),
       });
 

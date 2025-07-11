@@ -78,7 +78,7 @@ const SimpleLiquidityWrapper: React.FC<SimpleLiquidityWrapperProps> = ({
   const marketDetails = {
     marketAddress: marketAddress as `0x${string}`,
     chainId: chainId as number,
-    marketId: marketContractData.epochId,
+    marketId: marketContractData.marketId,
     marketAbi: abi,
     collateralAssetTicker,
     collateralAssetAddress: collateralAssetAddress as `0x${string}`,

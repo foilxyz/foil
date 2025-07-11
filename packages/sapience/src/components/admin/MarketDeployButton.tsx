@@ -217,7 +217,7 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>Deploy Market (Epoch)</DialogTitle>
+          <DialogTitle>Deploy Market</DialogTitle>
           <DialogDescription>
             Deploy market ID {market.marketId} for group {marketGroupAddress} on
             chain {chainId}

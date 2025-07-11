@@ -511,7 +511,7 @@ const getPositions = {
           lowPriceTick
           lpBaseToken
           lpQuoteToken
-          market { # Changed from epoch to market
+          market {
             id
             marketId
             startTimestamp
@@ -768,7 +768,7 @@ const getMarketCandles = {
         .describe('The chain ID where the market group exists'),
       marketId: z
         .string()
-        .describe('The market ID (epoch ID) to get candles for'),
+        .describe('The market ID to get candles for'),
       from: z.string().describe('Start timestamp in seconds'),
       to: z.string().describe('End timestamp in seconds'),
       interval: z.string().describe('Interval between candles in seconds'),
@@ -784,7 +784,7 @@ const getMarketCandles = {
   }: {
     address: string;
     chainId: string;
-    marketId: string; // Changed from epochId
+    marketId: string;
     from: string;
     to: string;
     interval: string;
@@ -809,7 +809,7 @@ const getMarketCandles = {
     const result = await executeGraphQLQuery(query, {
       address,
       chainId: parseInt(chainId),
-      marketId, // Changed from epochId
+      marketId,
       from: parseInt(from),
       to: parseInt(to),
       interval: intervalSeconds,
@@ -962,7 +962,7 @@ const getIndexCandles = {
         .describe('The chain ID where the market group exists'),
       marketId: z
         .string()
-        .describe('The market ID (epoch ID) to get candles for'),
+        .describe('The market ID to get candles for'),
       from: z.string().describe('Start timestamp in seconds'),
       to: z.string().describe('End timestamp in seconds'),
       interval: z.string().describe('Interval between candles in seconds'),
@@ -978,7 +978,7 @@ const getIndexCandles = {
   }: {
     address: string;
     chainId: string;
-    marketId: string; // Changed from epochId
+    marketId: string;
     from: string;
     to: string;
     interval: string;
@@ -1003,7 +1003,7 @@ const getIndexCandles = {
     const result = await executeGraphQLQuery(query, {
       address,
       chainId: parseInt(chainId),
-      marketId, // Changed from epochId
+      marketId,
       from: parseInt(from),
       to: parseInt(to),
       interval: intervalSeconds,
