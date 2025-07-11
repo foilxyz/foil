@@ -103,6 +103,7 @@ export type MarketGroup = {
   baseTokenName?: Maybe<Scalars['String']['output']>;
   category?: Maybe<Category>;
   chainId: Scalars['Int']['output'];
+  classification: Scalars['String']['output'];
   collateralAsset?: Maybe<Scalars['String']['output']>;
   collateralDecimals?: Maybe<Scalars['Int']['output']>;
   collateralSymbol?: Maybe<Scalars['String']['output']>;
@@ -660,6 +661,7 @@ export type MarketGroupResolvers<
     ContextType
   >;
   chainId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  classification?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   collateralAsset?: Resolver<
     Maybe<ResolversTypes['String']>,
     ParentType,

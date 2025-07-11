@@ -62,6 +62,7 @@ type MarketGroup {
   baseTokenName: String
   category: Category
   chainId: Int!
+  classification: String!
   collateralAsset: String
   collateralDecimals: Int
   collateralSymbol: String

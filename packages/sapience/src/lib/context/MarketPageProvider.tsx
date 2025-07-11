@@ -12,7 +12,6 @@ import {
 } from '~/hooks/contract';
 import { useMarket } from '~/hooks/graphql/useMarket';
 import type { MarketGroupClassification } from '~/lib/types';
-import { getMarketGroupClassification } from '~/lib/utils/marketUtils';
 
 interface MarketDataContract {
   epochId: bigint;
@@ -164,10 +163,10 @@ export function MarketPageProvider({
       return null;
     }
 
-    // Assuming GraphQL provides marketData.marketGroup structured appropriately
-    // for all cases, including single markets (e.g., marketGroup.markets = [singleMarket]).
-    // getMarketGroupClassification handles cases where marketGroup.markets is undefined or empty.
-    return getMarketGroupClassification(marketData.marketGroup || {});
+    return (
+      (marketData.marketGroup?.classification as MarketGroupClassification) ||
+      null
+    );
   }, [marketData]);
 
   const value = {

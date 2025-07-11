@@ -162,4 +162,59 @@ export class MarketGroupResolver {
       throw new Error('Failed to fetch markets');
     }
   }
+
+  @FieldResolver(() => String)
+  async classification(
+    @Root() marketGroup: market_group & { market?: market[] }
+  ): Promise<string> {
+    try {
+      let markets = marketGroup.market;
+
+      if (!markets) {
+        markets = await prisma.market.findMany({
+          where: { marketGroupId: marketGroup.id },
+        });
+      }
+
+      if (!markets?.length) {
+        console.warn(
+          '[classification] Invalid or empty market group data, defaulting to NUMERIC.'
+        );
+        return '3'; // numeric based on frontend enum
+      }
+
+      if (markets.length > 1) {
+        const endTimeCounts = new Map<string | number, number>();
+        for (const market of markets) {
+          if (
+            market.endTimestamp !== null &&
+            market.endTimestamp !== undefined
+          ) {
+            const key =
+              typeof market.endTimestamp === 'number' ||
+              typeof market.endTimestamp === 'string'
+                ? market.endTimestamp
+                : String(market.endTimestamp);
+            endTimeCounts.set(key, (endTimeCounts.get(key) || 0) + 1);
+          }
+        }
+
+        for (const count of Array.from(endTimeCounts.values())) {
+          if (count > 1) {
+            return '1'; // multiple choice based on frontend enum
+          }
+        }
+      }
+
+      // Check for YES_NO based on baseTokenName
+      if (marketGroup.baseTokenName === 'Yes') {
+        return '2'; // yes no based on frontend enum
+      }
+
+      return '3'; // numeric based on frontend enum
+    } catch (error) {
+      console.error('Error computing market group classification:', error);
+      return '3'; // default to numeric on error
+    }
+  }
 }

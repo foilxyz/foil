@@ -8,7 +8,6 @@ import { print } from 'graphql';
 import { useEffect, useState } from 'react';
 
 import type { MarketGroupClassification } from '../../lib/types';
-import { getMarketGroupClassification } from '../../lib/utils/marketUtils';
 import {
   findActiveMarkets,
   foilApi,
@@ -27,6 +26,7 @@ const MARKET_GROUP_QUERY = gql`
       quoteTokenName
       collateralSymbol
       collateralAsset
+      classification
       markets {
         optionName
         id
@@ -96,9 +96,9 @@ export const useMarketGroup = ({
     }
   }, [marketGroupData]);
 
-  const marketClassification = marketGroupData
-    ? getMarketGroupClassification(marketGroupData)
-    : undefined;
+  const marketClassification = marketGroupData?.classification as
+    | MarketGroupClassification
+    | undefined;
 
   return {
     marketGroupData,
