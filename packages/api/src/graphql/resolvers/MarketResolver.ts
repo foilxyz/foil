@@ -78,7 +78,4 @@ export class MarketResolver {
       return null;
     }
   }
-
 }
-
-
