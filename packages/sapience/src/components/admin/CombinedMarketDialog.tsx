@@ -31,11 +31,11 @@ import { isAddress } from 'viem';
 import { useAccount, useChainId, useSignMessage } from 'wagmi';
 import { z } from 'zod';
 
+import { ADMIN_AUTHENTICATE_MSG } from '~/lib/constants';
 import {
   DEFAULT_FOCUS_AREA,
   FOCUS_AREAS,
 } from '../../lib/constants/focusAreas';
-import { ADMIN_AUTHENTICATE_MSG } from '~/lib/constants';
 
 import MarketFormFields, { type MarketInput } from './MarketFormFields'; // Import shared form and type
 
@@ -62,7 +62,7 @@ const DEFAULT_MIN_TRADE_SIZE = '10000';
 const DEFAULT_SQRT_PRICE = '56022770974786143748341366784';
 const DEFAULT_MIN_PRICE_TICK = '-92200';
 const DEFAULT_MAX_PRICE_TICK = '0';
-const DEFAULT_FACTORY_ADDRESS = '0x2492c9d2955448181a3CD2a3d5207714949ED0f6';
+const DEFAULT_FACTORY_ADDRESS = '0x65A718050cb7D66671c8a924dD1F78Db3Abd2A54';
 
 // Type definitions (MarketInput is now imported)
 interface MarketParamsInput {
