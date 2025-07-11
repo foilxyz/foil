@@ -79,11 +79,6 @@ export class MarketResolver {
     }
   }
 
-  @FieldResolver(() => String, { nullable: true })
-  async startingSqrtPriceX96(@Root() market: market): Promise<string | null> {
-    // Explicitly convert Prisma Decimal to string to avoid scientific notation
-    return market.startingSqrtPriceX96?.toString() || null;
-  }
 }
 
 
