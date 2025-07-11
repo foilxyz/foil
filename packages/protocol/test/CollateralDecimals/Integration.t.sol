@@ -6,6 +6,7 @@ import "../../src/market/storage/MarketGroup.sol";
 import "../../src/market/storage/Position.sol";
 import "../../src/market/libraries/DecimalMath.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "../../src/market/storage/Errors.sol";
 
 // Simple test to verify the integration of decimal handling in Position.updateCollateral
 contract CollateralDecimalsIntegrationTest is Test {
@@ -60,11 +61,7 @@ contract CollateralDecimalsIntegrationTest is Test {
         int256 delta = position.updateCollateral(newTotal18);
 
         assertEq(delta, int256(10 * 1e18), "Delta should be 10e18");
-        assertEq(
-            position.depositedCollateralAmount,
-            newTotal18,
-            "Should update to 60e18"
-        );
+        assertEq(position.depositedCollateralAmount, newTotal18, "Should update to 60e18");
     }
 
     function test_UpdateCollateralDecrease() public {
@@ -88,11 +85,7 @@ contract CollateralDecimalsIntegrationTest is Test {
         int256 delta = position.updateCollateral(newTotal18);
 
         assertEq(delta, -int256(20 * 1e18), "Delta should be -20e18");
-        assertEq(
-            position.depositedCollateralAmount,
-            newTotal18,
-            "Should update to 30e18"
-        );
+        assertEq(position.depositedCollateralAmount, newTotal18, "Should update to 30e18");
     }
 
     function test_MinCollateralCheck() public {
@@ -107,7 +100,8 @@ contract CollateralDecimalsIntegrationTest is Test {
         position.depositedCollateralAmount = 9999 * 1e18; // Just below 10,000 in 18 decimals
 
         // Should revert with CollateralBelowMin error
-        vm.expectRevert();
+        // vm.expectRevert();
+        vm.expectRevert(abi.encodeWithSelector(Errors.CollateralBelowMin.selector, 9999 * 1e18, 10000 * 1e18));
         position.afterTradeCheck();
     }
 
@@ -135,19 +129,12 @@ contract CollateralDecimalsIntegrationTest is Test {
             abi.encode(true)
         );
 
-        uint256 withdrawn = marketGroup.withdrawCollateral(
-            USER,
-            withdrawAmount18
-        );
+        uint256 withdrawn = marketGroup.withdrawCollateral(USER, withdrawAmount18);
 
-        assertEq(
-            withdrawn,
-            withdrawAmount18,
-            "Should return amount in 18 decimals"
-        );
+        assertEq(withdrawn, withdrawAmount18, "Should return amount in 18 decimals");
     }
 
-    function test_PrecisionEdgeCases() public {
+    function test_PrecisionEdgeCases() public view {
         MarketGroup.Data storage marketGroup = MarketGroup.load();
 
         // Test amount that doesn't divide evenly
@@ -159,10 +146,6 @@ contract CollateralDecimalsIntegrationTest is Test {
 
         // Converting back loses precision
         uint256 backTo18 = marketGroup.normalizeCollateralAmount(odd8);
-        assertEq(
-            backTo18,
-            12345678900000000000,
-            "Lost precision in least significant digits"
-        );
+        assertEq(backTo18, 12345678900000000000, "Lost precision in least significant digits");
     }
 }
