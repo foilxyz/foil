@@ -25,6 +25,7 @@ import type { EnrichedMarketGroup } from '~/hooks/graphql/useMarketGroups';
 import { shortenAddress, foilApi } from '~/lib/utils/util';
 
 import AddMarketDialog from './AddMarketDialog';
+import EnableBridgedMarketGroupButton from './EnableBridgedMarketGroupButton';
 import MarketDeployButton from './MarketDeployButton';
 import MarketGroupDeployButton from './MarketGroupDeployButton';
 import OwnershipDialog from './OwnershipDialog';
@@ -340,9 +341,16 @@ const ActionsCell = ({ group }: { group: EnrichedMarketGroup }) => {
     group.chainId
   );
 
+  // Check if this is a bridged market group that needs to be enabled
+  const isGroupEnabled = false; // TODO: Implement this - check if group is enabled on bridge
+  const needsEnable = group.address && group.isBridged && !isGroupEnabled;
+
   if (group.address) {
     return (
       <div className="flex items-center gap-2 justify-end">
+        {needsEnable && (
+          <EnableBridgedMarketGroupButton group={group} />
+        )}
         <Dialog open={marketsDialogOpen} onOpenChange={setMarketsDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm">
