@@ -111,6 +111,7 @@ export type MarketGroup = {
   factoryAddress?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   initializationNonce?: Maybe<Scalars['String']['output']>;
+  isBridged: Scalars['Boolean']['output'];
   isCumulative: Scalars['Boolean']['output'];
   marketParamsAssertionliveness?: Maybe<Scalars['String']['output']>;
   marketParamsBondamount?: Maybe<Scalars['String']['output']>;
@@ -695,6 +696,7 @@ export type MarketGroupResolvers<
     ParentType,
     ContextType
   >;
+  isBridged?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   isCumulative?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   marketParamsAssertionliveness?: Resolver<
     Maybe<ResolversTypes['String']>,
