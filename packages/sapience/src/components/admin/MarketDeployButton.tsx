@@ -17,10 +17,10 @@ import {
 import { sapienceAbi } from '@sapience/ui/lib/abi';
 import type { MarketType } from '@sapience/ui/types';
 import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { toBytes, bytesToHex } from 'viem';
+import { useEffect, useState } from 'react';
 import type { Address } from 'viem';
-import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { bytesToHex, toBytes } from 'viem';
+import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 
 interface MarketDeployButtonProps {
   market: MarketType; // Use the adjusted market type
@@ -152,16 +152,18 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
       // Generate salt on the fly
       const salt = BigInt(Math.floor(Math.random() * 1e18));
 
-      const args = [
-        BigInt(startTimeNum),
-        BigInt(endTimeNum),
-        BigInt(market.startingSqrtPriceX96!),
-        minPriceTickNum,
-        maxPriceTickNum,
-        salt,
-        claimStatementHexYesOrNumeric as `0x${string}`,
-        claimStatementHexNo as `0x${string}`,
-      ] as const;
+      // Create MarketCreationParams struct
+      const args = {
+        startTime: BigInt(startTimeNum),
+        endTime: BigInt(endTimeNum),
+        startingSqrtPriceX96: BigInt(market.startingSqrtPriceX96!),
+        baseAssetMinPriceTick: minPriceTickNum,
+        baseAssetMaxPriceTick: maxPriceTickNum,
+        salt: salt,
+        claimStatementYesOrNumeric:
+          claimStatementHexYesOrNumeric as `0x${string}`,
+        claimStatementNo: claimStatementHexNo as `0x${string}`,
+      };
 
       console.log('Calling writeContract (createMarket) with args:', args);
       console.log('Target contract:', marketGroupAddress);
@@ -170,7 +172,7 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
         address: marketGroupAddress as Address,
         abi: sapienceAbi().abi,
         functionName: 'createMarket',
-        args,
+        args: [args],
       });
     } catch (err) {
       console.error('Deployment preparation error:', err);
