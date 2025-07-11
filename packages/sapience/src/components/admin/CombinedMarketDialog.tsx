@@ -93,6 +93,7 @@ interface CreateCombinedPayload {
   factoryAddress: string;
   resourceId?: number;
   isCumulative?: boolean;
+  isBridged?: boolean;
   markets: Omit<MarketInput, 'id'>[]; // Send markets without client-side id
   signature: `0x${string}` | undefined;
   signatureTimestamp: number;
@@ -587,6 +588,7 @@ const CombinedMarketDialog = () => {
         factoryAddress,
         resourceId: selectedResourceId || undefined,
         isCumulative: selectedResourceId ? isCumulative : undefined,
+        isBridged,
         markets: markets.map(({ id, ...market }) => market), // Remove client-side id
         signature: undefined, // Will be set after signing
         signatureTimestamp,
