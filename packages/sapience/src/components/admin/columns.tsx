@@ -20,6 +20,7 @@ import { useState } from 'react';
 import type { Address } from 'viem';
 import { formatEther } from 'viem';
 
+import { useMarketGroupBridgeStatus } from '~/hooks/contract/useMarketGroupBridgeStatus';
 import { useMarketGroupLatestEpoch } from '~/hooks/contract/useMarketGroupLatestEpoch';
 import type { EnrichedMarketGroup } from '~/hooks/graphql/useMarketGroups';
 import { shortenAddress, foilApi } from '~/lib/utils/util';
@@ -342,15 +343,21 @@ const ActionsCell = ({ group }: { group: EnrichedMarketGroup }) => {
   );
 
   // Check if this is a bridged market group that needs to be enabled
-  const isGroupEnabled = false; // TODO: Implement this - check if group is enabled on bridge
-  const needsEnable = group.address && group.isBridged && !isGroupEnabled;
+  const bridgeAddress = group.isBridged
+    ? (group.marketParamsOptimisticoraclev3 as Address)
+    : undefined;
+  const { isEnabled: isGroupEnabled, isLoading: isBridgeStatusLoading } =
+    useMarketGroupBridgeStatus(group.address as Address, bridgeAddress);
+  const needsEnable =
+    group.address &&
+    group.isBridged &&
+    !isGroupEnabled &&
+    !isBridgeStatusLoading;
 
   if (group.address) {
     return (
       <div className="flex items-center gap-2 justify-end">
-        {needsEnable && (
-          <EnableBridgedMarketGroupButton group={group} />
-        )}
+        {needsEnable && <EnableBridgedMarketGroupButton group={group} />}
         <Dialog open={marketsDialogOpen} onOpenChange={setMarketsDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm">

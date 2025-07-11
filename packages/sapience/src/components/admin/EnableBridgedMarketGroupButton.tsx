@@ -42,6 +42,8 @@ const MARKET_LAYER_ZERO_BRIDGE_ABI = [
   },
 ] as const;
 
+// No hardcoded bridge address - it comes from group.marketParamsOptimisticoraclev3
+
 const EnableBridgedMarketGroupButton: React.FC<
   EnableBridgedMarketGroupButtonProps
 > = ({ group }) => {
@@ -86,11 +88,11 @@ const EnableBridgedMarketGroupButton: React.FC<
     if (!group.address) {
       return 'Missing market group address.';
     }
-    if (!group.marketParamsOptimisticoraclev3) {
-      return 'Missing bridge address (optimisticOracleV3).';
-    }
     if (!group.isBridged) {
       return 'Market group is not bridged.';
+    }
+    if (!group.marketParamsOptimisticoraclev3) {
+      return 'Missing bridge address (optimisticOracleV3).';
     }
     return null;
   };
@@ -153,9 +155,7 @@ const EnableBridgedMarketGroupButton: React.FC<
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button size="sm">
-          Enable
-        </Button>
+        <Button size="sm">Enable</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
