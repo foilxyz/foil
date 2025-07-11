@@ -3,13 +3,13 @@ import type { Address, Abi } from 'viem';
 import { useReadContract } from 'wagmi';
 
 /**
- * Hook to fetch the latest epoch ID for a specific market group contract.
+ * Hook to fetch the latest market ID for a specific market group contract.
  *
  * @param marketGroupAddress The address of the deployed market group contract.
  * @param chainId The chain ID where the contract is deployed.
- * @returns An object containing the latest epoch ID, loading state, and error state.
+ * @returns An object containing the latest market ID, loading state, and error state.
  */
-export const useMarketGroupLatestEpoch = (
+export const useMarketGroupLatestMarket = (
   marketGroupAddress?: Address,
   chainId?: number
 ) => {
@@ -28,7 +28,7 @@ export const useMarketGroupLatestEpoch = (
   });
 
   // Extract the epochId from the returned tuple
-  const latestEpochId =
+  const latestMarketId =
     latestEpochData &&
     Array.isArray(latestEpochData) &&
     latestEpochData.length > 0 &&
@@ -39,7 +39,7 @@ export const useMarketGroupLatestEpoch = (
       : undefined;
 
   return {
-    latestEpochId, // bigint | undefined
+    latestMarketId, // bigint | undefined
     isLoading: isReadingEpoch,
     error: readError,
     refetch: refetchLatestEpoch, // Optionally return refetch function

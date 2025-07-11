@@ -154,18 +154,18 @@ export const createOrModifyPositionFromTransaction = async (
 
       if (!foundMarket) {
         console.error(
-          'Epoch not found: ',
+          'Market not found: ',
           marketId,
           'market:',
           transaction.event.market_group.address
         );
-        throw new Error(`Epoch not found: ${marketId}`);
+        throw new Error(`Market not found: ${marketId}`);
       }
       market = foundMarket;
     }
 
     if (!market) {
-      throw new Error('Epoch is undefined');
+      throw new Error('Market is undefined');
     }
 
     const positionId = Number(eventArgs.positionId);
@@ -1017,7 +1017,7 @@ export const getMarketStartEndBlock = async (
   });
 
   if (!market) {
-    return { error: 'Epoch not found' };
+    return { error: 'Market not found' };
   }
 
   const now = Math.floor(Date.now() / 1000);

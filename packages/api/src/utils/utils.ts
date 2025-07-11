@@ -173,15 +173,15 @@ export const getTimestampsForReindex = async (
   if (!market || !market.startTimestamp || !market.endTimestamp) {
     // get info from contract
     console.log('fetching market from contract to get timestamps...');
-    const epochContract = (await client.readContract({
+    const marketContract = (await client.readContract({
       address: contractDeployment.address.toLowerCase() as `0x${string}`,
       abi: contractDeployment.abi,
       functionName: 'getMarket',
       args: [`${marketId}`],
     })) as [number, number, number];
     return {
-      startTimestamp: Number(epochContract[0]),
-      endTimestamp: Math.min(Number(epochContract[1]), now),
+      startTimestamp: Number(marketContract[0]),
+      endTimestamp: Math.min(Number(marketContract[1]), now),
     };
   }
 

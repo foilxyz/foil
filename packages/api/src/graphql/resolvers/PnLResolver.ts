@@ -31,8 +31,8 @@ export class PnLResolver {
         };
       });
     } catch (error) {
-      console.error('Error fetching epochs:', error);
-      throw new Error('Failed to fetch epochs');
+      console.error('Error fetching markets:', error);
+      throw new Error('Failed to fetch markets');
     }
   }
 }

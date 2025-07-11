@@ -9,7 +9,7 @@ interface AggregatedLeaderboardEntry {
   totalPnL: number; // Aggregated PnL as number
 }
 
-// Query to fetch all markets and their epochs
+// Query to fetch all market groups and their markets
 const GET_MARKET_GROUPS = `
   query GetMarketGroups {
     marketGroups {
@@ -23,7 +23,7 @@ const GET_MARKET_GROUPS = `
   }
 `;
 
-// Query to fetch leaderboard for a specific epoch
+// Query to fetch leaderboard for a specific market
 const GET_MARKET_LEADERBOARD = `
   query GetMarketLeaderboard($chainId: Int!, $address: String!, $marketId: String!) {
     getMarketLeaderboard(chainId: $chainId, address: $address, marketId: $marketId) {
@@ -75,7 +75,7 @@ const useAllTimeLeaderboard = () => {
           return [];
         }
 
-        // 2. Identify all public market/epoch pairs
+        // 2. Identify all public market group / market pairs
         const publicMarketIdentifiers: {
           address: string;
           chainId: number;
@@ -87,7 +87,7 @@ const useAllTimeLeaderboard = () => {
               publicMarketIdentifiers.push({
                 address: marketGroup.address,
                 chainId: marketGroup.chainId,
-                marketId: String(market.marketId), // Ensure epochId is string for query variable
+                marketId: String(market.marketId), // Ensure marketId is string for query variable
               });
             }
           });
@@ -97,7 +97,7 @@ const useAllTimeLeaderboard = () => {
           return [];
         }
 
-        // 3. Fetch leaderboards for all public epochs in parallel
+        // 3. Fetch leaderboards for all public markets in parallel
         const leaderboardPromises = publicMarketIdentifiers.map((identifier) =>
           foilApi.post(graphqlEndpoint, {
             query: GET_MARKET_LEADERBOARD,
@@ -117,7 +117,7 @@ const useAllTimeLeaderboard = () => {
               `GraphQL error fetching leaderboard for ${JSON.stringify(identifier)}:`,
               response.errors
             );
-            // Continue aggregation even if one epoch fails
+            // Continue aggregation even if one market fails
             return;
           }
 

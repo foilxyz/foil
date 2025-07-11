@@ -23,7 +23,7 @@ export class VolumeResolver {
     );
 
     if (!startTimestamp || !endTimestamp) {
-      throw new Error(`Epoch ${marketId} not found for chain ${chainId}`);
+      throw new Error(`Market ${marketId} not found for chain ${chainId}`);
     }
 
     // 2. Fetch transactions

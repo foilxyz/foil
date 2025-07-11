@@ -27,7 +27,7 @@ import type { MarketGroupClassification } from '~/lib/types';
 import { tickToPrice } from '~/lib/utils/tickUtils';
 
 interface MarketDataContract {
-  epochId: bigint;
+  marketId: bigint;
   startTime: bigint;
   endTime: bigint;
   pool: string;

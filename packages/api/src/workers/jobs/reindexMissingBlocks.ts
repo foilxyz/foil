@@ -109,7 +109,7 @@ export async function reindexMissingBlocks(
     Sentry.withScope((scope: Sentry.Scope) => {
       scope.setExtra('chainId', chainId);
       scope.setExtra('address', address);
-      scope.setExtra('epochId', marketId);
+      scope.setExtra('marketId', marketId);
       Sentry.captureException(error);
     });
     throw error;
