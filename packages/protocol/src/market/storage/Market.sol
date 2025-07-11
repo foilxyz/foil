@@ -119,12 +119,14 @@ library Market {
         market.baseAssetMaxPriceTick = baseAssetMaxPriceTick;
         market.feeRateD18 = uint256(marketParams.feeRate) * 1e12;
 
-        // check market.marketParams.bondAmount is greater than the minimum bond for the assertion currency
-        uint256 minUMABond =
-            OptimisticOracleV3Interface(marketParams.optimisticOracleV3).getMinimumBond(marketParams.bondCurrency);
-        if (marketParams.bondAmount < minUMABond) {
-            // Cap the bond amount at the minimum bond for the assertion currency
-            market.marketParams.bondAmount = minUMABond;
+        if(!marketGroup.bridgedSettlement) {
+            // check market.marketParams.bondAmount is greater than the minimum bond for the assertion currency
+            uint256 minUMABond =
+                OptimisticOracleV3Interface(marketParams.optimisticOracleV3).getMinimumBond(marketParams.bondCurrency);
+            if (marketParams.bondAmount < minUMABond) {
+                // Cap the bond amount at the minimum bond for the assertion currency
+                market.marketParams.bondAmount = minUMABond;
+            }
         }
         VirtualToken tokenA = _createVirtualToken(salt, "Base Token", "vBase");
         VirtualToken tokenB = _createVirtualToken(salt + 1, "Quote Token", "vQuote");
