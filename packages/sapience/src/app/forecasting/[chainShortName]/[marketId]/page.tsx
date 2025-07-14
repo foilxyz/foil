@@ -121,6 +121,7 @@ const ForecastContent = () => {
     marketClassification,
     marketContractData,
     collateralAssetAddress,
+    collateralAssetTicker,
   } = useMarketPage();
 
   const [selectedInterval, setSelectedInterval] = useState<TimeInterval>(
@@ -154,7 +155,7 @@ const ForecastContent = () => {
   });
 
   // Extract resource slug
-  const resourceSlug = marketData?.marketGroup?.resource?.slug;
+  const resourceSlug = marketData?.market_group?.resource?.slug;
 
   // Determine the selected position if positionId exists
   const selectedPosition = positionId ? getPositionById(positionId) : null;
@@ -228,8 +229,8 @@ const ForecastContent = () => {
           <div>
             {marketClassification ===
               MarketGroupClassification.MULTIPLE_CHOICE &&
-              marketData?.marketGroup?.markets &&
-              marketData.marketGroup.markets.length > 1 && (
+              marketData?.market_group?.markets &&
+              marketData.market_group.markets.length > 1 && (
                 <div className="mb-6">
                   <Tabs
                     defaultValue={
@@ -242,7 +243,7 @@ const ForecastContent = () => {
                     }}
                   >
                     <TabsList className="gap-1 py-6">
-                      {marketData.marketGroup.markets
+                      {marketData.market_group.markets
                         .filter(
                           (
                             market: GqlMarketType // market.id is string, numericMarketId is number | null, market.marketId is number
@@ -279,6 +280,7 @@ const ForecastContent = () => {
             collateralAssetAddress={collateralAssetAddress}
             baseTokenName={baseTokenName}
             quoteTokenName={quoteTokenName}
+            collateralSymbol={collateralAssetTicker}
             minTick={minTick}
             maxTick={maxTick}
           />
@@ -302,7 +304,7 @@ const ForecastContent = () => {
                             chainId: chainId!,
                             address: marketAddress!,
                             quoteTokenName:
-                              marketData?.marketGroup?.quoteTokenName ||
+                              marketData?.market_group?.quoteTokenName ||
                               undefined,
                             startTimestamp: marketData?.startTimestamp,
                             endTimestamp: marketData?.endTimestamp,
@@ -383,7 +385,7 @@ const ForecastContent = () => {
                               setSelectedInterval={setSelectedInterval}
                             />
                           </motion.div>
-                          {marketData?.marketGroup?.resource?.slug && (
+                          {marketData?.market_group?.resource?.slug && (
                             <motion.div
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}

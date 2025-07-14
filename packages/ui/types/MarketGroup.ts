@@ -3,7 +3,6 @@ export type MarketsApiResponse = Array<{
   name: string;
   chainId: number;
   address: string;
-  vaultAddress: string;
   collateralAsset: string;
   owner: string;
   isCumulative: boolean;
@@ -12,25 +11,25 @@ export type MarketsApiResponse = Array<{
     name: string;
     slug: string;
   };
-  epochs: Array<{
+  markets: Array<{
     id: number;
-    epochId: number;
+    marketId: number;
     startTimestamp: number;
     endTimestamp: number;
     public: boolean;
     question?: string;
   }>;
-  currentEpoch: {
+  currentMarket: {
     id: number;
-    epochId: number;
+    marketId: number;
     startTimestamp: number;
     endTimestamp: number;
     public: boolean;
     question?: string;
   } | null;
-  nextEpoch: {
+  nextMarket: {
     id: number;
-    epochId: number;
+    marketId: number;
     startTimestamp: number;
     endTimestamp: number;
     public: boolean;
@@ -43,7 +42,6 @@ export interface MarketGroup {
   name: string;
   chainId: number;
   address: string;
-  vaultAddress: string;
   collateralAsset: string;
   owner: string;
   isCumulative: boolean;

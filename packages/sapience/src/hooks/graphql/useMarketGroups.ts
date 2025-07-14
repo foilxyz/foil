@@ -81,7 +81,7 @@ export interface EnrichedMarketGroup
   extends Omit<MarketGroupType, 'category' | 'markets'> {
   category: CategoryType & { iconSvg?: string; color?: string };
   markets: MarketType[];
-  latestEpochId?: bigint;
+  latestMarketId?: bigint;
   marketClassification: MarketGroupClassification;
 }
 
@@ -118,8 +118,6 @@ const MARKETS_QUERY = gql`
       id
       address
       chainId
-      isYin
-      vaultAddress
       owner
       collateralAsset
       question
@@ -133,7 +131,7 @@ const MARKETS_QUERY = gql`
       deployTimestamp
       deployTxnBlockNumber
       isCumulative
-      claimStatement
+      isBridged
       resource {
         id
         name
@@ -143,7 +141,8 @@ const MARKETS_QUERY = gql`
       marketParamsAssertionliveness
       marketParamsBondcurrency
       marketParamsBondamount
-      marketParamsClaimstatement
+      marketParamsClaimstatementYesOrNumeric
+      marketParamsClaimstatementNo
       marketParamsUniswappositionmanager
       marketParamsUniswapswaprouter
       marketParamsUniswapquoter
@@ -172,7 +171,8 @@ const MARKETS_QUERY = gql`
         marketParamsAssertionliveness
         marketParamsBondcurrency
         marketParamsBondamount
-        marketParamsClaimstatement
+        marketParamsClaimstatementYesOrNumeric
+        marketParamsClaimstatementNo
         marketParamsUniswappositionmanager
         marketParamsUniswapswaprouter
         marketParamsUniswapquoter
@@ -235,7 +235,7 @@ const OPEN_INTEREST_QUERY = gql`
       market {
         id
         marketId
-        marketGroup {
+        market_group {
           id
           collateralDecimals
         }
@@ -314,7 +314,7 @@ export const useEnrichedMarketGroups = () => {
           // Get classification
           const classification = getMarketGroupClassification(marketGroup);
 
-          // Return the enriched group WITHOUT fetching epochId here
+          // Return the enriched group WITHOUT fetching marketId here
           return {
             ...marketGroup,
             category: categoryInfo,
@@ -523,7 +523,7 @@ export const useOpenInterest = (market: {
         // Get collateral decimals from the first position (they should all be the same market group)
         const collateralDecimals =
           marketPositions.length > 0
-            ? marketPositions[0].market.marketGroup.collateralDecimals || 18
+            ? marketPositions[0].market.market_group.collateralDecimals || 18
             : 18;
 
         return unsettledPositions.reduce(

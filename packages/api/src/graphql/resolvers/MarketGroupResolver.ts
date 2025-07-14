@@ -155,7 +155,6 @@ export class MarketGroupResolver {
           );
         }
       }
-
       return markets as Market[];
     } catch (error) {
       console.error('Error fetching markets for market group:', error);

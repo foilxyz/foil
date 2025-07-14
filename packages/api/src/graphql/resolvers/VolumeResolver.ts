@@ -15,7 +15,7 @@ export class VolumeResolver {
     @Arg('marketAddress', () => String) marketAddress: string,
     @Arg('marketId', () => Int) marketId: number
   ): Promise<number> {
-    // 1. Get epoch start and end timestamps (Needs implementation or existing function)
+    // 1. Get market start and end timestamps (Needs implementation or existing function)
     const { startTimestamp, endTimestamp } = await getMarketStartEndTimestamps(
       marketId,
       chainId,
@@ -23,7 +23,7 @@ export class VolumeResolver {
     );
 
     if (!startTimestamp || !endTimestamp) {
-      throw new Error(`Epoch ${marketId} not found for chain ${chainId}`);
+      throw new Error(`Market ${marketId} not found for chain ${chainId}`);
     }
 
     // 2. Fetch transactions

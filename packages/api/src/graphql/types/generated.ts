@@ -54,17 +54,18 @@ export type Market = {
   currentPrice?: Maybe<Scalars['String']['output']>;
   endTimestamp?: Maybe<Scalars['Int']['output']>;
   id: Scalars['ID']['output'];
-  marketGroup?: Maybe<MarketGroup>;
   marketId: Scalars['Int']['output'];
   marketParamsAssertionliveness?: Maybe<Scalars['String']['output']>;
   marketParamsBondamount?: Maybe<Scalars['String']['output']>;
   marketParamsBondcurrency?: Maybe<Scalars['String']['output']>;
-  marketParamsClaimstatement?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementNo?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementYesOrNumeric?: Maybe<Scalars['String']['output']>;
   marketParamsFeerate?: Maybe<Scalars['Int']['output']>;
   marketParamsOptimisticoraclev3?: Maybe<Scalars['String']['output']>;
   marketParamsUniswappositionmanager?: Maybe<Scalars['String']['output']>;
   marketParamsUniswapquoter?: Maybe<Scalars['String']['output']>;
   marketParamsUniswapswaprouter?: Maybe<Scalars['String']['output']>;
+  market_group?: Maybe<MarketGroup>;
   optionName?: Maybe<Scalars['String']['output']>;
   poolAddress?: Maybe<Scalars['String']['output']>;
   positions?: Maybe<Array<Position>>;
@@ -95,12 +96,13 @@ export type MarketGroup = {
   factoryAddress?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   initializationNonce?: Maybe<Scalars['String']['output']>;
+  isBridged: Scalars['Boolean']['output'];
   isCumulative: Scalars['Boolean']['output'];
-  isYin: Scalars['Boolean']['output'];
   marketParamsAssertionliveness?: Maybe<Scalars['String']['output']>;
   marketParamsBondamount?: Maybe<Scalars['String']['output']>;
   marketParamsBondcurrency?: Maybe<Scalars['String']['output']>;
-  marketParamsClaimstatement?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementNo?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementYesOrNumeric?: Maybe<Scalars['String']['output']>;
   marketParamsFeerate?: Maybe<Scalars['Int']['output']>;
   marketParamsOptimisticoraclev3?: Maybe<Scalars['String']['output']>;
   marketParamsUniswappositionmanager?: Maybe<Scalars['String']['output']>;
@@ -112,7 +114,6 @@ export type MarketGroup = {
   question?: Maybe<Scalars['String']['output']>;
   quoteTokenName?: Maybe<Scalars['String']['output']>;
   resource?: Maybe<Resource>;
-  vaultAddress?: Maybe<Scalars['String']['output']>;
 };
 
 
@@ -473,17 +474,18 @@ export type MarketResolvers<ContextType = ApolloContext, ParentType extends Reso
   currentPrice?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   endTimestamp?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  marketGroup?: Resolver<Maybe<ResolversTypes['MarketGroup']>, ParentType, ContextType>;
   marketId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   marketParamsAssertionliveness?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   marketParamsBondamount?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   marketParamsBondcurrency?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  marketParamsClaimstatement?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  marketParamsClaimstatementNo?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  marketParamsClaimstatementYesOrNumeric?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   marketParamsFeerate?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   marketParamsOptimisticoraclev3?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   marketParamsUniswappositionmanager?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   marketParamsUniswapquoter?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   marketParamsUniswapswaprouter?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  market_group?: Resolver<Maybe<ResolversTypes['MarketGroup']>, ParentType, ContextType>;
   optionName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   poolAddress?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   positions?: Resolver<Maybe<Array<ResolversTypes['Position']>>, ParentType, ContextType>;
@@ -510,12 +512,13 @@ export type MarketGroupResolvers<ContextType = ApolloContext, ParentType extends
   factoryAddress?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   initializationNonce?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  isBridged?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   isCumulative?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  isYin?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   marketParamsAssertionliveness?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   marketParamsBondamount?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   marketParamsBondcurrency?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  marketParamsClaimstatement?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  marketParamsClaimstatementNo?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  marketParamsClaimstatementYesOrNumeric?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   marketParamsFeerate?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   marketParamsOptimisticoraclev3?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   marketParamsUniswappositionmanager?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -527,7 +530,6 @@ export type MarketGroupResolvers<ContextType = ApolloContext, ParentType extends
   question?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   quoteTokenName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   resource?: Resolver<Maybe<ResolversTypes['Resource']>, ParentType, ContextType>;
-  vaultAddress?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 

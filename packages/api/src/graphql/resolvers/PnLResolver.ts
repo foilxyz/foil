@@ -1,6 +1,6 @@
 import { Resolver, Query, Arg, Int } from 'type-graphql';
 import { PnLType } from '../types';
-import { EpochPnL } from '../../helpers/epochPnL';
+import { MarketPnL } from '../../helpers/marketPnL';
 
 @Resolver(() => PnLType)
 export class PnLResolver {
@@ -11,8 +11,8 @@ export class PnLResolver {
     @Arg('marketId', () => String) marketId: string
   ): Promise<PnLType[]> {
     try {
-      const pnlPerformance = EpochPnL.getInstance();
-      const pnlData = await pnlPerformance.getEpochPnLs(
+      const pnlPerformance = MarketPnL.getInstance();
+      const pnlData = await pnlPerformance.getMarketPnLs(
         chainId,
         address,
         parseInt(marketId)
@@ -31,8 +31,8 @@ export class PnLResolver {
         };
       });
     } catch (error) {
-      console.error('Error fetching epochs:', error);
-      throw new Error('Failed to fetch epochs');
+      console.error('Error fetching markets:', error);
+      throw new Error('Failed to fetch markets');
     }
   }
 }

@@ -1,7 +1,7 @@
 import { encodeFunctionData } from 'viem';
 // import { base } from 'viem/chains';
 // import { createPublicClient, http } from 'viem';
-import FoilABI from '@sapience/protocol/deployments/Foil.json';
+import SapienceABI from '@sapience/protocol/deployments/Sapience.json';
 import { CallToolResult } from '@modelcontextprotocol/sdk/types';
 import { z } from 'zod';
 
@@ -21,7 +21,7 @@ function encodeFunction(
     | Record<string, string | number | bigint | boolean>
 ) {
   return encodeFunctionData({
-    abi: FoilABI.abi,
+    abi: SapienceABI.abi,
     functionName,
     args: Array.isArray(args) ? args : [args],
   });
@@ -190,7 +190,7 @@ export const createLiquidityPosition = {
   }): Promise<CallToolResult> => {
     try {
       const params = {
-        epochId: BigInt(args.marketId),
+        marketId: BigInt(args.marketId),
         amountTokenA: BigInt(args.amountTokenA),
         amountTokenB: BigInt(args.amountTokenB),
         collateralAmount: BigInt(args.collateralAmount),
@@ -445,7 +445,7 @@ export const settlePosition = {
 //     try {
 //       const result = await client.simulateContract({
 //         address: args.marketGroupAddress as `0x${string}`,
-//         abi: FoilABI.abi,
+//         abi: SapienceABI.abi,
 //         functionName: 'quoteCreateTraderPosition',
 //         args: [BigInt(args.marketId), Number(args.size)],
 //       });
@@ -503,7 +503,7 @@ export const settlePosition = {
 //     try {
 //       const result = await client.simulateContract({
 //         address: args.marketGroupAddress as `0x${string}`,
-//         abi: FoilABI.abi,
+//         abi: SapienceABI.abi,
 //         functionName: 'quoteLiquidityPositionTokens',
 //         args: [
 //           BigInt(args.marketId),
@@ -572,7 +572,7 @@ export const settlePosition = {
 //     try {
 //       const result = await client.simulateContract({
 //         address: args.marketGroupAddress as `0x${string}`,
-//         abi: FoilABI.abi,
+//         abi: SapienceABI.abi,
 //         functionName: 'quoteModifyTraderPosition',
 //         args: [BigInt(args.positionId), Number(args.newSize)],
 //       });
@@ -637,7 +637,7 @@ export const settlePosition = {
 //     try {
 //       const result = await client.simulateContract({
 //         address: args.marketGroupAddress as `0x${string}`,
-//         abi: FoilABI.abi,
+//         abi: SapienceABI.abi,
 //         functionName: 'quoteRequiredCollateral',
 //         args: [BigInt(args.positionId), Number(args.newSize)],
 //       });

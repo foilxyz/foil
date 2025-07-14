@@ -23,17 +23,17 @@ import {
 import { Switch } from '@sapience/ui/components/ui/switch';
 import { useToast } from '@sapience/ui/hooks/use-toast';
 import { useMutation } from '@tanstack/react-query';
-import { AlertCircle, Loader2, Plus, Trash, ArrowLeft } from 'lucide-react';
+import { AlertCircle, ArrowLeft, Loader2, Plus, Trash } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { isAddress } from 'viem';
 import { useAccount, useChainId, useSignMessage } from 'wagmi';
 import { z } from 'zod';
 
 import {
-  FOCUS_AREAS,
   DEFAULT_FOCUS_AREA,
+  FOCUS_AREAS,
 } from '../../lib/constants/focusAreas';
 import { ADMIN_AUTHENTICATE_MSG } from '~/lib/constants';
 
@@ -93,6 +93,7 @@ interface CreateCombinedPayload {
   factoryAddress: string;
   resourceId?: number;
   isCumulative?: boolean;
+  isBridged?: boolean;
   markets: Omit<MarketInput, 'id'>[]; // Send markets without client-side id
   signature: `0x${string}` | undefined;
   signatureTimestamp: number;
@@ -137,7 +138,11 @@ const marketSchema = z
     // id is client-side, not validated here for API payload
     marketQuestion: z.string().trim().min(1, 'Market Question is required'),
     optionName: z.string().trim().optional(), // Align with MarketInput type
-    claimStatement: z.string().trim().min(1, 'Claim Statement is required'),
+    claimStatementYesOrNumeric: z
+      .string()
+      .trim()
+      .min(1, 'Claim Statement is required'),
+    claimStatementNo: z.string().trim().optional(),
     startTime: z.coerce
       .number()
       .int()
@@ -229,7 +234,8 @@ const createEmptyMarket = (id: number): MarketInput => {
     startingPrice: '0.5',
     lowTickPrice: '0.00009908435194807992',
     highTickPrice: '1',
-    claimStatement: '',
+    claimStatementYesOrNumeric: '',
+    claimStatementNo: '',
     rules: '', // Initialize optional field
   };
 };
@@ -251,7 +257,8 @@ const createMarketFromPrevious = (
     startingPrice: previousMarket.startingPrice,
     lowTickPrice: previousMarket.lowTickPrice,
     highTickPrice: previousMarket.highTickPrice,
-    claimStatement: previousMarket.claimStatement, // Copy claim statement
+    claimStatementYesOrNumeric: previousMarket.claimStatementYesOrNumeric, // Copy claim statement
+    claimStatementNo: previousMarket.claimStatementNo, // Copy claim statement
     rules: previousMarket.rules || '', // Copy rules if they exist
   };
 };
@@ -292,6 +299,7 @@ const CombinedMarketDialog = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>(
     DEFAULT_FOCUS_AREA.id
   );
+  const [isBridged, setIsBridged] = useState<boolean>(true);
   const [baseTokenName, setBaseTokenName] = useState<string>('Yes');
   const [quoteTokenName, setQuoteTokenName] = useState<string>('sUSDS');
   const [selectedResourceId, setSelectedResourceId] = useState<number | null>(
@@ -487,6 +495,7 @@ const CombinedMarketDialog = () => {
       chainId,
       question,
       category: selectedCategory,
+      isBridged,
       baseTokenName,
       quoteTokenName,
       ...(selectedResourceId && {
@@ -579,6 +588,7 @@ const CombinedMarketDialog = () => {
         factoryAddress,
         resourceId: selectedResourceId || undefined,
         isCumulative: selectedResourceId ? isCumulative : undefined,
+        isBridged,
         markets: markets.map(({ id, ...market }) => market), // Remove client-side id
         signature: undefined, // Will be set after signing
         signatureTimestamp,
@@ -884,6 +894,17 @@ const CombinedMarketDialog = () => {
                           required
                         />
                       </div>
+                    </div>
+                    {/* isBridged toggle */}
+                    <div className="flex items-center gap-2 py-2">
+                      <Label htmlFor="isBridged" className="font-medium">
+                        Bridged
+                      </Label>
+                      <Switch
+                        id="isBridged"
+                        checked={isBridged}
+                        onCheckedChange={setIsBridged}
+                      />
                     </div>
                     {/* Owner, Nonce, Collateral Asset, Min Trade Size */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

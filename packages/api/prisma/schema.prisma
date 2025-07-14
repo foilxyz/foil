@@ -4,8 +4,6 @@ generator client {
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
-
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -108,7 +106,7 @@ model market {
   marketId                           Int
   startTimestamp                     Int?
   endTimestamp                       Int?
-  startingSqrtPriceX96               Decimal?      @db.Decimal(78, 0)
+  startingSqrtPriceX96               String?      
   settlementPriceD18                 Decimal?      @db.Decimal(78, 0)
   settled                            Boolean?
   baseAssetMinPriceTick              Int?
@@ -120,7 +118,8 @@ model market {
   marketParamsAssertionliveness      Decimal?      @db.Decimal(78, 0)
   marketParamsBondcurrency           String?       @db.VarChar
   marketParamsBondamount             Decimal?      @db.Decimal(78, 0)
-  marketParamsClaimstatement         String?       @db.VarChar
+  marketParamsClaimstatementYesOrNumeric         String?       @db.VarChar
+  marketParamsClaimstatementNo       String?       @db.VarChar
   marketParamsUniswappositionmanager String?       @db.VarChar
   marketParamsUniswapswaprouter      String?       @db.VarChar
   marketParamsUniswapquoter          String?       @db.VarChar
@@ -145,8 +144,6 @@ model market_group {
   id                                 Int       @id(map: "PK_1e9a2963edfd331d92018e3abac") @default(autoincrement())
   createdAt                          DateTime  @default(now()) @db.Timestamp(6)
   address                            String?   @db.VarChar
-  vaultAddress                       String?   @db.VarChar
-  isYin                              Boolean   @default(false)
   chainId                            Int
   deployTimestamp                    Int?
   deployTxnBlockNumber               Int?
@@ -157,11 +154,13 @@ model market_group {
   marketParamsAssertionliveness      Decimal?  @db.Decimal(78, 0)
   marketParamsBondcurrency           String?   @db.VarChar
   marketParamsBondamount             Decimal?  @db.Decimal(78, 0)
-  marketParamsClaimstatement         String?   @db.VarChar
+  marketParamsClaimstatementYesOrNumeric         String?   @db.VarChar
+  marketParamsClaimstatementNo       String?   @db.VarChar
   marketParamsUniswappositionmanager String?   @db.VarChar
   marketParamsUniswapswaprouter      String?   @db.VarChar
   marketParamsUniswapquoter          String?   @db.VarChar
   marketParamsOptimisticoraclev3     String?   @db.VarChar
+  isBridged                          Boolean   @default(false)
   isCumulative                       Boolean   @default(false)
   categoryId                         Int?
   question                           String?

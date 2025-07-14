@@ -20,11 +20,13 @@ import { useState } from 'react';
 import type { Address } from 'viem';
 import { formatEther } from 'viem';
 
-import { useMarketGroupLatestEpoch } from '~/hooks/contract/useMarketGroupLatestEpoch';
+import { useMarketGroupBridgeStatus } from '~/hooks/contract/useMarketGroupBridgeStatus';
+import { useMarketGroupLatestMarket } from '~/hooks/contract/useMarketGroupLatestMarket';
 import type { EnrichedMarketGroup } from '~/hooks/graphql/useMarketGroups';
 import { shortenAddress, foilApi } from '~/lib/utils/util';
 
 import AddMarketDialog from './AddMarketDialog';
+import EnableBridgedMarketGroupButton from './EnableBridgedMarketGroupButton';
 import MarketDeployButton from './MarketDeployButton';
 import MarketGroupDeployButton from './MarketGroupDeployButton';
 import OwnershipDialog from './OwnershipDialog';
@@ -148,18 +150,19 @@ const getChainShortName = (chainId: number): string => {
 const MarketItem = ({
   market,
   group,
-  latestEpochId,
+  latestMarketId,
 }: {
   market: MarketType;
   group: EnrichedMarketGroup;
-  latestEpochId?: bigint;
+  latestMarketId?: bigint;
 }) => {
   const marketId = market.marketId ? Number(market.marketId) : 0;
-  const currentEpochId = latestEpochId ? Number(latestEpochId) : 0;
+  const currentMarketId = latestMarketId ? Number(latestMarketId) : 0;
   const shouldShowDeployButton =
-    marketId > currentEpochId &&
+    marketId > currentMarketId &&
     !!market.startingSqrtPriceX96 &&
-    !!market.marketParamsClaimstatement;
+    !!market.marketParamsClaimstatementYesOrNumeric &&
+    !!market.marketParamsClaimstatementNo;
 
   const isDeployed = !!market.poolAddress;
   const isFutureEndTime = (market.endTimestamp ?? 0) * 1000 > Date.now();
@@ -334,14 +337,27 @@ const SettlementPriceCell = ({ group }: { group: EnrichedMarketGroup }) => {
 
 const ActionsCell = ({ group }: { group: EnrichedMarketGroup }) => {
   const [marketsDialogOpen, setMarketsDialogOpen] = useState(false);
-  const { latestEpochId } = useMarketGroupLatestEpoch(
+  const { latestMarketId } = useMarketGroupLatestMarket(
     group.address as Address,
     group.chainId
   );
 
+  // Check if this is a bridged market group that needs to be enabled
+  const bridgeAddress = group.isBridged
+    ? (group.marketParamsOptimisticoraclev3 as Address)
+    : undefined;
+  const { isEnabled: isGroupEnabled, isLoading: isBridgeStatusLoading } =
+    useMarketGroupBridgeStatus(group.address as Address, bridgeAddress);
+  const needsEnable =
+    group.address &&
+    group.isBridged &&
+    !isGroupEnabled &&
+    !isBridgeStatusLoading;
+
   if (group.address) {
     return (
       <div className="flex items-center gap-2 justify-end">
+        {needsEnable && <EnableBridgedMarketGroupButton group={group} />}
         <Dialog open={marketsDialogOpen} onOpenChange={setMarketsDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm">
@@ -375,7 +391,7 @@ const ActionsCell = ({ group }: { group: EnrichedMarketGroup }) => {
                       key={`${group.address || group.id}-${market.marketId || market.id}`}
                       market={market}
                       group={group}
-                      latestEpochId={latestEpochId}
+                      latestMarketId={latestMarketId}
                     />
                   ))
               ) : (

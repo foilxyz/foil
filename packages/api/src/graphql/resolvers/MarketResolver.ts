@@ -1,6 +1,6 @@
-import { Resolver, Query, Arg, Int, FieldResolver, Root } from 'type-graphql';
-import prisma from '../../db';
+import { Arg, FieldResolver, Int, Query, Resolver, Root } from 'type-graphql';
 import type { market } from '../../../generated/prisma';
+import prisma from '../../db';
 import { Market } from '../types/PrismaTypes';
 
 @Resolver(() => Market)

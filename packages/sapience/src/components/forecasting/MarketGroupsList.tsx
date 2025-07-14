@@ -75,7 +75,6 @@ export interface MarketWithContext extends GraphQLMarketType {
   marketAddress: string;
   chainId: number;
   collateralAsset: string;
-  isYin: boolean;
   categorySlug: string;
   categoryId: string;
 }
@@ -90,7 +89,6 @@ interface GroupedMarketGroup {
   color: string;
   categorySlug: string;
   categoryId: string;
-  isYin: boolean;
   marketQuestion?: string | null;
   markets: MarketWithContext[];
   displayQuestion?: string;
@@ -314,7 +312,6 @@ const ForecastingTable = () => {
               marketAddress: marketGroup.address!,
               chainId: marketGroup.chainId,
               collateralAsset: marketGroup.collateralAsset!,
-              isYin: marketGroup.isYin,
               categorySlug: marketGroup.category!.slug!,
               categoryId: marketGroup.category!.id!,
             };
@@ -378,7 +375,6 @@ const ForecastingTable = () => {
           color,
           categorySlug: market.categorySlug,
           categoryId: market.categoryId,
-          isYin: market.isYin,
           marketQuestion: undefined,
           markets: [],
           displayQuestion: undefined,

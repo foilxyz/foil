@@ -12,72 +12,72 @@ interface PnLData {
   totalPnL: bigint;
 }
 
-interface EpochData {
+interface MarketData {
   id: number;
   chainId: number;
   address: string;
-  epochId: number;
+  marketId: number;
 }
 
-interface EpochPnLData {
-  epochData: EpochData;
+interface MarketPnLData {
+  marketData: MarketData;
   pnlData: PnLData[];
   datapointTime: number;
 }
 
-export class EpochPnL {
-  private static instance: EpochPnL;
+export class MarketPnL {
+  private static instance: MarketPnL;
   private INTERVAL = TIME_INTERVALS.intervals.INTERVAL_5_MINUTES;
 
-  private epochs: EpochPnLData[] = [];
+  private markets: MarketPnLData[] = [];
 
   private constructor() {
     // Private constructor to prevent direct construction calls with the `new` operator
   }
 
-  public static getInstance(): EpochPnL {
-    if (!EpochPnL.instance) {
-      EpochPnL.instance = new EpochPnL();
+  public static getInstance(): MarketPnL {
+    if (!MarketPnL.instance) {
+      MarketPnL.instance = new MarketPnL();
     }
 
-    return EpochPnL.instance;
+    return MarketPnL.instance;
   }
 
-  async getEpochPnLs(chainId: number, address: string, epochId: number) {
+  async getMarketPnLs(chainId: number, address: string, marketId: number) {
     const currentTimestamp = Date.now() / 1000;
     const datapointTime = startOfInterval(currentTimestamp, this.INTERVAL);
 
-    let epoch = this.epochs.find(
+    let market = this.markets.find(
       (data) =>
-        data.epochData.chainId === chainId &&
-        data.epochData.address === address.toLowerCase() &&
-        data.epochData.epochId === epochId
+        data.marketData.chainId === chainId &&
+        data.marketData.address === address.toLowerCase() &&
+        data.marketData.marketId === marketId
     );
 
-    if (!epoch) {
-      epoch = await this.getMarketData(chainId, address, epochId);
-      if (!epoch) {
+    if (!market) {
+      market = await this.getMarketData(chainId, address, marketId);
+      if (!market) {
         return [];
       }
     }
 
-    if (epoch.datapointTime === datapointTime) {
-      return epoch.pnlData;
+    if (market.datapointTime === datapointTime) {
+      return market.pnlData;
     }
 
-    // Build the pnlData array for this epoch and datapointTime
-    epoch.pnlData = await this.buildPnlData(epoch.epochData);
-    epoch.datapointTime = datapointTime;
+    // Build the pnlData array for this market and datapointTime
+    market.pnlData = await this.buildPnlData(market.marketData);
+    market.datapointTime = datapointTime;
 
-    return epoch.pnlData;
+    return market.pnlData;
   }
 
-  private async buildPnlData(epochData: EpochData): Promise<PnLData[]> {
+  private async buildPnlData(marketData: MarketData): Promise<PnLData[]> {
     try {
-      // 1. Fetch positions for the epoch
+      // 1. Fetch positions for the market
       const positions = await prisma.position.findMany({
         where: {
-          marketId: epochData.id,
+          marketId: marketData.id,
         },
         include: {
           transaction: {
@@ -144,9 +144,9 @@ export class EpochPnL {
     chainId: number,
     address: string,
     marketId: number
-  ): Promise<EpochPnLData | undefined> {
+  ): Promise<MarketPnLData | undefined> {
     try {
-      const epoch = await prisma.market.findFirst({
+      const market = await prisma.market.findFirst({
         where: {
           market_group: {
             chainId,
@@ -156,26 +156,26 @@ export class EpochPnL {
         },
       });
 
-      if (!epoch) {
+      if (!market) {
         return undefined;
       }
 
-      const epochPnLData: EpochPnLData = {
-        epochData: {
-          id: epoch.id,
+      const marketPnLData: MarketPnLData = {
+        marketData: {
+          id: market.id,
           chainId,
           address,
-          epochId: marketId,
+          marketId: marketId,
         },
         pnlData: [],
         datapointTime: 0,
       };
 
-      this.epochs.push(epochPnLData);
+      this.markets.push(marketPnLData);
 
-      return epochPnLData;
+      return marketPnLData;
     } catch (error) {
-      console.error('Error fetching epoch data:', error);
+      console.error('Error fetching market data:', error);
       return undefined;
     }
   }

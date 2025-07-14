@@ -29,17 +29,18 @@ type Market {
   currentPrice: String
   endTimestamp: Int
   id: ID!
-  marketGroup: MarketGroup
   marketId: Int!
   marketParamsAssertionliveness: String
   marketParamsBondamount: String
   marketParamsBondcurrency: String
-  marketParamsClaimstatement: String
+  marketParamsClaimstatementNo: String
+  marketParamsClaimstatementYesOrNumeric: String
   marketParamsFeerate: Int
   marketParamsOptimisticoraclev3: String
   marketParamsUniswappositionmanager: String
   marketParamsUniswapquoter: String
   marketParamsUniswapswaprouter: String
+  market_group: MarketGroup
   optionName: String
   poolAddress: String
   positions: [Position!]
@@ -69,12 +70,13 @@ type MarketGroup {
   factoryAddress: String
   id: ID!
   initializationNonce: String
+  isBridged: Boolean!
   isCumulative: Boolean!
-  isYin: Boolean!
   marketParamsAssertionliveness: String
   marketParamsBondamount: String
   marketParamsBondcurrency: String
-  marketParamsClaimstatement: String
+  marketParamsClaimstatementNo: String
+  marketParamsClaimstatementYesOrNumeric: String
   marketParamsFeerate: Int
   marketParamsOptimisticoraclev3: String
   marketParamsUniswappositionmanager: String
@@ -86,7 +88,6 @@ type MarketGroup {
   question: String
   quoteTokenName: String
   resource: Resource
-  vaultAddress: String
 }
 
 input MarketOrderInput {

@@ -1,8 +1,7 @@
+import { Request, Response, Router } from 'express';
 import prisma from '../db';
-import { Router } from 'express';
-import { Request, Response } from 'express';
-import { watchFactoryAddress } from '../workers/jobs/indexMarkets';
 import { isValidWalletSignature } from '../middleware';
+import { watchFactoryAddress } from '../workers/jobs/indexMarkets';
 
 const router = Router();
 
@@ -15,7 +14,8 @@ interface MarketDataPayload {
   startingSqrtPriceX96: string;
   baseAssetMinPriceTick: string | number;
   baseAssetMaxPriceTick: string | number;
-  claimStatement: string;
+  claimStatementYesOrNumeric: string;
+  claimStatementNo: string | null;
   rules?: string | null;
 }
 
@@ -33,14 +33,15 @@ async function createSingleMarket(
     startingSqrtPriceX96,
     baseAssetMinPriceTick,
     baseAssetMaxPriceTick,
-    claimStatement,
+    claimStatementYesOrNumeric,
+    claimStatementNo,
     rules,
   } = marketData;
 
   // Validate required market fields
   if (
     !marketQuestion ||
-    !claimStatement ||
+    !claimStatementYesOrNumeric ||
     startTime === undefined ||
     endTime === undefined ||
     !startingSqrtPriceX96 ||
@@ -57,7 +58,8 @@ async function createSingleMarket(
       question: marketQuestion,
       optionName: optionName || null,
       rules: rules || null,
-      marketParamsClaimstatement: claimStatement,
+      marketParamsClaimstatementYesOrNumeric: claimStatementYesOrNumeric,
+      marketParamsClaimstatementNo: claimStatementNo,
       startTimestamp: parseInt(String(startTime), 10),
       endTimestamp: parseInt(String(endTime), 10),
       startingSqrtPriceX96: startingSqrtPriceX96,
@@ -95,6 +97,7 @@ router.post('/', async (req: Request, res: Response) => {
       markets,
       signature,
       signatureTimestamp,
+      isBridged,
     } = req.body as { markets: MarketDataPayload[] } & Omit<
       Request['body'],
       'markets'
@@ -195,17 +198,17 @@ router.post('/', async (req: Request, res: Response) => {
         owner: owner,
         collateralAsset: collateralAsset,
         minTradeSize: minTradeSize,
-        marketParamsFeerate: marketParams.feerate,
-        marketParamsAssertionliveness: marketParams.assertionliveness,
-        marketParamsBondcurrency: marketParams.bondcurrency,
-        marketParamsBondamount: marketParams.bondamount,
-        marketParamsClaimstatement: marketParams.claimstatement,
-        marketParamsUniswappositionmanager: marketParams.uniswappositionmanager,
-        marketParamsUniswapswaprouter: marketParams.uniswapswaprouter,
-        marketParamsUniswapquoter: marketParams.uniswapquoter,
-        marketParamsOptimisticoraclev3: marketParams.optimisticoraclev3,
+        marketParamsFeerate: parseInt(marketParams.feeRate, 10),
+        marketParamsAssertionliveness: marketParams.assertionLiveness,
+        marketParamsBondcurrency: marketParams.bondCurrency,
+        marketParamsBondamount: marketParams.bondAmount,
+        marketParamsUniswappositionmanager: marketParams.uniswapPositionManager,
+        marketParamsUniswapswaprouter: marketParams.uniswapSwapRouter,
+        marketParamsUniswapquoter: marketParams.uniswapQuoter,
+        marketParamsOptimisticoraclev3: marketParams.optimisticOracleV3,
         resourceId: resource ? resource.id : null,
         isCumulative: isCumulative !== undefined ? isCumulative : false,
+        isBridged: isBridged !== undefined ? isBridged : false,
       },
     });
 

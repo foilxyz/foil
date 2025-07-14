@@ -156,16 +156,16 @@ export class CandleResolver {
         throw new Error(`Resource not found for market: ${marketGroup.id}`);
       }
 
-      const epochStartTimestamp = Number(market.startTimestamp);
-      if (timestamp < epochStartTimestamp) {
-        throw new Error(`Timestamp is before epoch start time`);
+      const marketStartTimestamp = Number(market.startTimestamp);
+      if (timestamp < marketStartTimestamp) {
+        throw new Error(`Timestamp is before market start time`);
       }
 
       const pricesInRange = await prisma.resource_price.findMany({
         where: {
           resourceId: resource.id,
           timestamp: {
-            gte: epochStartTimestamp,
+            gte: marketStartTimestamp,
             lte: timestamp,
           },
         },

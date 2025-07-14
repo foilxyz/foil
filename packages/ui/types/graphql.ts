@@ -44,17 +44,18 @@ export type Market = {
   currentPrice?: Maybe<Scalars['String']['output']>;
   endTimestamp?: Maybe<Scalars['Int']['output']>;
   id: Scalars['ID']['output'];
-  marketGroup?: Maybe<MarketGroup>;
   marketId: Scalars['Int']['output'];
   marketParamsAssertionliveness?: Maybe<Scalars['String']['output']>;
   marketParamsBondamount?: Maybe<Scalars['String']['output']>;
   marketParamsBondcurrency?: Maybe<Scalars['String']['output']>;
-  marketParamsClaimstatement?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementNo?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementYesOrNumeric?: Maybe<Scalars['String']['output']>;
   marketParamsFeerate?: Maybe<Scalars['Int']['output']>;
   marketParamsOptimisticoraclev3?: Maybe<Scalars['String']['output']>;
   marketParamsUniswappositionmanager?: Maybe<Scalars['String']['output']>;
   marketParamsUniswapquoter?: Maybe<Scalars['String']['output']>;
   marketParamsUniswapswaprouter?: Maybe<Scalars['String']['output']>;
+  market_group?: Maybe<MarketGroup>;
   optionName?: Maybe<Scalars['String']['output']>;
   poolAddress?: Maybe<Scalars['String']['output']>;
   positions?: Maybe<Array<Position>>;
@@ -85,12 +86,13 @@ export type MarketGroup = {
   factoryAddress?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   initializationNonce?: Maybe<Scalars['String']['output']>;
+  isBridged: Scalars['Boolean']['output'];
   isCumulative: Scalars['Boolean']['output'];
-  isYin: Scalars['Boolean']['output'];
   marketParamsAssertionliveness?: Maybe<Scalars['String']['output']>;
   marketParamsBondamount?: Maybe<Scalars['String']['output']>;
   marketParamsBondcurrency?: Maybe<Scalars['String']['output']>;
-  marketParamsClaimstatement?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementNo?: Maybe<Scalars['String']['output']>;
+  marketParamsClaimstatementYesOrNumeric?: Maybe<Scalars['String']['output']>;
   marketParamsFeerate?: Maybe<Scalars['Int']['output']>;
   marketParamsOptimisticoraclev3?: Maybe<Scalars['String']['output']>;
   marketParamsUniswappositionmanager?: Maybe<Scalars['String']['output']>;
@@ -102,7 +104,6 @@ export type MarketGroup = {
   question?: Maybe<Scalars['String']['output']>;
   quoteTokenName?: Maybe<Scalars['String']['output']>;
   resource?: Maybe<Resource>;
-  vaultAddress?: Maybe<Scalars['String']['output']>;
 };
 
 

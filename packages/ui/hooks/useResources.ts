@@ -24,11 +24,11 @@ const LATEST_RESOURCE_PRICE_QUERY = gql`
 `;
 
 const LATEST_INDEX_PRICE_QUERY = gql`
-  query GetLatestIndexPrice($address: String!, $chainId: Int!, $epochId: String!) {
+  query GetLatestIndexPrice($address: String!, $chainId: Int!, $marketId: String!) {
     indexCandlesFromCache(
       address: $address
       chainId: $chainId
-      epochId: $epochId
+      marketId: $marketId
       from: ${Math.floor(Date.now() / 1000) - 300}  # Last 5 minutes
       to: ${Math.floor(Date.now() / 1000)}
       interval: 60  # 1 minute intervals
@@ -51,8 +51,7 @@ const RESOURCES_QUERY = gql`
       marketGroups {
         id
         address
-        isYin
-        vaultAddress
+        isBridged
         chainId
         markets {
           id
@@ -131,16 +130,16 @@ export const useLatestResourcePrice = (slug: string) => {
 export const useLatestIndexPrice = (market: {
   address: string;
   chainId: number;
-  epochId: number;
+  marketId: number;
 }) => {
   return useQuery<{ timestamp: string; value: string } | null>({
     queryKey: [
       'indexPrice',
       `${market.chainId}:${market.address}`,
-      market.epochId,
+      market.marketId,
     ],
     queryFn: async () => {
-      if (!market.address || !market.chainId || market.epochId === 0) {
+      if (!market.address || !market.chainId || market.marketId === 0) {
         return null;
       }
 
@@ -149,7 +148,7 @@ export const useLatestIndexPrice = (market: {
         variables: {
           address: market.address,
           chainId: market.chainId,
-          epochId: market.epochId.toString(),
+          marketId: market.marketId.toString(),
         },
       });
 
@@ -176,6 +175,6 @@ export const useLatestIndexPrice = (market: {
       };
     },
     refetchInterval: 12000, // Refetch every 12 seconds (approx ETH block time)
-    enabled: !!market.address && !!market.chainId && market.epochId !== 0,
+    enabled: !!market.address && !!market.chainId && market.marketId !== 0,
   });
 };
