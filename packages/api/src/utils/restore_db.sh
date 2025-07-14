@@ -68,7 +68,7 @@ fi
 
 # Replace all instances of the original database name with the local database name
 # This handles cases where the dump contains references to the original database name
-sed -i '' "s/$DB_NAME/$DB_NAME_LOCAL/g" ./db_backups/complete_dump.sql
+sed -i '' "s/$DB_NAME/$DB_NAME_LOCAL/g" './db_backups/complete_dump.sql'
 
 # Step 1: Drop and recreate local database
 echo "Dropping and recreating local database..."
