@@ -31,8 +31,8 @@ interface MarketDataContract {
   startTime: bigint;
   endTime: bigint;
   pool: string;
-  ethToken: string;
-  gasToken: string;
+  quoteToken: string;
+  baseToken: string;
   minPriceD18: bigint;
   maxPriceD18: bigint;
   baseAssetMinPriceTick: number;

@@ -16,10 +16,10 @@ export interface FoilPosition {
   kind: PositionKind;
   marketId: bigint; // Same as marketId
   depositedCollateralAmount: bigint;
-  borrowedVEth: bigint;
-  borrowedVGas: bigint;
-  vEthAmount: bigint;
-  vGasAmount: bigint;
+  borrowedVBase: bigint;
+  borrowedVQuote: bigint;
+  vBaseAmount: bigint;
+  vQuoteAmount: bigint;
   uniswapPositionId: bigint;
   isSettled: boolean;
 }

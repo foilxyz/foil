@@ -154,6 +154,7 @@ const ModifyTradeFormInternal: React.FC<ModifyTradeFormProps> = ({
   const successHandled = useRef(false);
 
   const positionData = getPositionById(positionId);
+  console.log('Position Data:', positionData);
 
   const {
     marketAddress,
@@ -168,8 +169,10 @@ const ModifyTradeFormInternal: React.FC<ModifyTradeFormProps> = ({
     'Long' | 'Short',
   ] = useMemo(() => {
     if (positionData) {
-      const isLong = positionData.vGasAmount > BigInt(0);
-      const size = isLong ? positionData.vGasAmount : positionData.borrowedVGas;
+      const isLong = positionData.vBaseAmount > BigInt(0);
+      const size = isLong
+        ? positionData.vBaseAmount
+        : positionData.borrowedVBase;
       const adjustedSize = size >= MIN_BIG_INT_SIZE ? size : BigInt(0);
       return [isLong ? adjustedSize : -adjustedSize, isLong ? 'Long' : 'Short'];
     }

@@ -33,8 +33,8 @@ interface MarketData {
   startTime: bigint;
   endTime: bigint;
   pool: `0x${string}`;
-  ethToken: `0x${string}`;
-  gasToken: `0x${string}`;
+  quoteToken: `0x${string}`;
+  baseToken: `0x${string}`;
   minPriceD18: bigint;
   maxPriceD18: bigint;
   baseAssetMinPriceTick: number;
