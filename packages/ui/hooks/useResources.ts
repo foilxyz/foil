@@ -75,13 +75,13 @@ export const useResources = () => {
     queryFn: async () => {
       const data = await graphqlRequest<GetResourcesQuery>(RESOURCES_QUERY);
       
-      const resources = data.resources.sort((a, b) => {
+      const resources = data.resources.sort((a: any, b: any) => {
         const indexA = RESOURCE_ORDER.indexOf(a.slug as ResourceSlug);
         const indexB = RESOURCE_ORDER.indexOf(b.slug as ResourceSlug);
         return indexA - indexB;
       });
 
-      return resources.map((resource) => ({
+      return resources.map((resource: any) => ({
         ...resource,
         iconPath: `/resources/${resource.slug}.svg`,
       }));
