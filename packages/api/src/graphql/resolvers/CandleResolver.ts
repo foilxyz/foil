@@ -391,7 +391,7 @@ export class CandleResolver {
   ): Promise<CandleAndTimestampType> {
     const candleCacheRetrieve = CandleCacheRetriever.getInstance();
     const { data, lastUpdateTimestamp } =
-      await candleCacheRetrieve.getmarketPrices(
+      await candleCacheRetrieve.getMarketPrices(
         from,
         to,
         interval,

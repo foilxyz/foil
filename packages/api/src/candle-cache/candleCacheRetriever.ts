@@ -137,7 +137,7 @@ export class CandleCacheRetriever {
     });
   }
 
-  async getmarketPrices(
+  async getMarketPrices(
     from: number,
     to: number,
     interval: number,

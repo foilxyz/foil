@@ -1,12 +1,12 @@
 import { CANDLE_CACHE_CONFIG, CANDLE_CACHE_IPC_KEYS } from './config';
 import {
   getMarketGroups,
-  getmarketPrices,
+  getMarketPrices,
   getResourcePrices,
   setParam,
   saveCandle,
   getResourcePricesCount,
-  getmarketPricesCount,
+  getMarketPricesCount,
   truncateCandlesTable,
   truncateParamsTable,
   setStringParam,
@@ -315,7 +315,7 @@ export abstract class BaseCandleCacheBuilder {
     );
     let getNextBatch = true;
 
-    const totalmarketPrices = await getmarketPricesCount(initialTimestamp);
+    const totalmarketPrices = await getMarketPricesCount(initialTimestamp);
     const totalBatches = Math.ceil(
       totalmarketPrices / CANDLE_CACHE_CONFIG.batchSize
     );
@@ -334,7 +334,7 @@ export abstract class BaseCandleCacheBuilder {
         `market prices batch: ${iter}/${totalBatches} - step 1`
       );
 
-      const { prices, hasMore } = await getmarketPrices({
+      const { prices, hasMore } = await getMarketPrices({
         initialTimestamp,
         quantity: CANDLE_CACHE_CONFIG.batchSize,
       });

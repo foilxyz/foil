@@ -159,7 +159,7 @@ type MarketPriceWithIncludes = Prisma.MarketPriceGetPayload<{
   };
 }>;
 
-export async function getmarketPrices({
+export async function getMarketPrices({
   initialTimestamp,
   quantity,
 }: {
@@ -429,7 +429,7 @@ export async function getCandles({
   });
 }
 
-export async function getmarketPricesCount(
+export async function getMarketPricesCount(
   initialTimestamp: number
 ): Promise<number> {
   return prisma.marketPrice.count({
