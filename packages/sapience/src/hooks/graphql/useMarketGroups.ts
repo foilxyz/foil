@@ -135,7 +135,7 @@ const MARKETS_QUERY = `
         name
         slug
       }
-      market {
+      markets {
         id
         marketId
         startTimestamp

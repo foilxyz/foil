@@ -274,19 +274,8 @@ const ForecastingTable = () => {
     // 2. Map filteredMarketGroups to MarketWithContext[]
     const allMarkets: MarketWithContext[] = filteredByCategory.flatMap(
       (marketGroup) => {
-        // Ensure required fields for MarketWithContext from marketGroup are present AND are strings
-        if (
-          typeof marketGroup.address !== 'string' ||
-          typeof marketGroup.collateralAsset !== 'string' ||
-          !marketGroup.category || // Ensure category object itself exists
-          typeof marketGroup.category.slug !== 'string' ||
-          typeof marketGroup.category.id !== 'string'
-        ) {
-          return []; // Skip this marketGroup if essential context fields are missing or not strings
-        }
-
         // Filter and map markets within this marketGroup
-        return marketGroup.market
+        return marketGroup.markets
           .filter(
             (
               market // market is GraphQLMarketType
