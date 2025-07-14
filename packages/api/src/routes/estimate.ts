@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { handleAsyncErrors } from '../helpers/handleAsyncErrors';
-import { getMarketGroupAndMarket } from '../helpers/getMarketAndEpoch';
+import { getMarketGroupAndMarket } from '../helpers/getMarketAndMarketGroup';
 
 interface Transaction {
   timeStamp: string;

@@ -286,14 +286,14 @@ async function getMarket(
 async function getCurrentPrice(
   chainId: number,
   marketAddress: string,
-  epochId: number
+  marketId: number
 ): Promise<bigint> {
   const client = getProviderForChain(chainId);
   const price = await client.readContract({
     address: marketAddress as `0x${string}`,
     abi: Sapience.abi,
     functionName: 'getReferencePrice',
-    args: [BigInt(epochId)],
+    args: [BigInt(marketId)],
   });
 
   return price as bigint;

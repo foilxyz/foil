@@ -5,7 +5,7 @@ import { useReadContract } from 'wagmi';
 
 // Define the types based on the provided structs
 interface MarketData {
-  epochId: bigint;
+  marketId: bigint;
   startTime: bigint;
   endTime: bigint;
   pool: Address;

@@ -14,7 +14,7 @@ export enum PositionKind {
 export interface FoilPosition {
   id: bigint; // NFT ID
   kind: PositionKind;
-  epochId: bigint; // Same as marketId
+  marketId: bigint; // Same as marketId
   depositedCollateralAmount: bigint;
   borrowedVEth: bigint;
   borrowedVGas: bigint;
@@ -174,8 +174,8 @@ export function usePositions({
       // If marketId is provided, filter positions by that marketId
       if (
         marketId !== undefined &&
-        position.epochId !== undefined &&
-        position.epochId.toString() !== marketId.toString()
+        position.marketId !== undefined &&
+        position.marketId.toString() !== marketId.toString()
       ) {
         // eslint-disable-next-line no-continue
         continue;

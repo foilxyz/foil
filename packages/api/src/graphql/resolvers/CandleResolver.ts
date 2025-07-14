@@ -156,8 +156,8 @@ export class CandleResolver {
         throw new Error(`Resource not found for market: ${marketGroup.id}`);
       }
 
-      const epochStartTimestamp = Number(market.startTimestamp);
-      if (timestamp < epochStartTimestamp) {
+      const marketStartTimestamp = Number(market.startTimestamp);
+      if (timestamp < marketStartTimestamp) {
         throw new Error(`Timestamp is before market start time`);
       }
 
@@ -165,7 +165,7 @@ export class CandleResolver {
         where: {
           resourceId: resource.id,
           timestamp: {
-            gte: epochStartTimestamp,
+            gte: marketStartTimestamp,
             lte: timestamp,
           },
         },
