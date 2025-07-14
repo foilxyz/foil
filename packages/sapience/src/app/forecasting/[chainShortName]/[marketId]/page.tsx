@@ -121,6 +121,7 @@ const ForecastContent = () => {
     marketClassification,
     marketContractData,
     collateralAssetAddress,
+    collateralAssetTicker,
   } = useMarketPage();
 
   const [selectedInterval, setSelectedInterval] = useState<TimeInterval>(
@@ -279,6 +280,7 @@ const ForecastContent = () => {
             collateralAssetAddress={collateralAssetAddress}
             baseTokenName={baseTokenName}
             quoteTokenName={quoteTokenName}
+            collateralSymbol={collateralAssetTicker}
             minTick={minTick}
             maxTick={maxTick}
           />
