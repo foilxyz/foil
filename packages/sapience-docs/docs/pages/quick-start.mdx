@@ -295,7 +295,7 @@ async function trade(marketAddress: Address, marketId: bigint, positionSize: big
 
   console.log(`Retrieving a quote for a $1 wager on market outcome "${prediction}"...`);
   console.log();
-  const marketGroupAddress = market.marketGroup!.address! as Address;
+  const marketGroupAddress = market.market_group!.address! as Address;
   const { positionSize } = await getQuote(marketGroupAddress, BigInt(market.marketId), prediction);
 
   if(ETHEREUM_PRIVATE_KEY){

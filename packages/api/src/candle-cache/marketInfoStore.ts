@@ -34,17 +34,12 @@ export class MarketInfoStore {
   }
 
   public async updateMarketInfo(marketGroups: MarketGroupWithRelations[]) {
-    console.log(
-      `updateMarketInfo: marketGroups.length: ${marketGroups.length}`
-    );
-    let _debugCounter = 0;
     for (const marketGroup of marketGroups) {
       // Add resource slug
       const resourceSlug = marketGroup.resource?.slug ?? 'no-resource';
 
       // Add market with extra data
       if (marketGroup.market) {
-        _debugCounter += marketGroup.market.length;
         for (const market of marketGroup.market) {
           if (this.marketInfoByIdx.has(market.id) || !marketGroup.address) {
             continue;
@@ -63,7 +58,6 @@ export class MarketInfoStore {
         }
       }
     }
-    console.log(`updateMarketInfo: markets counter: ${_debugCounter}`);
   }
 
   public getMarketInfo(marketId: number): MarketInfo | undefined {

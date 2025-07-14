@@ -30,7 +30,6 @@ export class MarketResolver {
         },
       });
 
-      console.log('markets', markets);
       return markets as Market[];
     } catch (error) {
       console.error('Error fetching markets:', error);
