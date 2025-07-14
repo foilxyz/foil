@@ -61,7 +61,7 @@ export function useMarketRead({
     address: marketAddress,
     abi,
     chainId: 8453,
-    functionName: 'getEpoch',
+    functionName: 'getMarket',
     args: [marketId],
   });
 

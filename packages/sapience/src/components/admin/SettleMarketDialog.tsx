@@ -186,8 +186,8 @@ const SettleMarketDialog = ({
   } = useReadContract({
     address: marketGroup.address as `0x${string}`,
     abi: sapienceAbi, // Use the fetched ABI
-    functionName: 'getEpoch',
-    args: [BigInt(market.marketId)], // market.marketId is the epochId
+    functionName: 'getMarket',
+    args: [BigInt(market.marketId)],
     chainId: marketGroup.chainId,
     query: {
       enabled:
@@ -200,7 +200,7 @@ const SettleMarketDialog = ({
     },
   });
 
-  // Destructure the result from getEpoch with type safety
+  // Destructure the result from getMarket with type safety
   const epochData: EpochData | undefined =
     Array.isArray(epochResult) && epochResult.length > 0
       ? (epochResult[0] as EpochData)
