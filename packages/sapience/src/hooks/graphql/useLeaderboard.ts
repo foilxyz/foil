@@ -79,7 +79,7 @@ const useAllTimeLeaderboard = () => {
           (marketGroup.markets || []).forEach((market) => {
             if (market.public) {
               publicMarketIdentifiers.push({
-                address: marketGroup.address,
+                address: marketGroup.address!,
                 chainId: marketGroup.chainId,
                 marketId: String(market.marketId), // Ensure marketId is string for query variable
               });
