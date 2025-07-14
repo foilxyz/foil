@@ -4564,34 +4564,3 @@ export type Transaction_Type_Enum =
   | 'removeLiquidity'
   | 'settledPosition'
   | 'short';
-
-// Additional Query Types
-export type GetResourcesQuery = {
-  resources: Array<Resource>;
-};
-
-export type GetResourcesQueryVariables = Exact<{ [key: string]: never; }>;
-
-export type GetResourceCandlesQuery = {
-  resourceCandlesFromCache: CandleAndTimestampType;
-};
-
-export type GetResourceCandlesQueryVariables = Exact<{
-  slug: Scalars['String']['input'];
-  from: Scalars['Int']['input'];
-  to: Scalars['Int']['input'];
-  interval: Scalars['Int']['input'];
-}>;
-
-export type GetIndexCandlesQuery = {
-  indexCandlesFromCache: CandleAndTimestampType;
-};
-
-export type GetIndexCandlesQueryVariables = Exact<{
-  address: Scalars['String']['input'];
-  chainId: Scalars['Int']['input'];
-  marketId: Scalars['String']['input'];
-  from: Scalars['Int']['input'];
-  to: Scalars['Int']['input'];
-  interval: Scalars['Int']['input'];
-}>;
