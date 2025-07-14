@@ -27,7 +27,7 @@ export const useMarketGroupLatestMarket = (
     chainId,
   });
 
-  // Extract the epochId from the returned tuple
+  // Extract the marketId from the returned tuple
   const latestMarketId =
     latestMarketData &&
     Array.isArray(latestMarketData) &&
