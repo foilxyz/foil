@@ -47,7 +47,7 @@ export const initializeMarket = async (marketInfo: marketInfo) => {
   const MarketReadResult = (await client.readContract({
     address: marketInfo.deployment.address as `0x${string}`,
     abi: Sapience.abi,
-    functionName: 'getMarket',
+    functionName: 'getMarketGroup',
   })) as [string, string, string, string, any];
 
   const updatedMarketData = {
@@ -664,7 +664,7 @@ export const upsertEntitiesFromEvent = async (
   chainId: number
 ) => {
   // First check if this event has already been processed by looking for an existing transaction
-  const existingTransaction = await prisma.transaction.findFirst({
+  let existingTransaction = await prisma.transaction.findFirst({
     where: { eventId: event.id },
   });
 
@@ -672,6 +672,17 @@ export const upsertEntitiesFromEvent = async (
     if (event.logData.eventName != EventType.PositionSettled) {
       return;
     }
+  }
+
+  if (!existingTransaction) {
+    // Create an empty transaction
+    existingTransaction = await prisma.transaction.create({
+      data: {
+        eventId: event.id,
+        type: 'addLiquidity' as any,
+        collateral: new Decimal('0'),
+      },
+    });
   }
 
   let skipTransaction = false;
