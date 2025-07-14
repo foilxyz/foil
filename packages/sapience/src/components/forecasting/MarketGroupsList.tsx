@@ -549,12 +549,14 @@ const ForecastingTable = () => {
       const timeA = dayEndTimes[a];
       const timeB = dayEndTimes[b];
       if (typeof timeA === 'number' && typeof timeB === 'number') {
-        return timeA - timeB;
+        // When status filter is "all", sort by end time descending (latest first)
+        // When status filter is "active", sort by end time ascending (earliest first)
+        return statusFilter === 'all' ? timeB - timeA : timeA - timeB;
       }
       // Fallback sort if types are not numbers (should not happen with current logic)
       return 0;
     });
-  }, [marketGroupsByDay, dayEndTimes]);
+  }, [marketGroupsByDay, dayEndTimes, statusFilter]);
 
   // Create a key that changes whenever filters change to force complete re-render
   const filterKey = React.useMemo(() => {
