@@ -75,7 +75,7 @@ const DataDrawer = ({ trigger }: DataDrawerProps) => {
   const allTransactions = allPositions
     .flatMap(
       (position) =>
-        position.transaction?.map((tx) => ({
+        position.transactions?.map((tx) => ({
           ...tx,
           position,
           positionType: position.isLP ? 'LP' : 'Trader',

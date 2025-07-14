@@ -288,6 +288,10 @@ const OwnerCell = ({ group }: { group: EnrichedMarketGroup }) => {
 
 // Settlement Price Cell Component
 const SettlementPriceCell = ({ group }: { group: EnrichedMarketGroup }) => {
+  // If the group has no resource, do not query and show N/A
+  if (!group.resource) {
+    return <span className="text-muted-foreground">N/A</span>;
+  }
   // Find the current/active market or the most recent settled market
   const now = Math.floor(Date.now() / 1000);
   const currentMarket = group.markets.find((m) => {
@@ -325,7 +329,15 @@ const SettlementPriceCell = ({ group }: { group: EnrichedMarketGroup }) => {
   }
 
   if (error) {
-    return <span className="text-red-500">Error</span>;
+    // Check if the error message is about a missing resource
+    const isResourceNotFound =
+      typeof error?.message === 'string' &&
+      error.message.includes('Resource not found for market');
+    return (
+      <span className="text-muted-foreground">
+        {isResourceNotFound ? 'No price data' : 'N/A'}
+      </span>
+    );
   }
 
   if (indexPrice === undefined || indexPrice === null) {
