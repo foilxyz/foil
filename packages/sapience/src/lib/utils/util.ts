@@ -158,11 +158,11 @@ export const getDisplayQuestion = (
  * Finds active markets for a market group based on current timestamp
  */
 export const findActiveMarkets = (marketGroupData: {
-  market?: MarketType[];
+  markets?: MarketType[];
 }): MarketType[] => {
   const nowInSeconds = Date.now() / 1000;
   // Filter markets based on timestamps
-  return (marketGroupData.market || []).filter(
+  return (marketGroupData.markets || []).filter(
     (
       market: MarketType // Use MarketType here
     ) => {

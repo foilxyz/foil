@@ -208,8 +208,22 @@ const TOTAL_VOLUME_QUERY = `
 `;
 
 const OPEN_INTEREST_QUERY = `
-  query GetOpenInterest($marketAddress: String, $chainId: Int) {
-    positions(marketAddress: $marketAddress, chainId: $chainId) {
+  query GetOpenInterest($marketAddress: String!, $chainId: Int!, $marketId: Int!) {
+    positions(
+      where: {
+        market: {
+          is: {
+            marketGroup: {
+              is: {
+                address: { equals: $marketAddress }
+                chainId: { equals: $chainId }
+              }
+            }
+            marketId: { equals: $marketId }
+          }
+        }
+      }
+    ) {
       id
       positionId
       collateral
@@ -499,6 +513,7 @@ export const useOpenInterest = (market: {
           {
             marketAddress: market.address,
             chainId: market.chainId,
+            marketId: market.marketId,
           }
         );
 
@@ -508,10 +523,7 @@ export const useOpenInterest = (market: {
         }
 
         // Filter positions for this specific market and sum collateral for unsettled positions
-        const marketPositions = data.positions.filter(
-          (position: PositionType) =>
-            position.market && position.market.marketId === market.marketId
-        );
+        const marketPositions = data.positions;
 
         const unsettledPositions = marketPositions.filter(
           (position: PositionType) =>

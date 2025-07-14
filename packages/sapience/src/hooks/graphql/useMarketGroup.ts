@@ -6,7 +6,6 @@ import type {
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
-import type { MarketGroupClassification } from '../../lib/types';
 import { getMarketGroupClassification } from '../../lib/utils/marketUtils';
 import {
   findActiveMarkets,
@@ -15,8 +14,8 @@ import {
 
 // GraphQL query to fetch market data
 const MARKET_GROUP_QUERY = `
-  query GetMarketGroup($chainId: Int!, $address: String!) {
-    marketGroup(chainId: $chainId, address: $address) {
+  query GetMarketGroup($where: MarketGroupWhereUniqueInput!) {
+    marketGroup(where: $where) {
       id
       address
       chainId
@@ -25,7 +24,7 @@ const MARKET_GROUP_QUERY = `
       quoteTokenName
       collateralSymbol
       collateralAsset
-      market {
+      markets {
         optionName
         id
         marketId
@@ -41,25 +40,13 @@ const MARKET_GROUP_QUERY = `
   }
 `;
 
-interface UseMarketGroupProps {
-  chainShortName: string;
-  marketAddress: string;
-}
-
-interface UseMarketGroupReturn {
-  marketGroupData: MarketGroupType | undefined;
-  isLoading: boolean;
-  isSuccess: boolean;
-  activeMarkets: MarketType[];
-  chainId: number;
-  isError: boolean;
-  marketClassification: MarketGroupClassification | undefined;
-}
-
 export const useMarketGroup = ({
   chainShortName,
   marketAddress,
-}: UseMarketGroupProps): UseMarketGroupReturn => {
+}: {
+  chainShortName: string;
+  marketAddress: string;
+}) => {
   const chainId = getChainIdFromShortName(chainShortName);
   const [activeMarkets, setActiveMarkets] = useState<MarketType[]>([]);
 
@@ -77,7 +64,14 @@ export const useMarketGroup = ({
 
       const data = await graphqlRequest<MarketGroupQueryResult>(
         MARKET_GROUP_QUERY,
-        { chainId, address: marketAddress }
+        {
+          where: {
+            address_chainId: {
+              address: marketAddress,
+              chainId,
+            },
+          },
+        }
       );
 
       const marketResponse = data?.marketGroup;
