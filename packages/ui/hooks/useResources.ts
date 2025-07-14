@@ -2,12 +2,20 @@ import { useQuery } from '@tanstack/react-query';
 
 import { graphqlRequest } from '../lib';
 import { RESOURCE_ORDER, type ResourceSlug } from '../types/resources';
-import { CandleType } from '../types';
-import type { 
-  GetResourcesQuery, 
-  GetResourceCandlesQuery, 
-  GetIndexCandlesQuery
-} from '../types/graphql';
+import { CandleType, Resource, CandleAndTimestampType } from '../types/graphql';
+
+// Query response types
+interface GetResourcesQuery {
+  resources: Resource[];
+}
+
+interface GetResourceCandlesQuery {
+  resourceCandles: CandleAndTimestampType;
+}
+
+interface GetIndexCandlesQuery {
+  indexCandles: CandleAndTimestampType;
+}
 
 const LATEST_RESOURCE_PRICE_QUERY = `
   query GetLatestResourcePrice($slug: String!, $from: Int!, $to: Int!, $interval: Int!) {
