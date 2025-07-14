@@ -187,7 +187,7 @@ const SettleMarketDialog = ({
     address: marketGroup.address as `0x${string}`,
     abi: sapienceAbi, // Use the fetched ABI
     functionName: 'getMarket',
-    args: [BigInt(market.marketId)], // market.marketId is the marketId
+    args: [BigInt(market.marketId)],
     chainId: marketGroup.chainId,
     query: {
       enabled:
