@@ -100,9 +100,13 @@ async function executeGraphQLQuery(
       content: [
         {
           type: 'text',
-          text: JSON.stringify({
-            data: result.data
-          }, null, 2),
+          text: JSON.stringify(
+            {
+              data: result.data,
+            },
+            null,
+            2
+          ),
         },
       ],
     };
@@ -122,13 +126,16 @@ async function executeGraphQLQuery(
 // MCP Tools
 export const introspectSchema = {
   name: 'introspect_sapience_schema',
-  description: 'Introspect the Sapience GraphQL schema to get all available queries, types, and fields',
+  description:
+    'Introspect the Sapience GraphQL schema to get all available queries, types, and fields',
   parameters: {
     properties: {
       __ignore__: z
         .boolean()
         .default(false)
-        .describe('This parameter is ignored - used for clients that cannot handle empty parameters')
+        .describe(
+          'This parameter is ignored - used for clients that cannot handle empty parameters'
+        )
         .optional(),
     },
   },
@@ -159,7 +166,8 @@ export const introspectSchema = {
 
 export const queryGraphQL = {
   name: 'query_sapience_graphql',
-  description: 'Execute a GraphQL query against the Sapience API. Use introspect_sapience_schema first to see available queries.',
+  description:
+    'Execute a GraphQL query against the Sapience API. Use introspect_sapience_schema first to see available queries.',
   parameters: {
     properties: {
       query: z.string().describe('The GraphQL query to execute'),

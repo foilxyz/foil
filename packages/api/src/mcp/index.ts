@@ -37,7 +37,7 @@ export function registerAllMcpTools(server: McpServer): void {
   // Register all tools using the helper function
   registerTools(server, readFoilContractsTools);
   registerTools(server, writeFoilContractsTools);
-  
+
   // Register GraphQL tools individually
   server.tool(
     introspectSchema.name,
@@ -51,6 +51,6 @@ export function registerAllMcpTools(server: McpServer): void {
     queryGraphQL.parameters.properties,
     wrapToolFunction(queryGraphQL.function)
   );
-  
+
   registerTools(server, miscTools);
 }
