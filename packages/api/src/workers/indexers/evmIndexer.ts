@@ -3,7 +3,7 @@ import { getBlockByTimestamp, getProviderForChain } from '../../utils/utils';
 import { Block, type PublicClient } from 'viem';
 import Sentry from '../../instrument';
 import { IResourcePriceIndexer } from '../../interfaces';
-import type { resource } from '../../../generated/prisma';
+import type { Resource } from '../../../generated/prisma';
 
 class EvmIndexer implements IResourcePriceIndexer {
   public client: PublicClient;
@@ -16,7 +16,7 @@ class EvmIndexer implements IResourcePriceIndexer {
     this.client = getProviderForChain(chainId);
   }
 
-  private async storeBlockPrice(block: Block, resource: resource) {
+  private async storeBlockPrice(block: Block, resource: Resource) {
     const value = block?.baseFeePerGas; // in wei
     const used = block?.gasUsed;
     if (!value || !block.number) {
@@ -28,7 +28,7 @@ class EvmIndexer implements IResourcePriceIndexer {
     try {
       const feePaid = BigInt(value) * BigInt(used);
 
-      await prisma.resource_price.upsert({
+      await prisma.resourcePrice.upsert({
         where: {
           resourceId_timestamp: {
             resourceId: resource.id,
@@ -59,7 +59,7 @@ class EvmIndexer implements IResourcePriceIndexer {
   }
 
   async indexBlockPriceFromTimestamp(
-    resource: resource,
+    resource: Resource,
     timestamp: number,
     endTimestamp?: number,
     overwriteExisting: boolean = false
@@ -90,7 +90,7 @@ class EvmIndexer implements IResourcePriceIndexer {
     ) {
       try {
         // Check if we already have a price for this block
-        const existingPrice = await prisma.resource_price.findFirst({
+        const existingPrice = await prisma.resourcePrice.findFirst({
           where: {
             resourceId: resource.id,
             blockNumber: Number(blockNumber),
@@ -129,7 +129,7 @@ class EvmIndexer implements IResourcePriceIndexer {
     return true;
   }
 
-  async indexBlocks(resource: resource, blocks: number[]): Promise<boolean> {
+  async indexBlocks(resource: Resource, blocks: number[]): Promise<boolean> {
     for (const blockNumber of blocks) {
       try {
         console.log(
@@ -155,7 +155,7 @@ class EvmIndexer implements IResourcePriceIndexer {
     return true;
   }
 
-  async watchBlocksForResource(resource: resource) {
+  async watchBlocksForResource(resource: Resource) {
     if (this.isWatching) {
       console.log(
         `[EvmIndexer.${resource.slug}] Already watching blocks for this resource`

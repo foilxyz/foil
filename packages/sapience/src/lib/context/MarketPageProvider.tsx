@@ -147,12 +147,12 @@ export function MarketPageProvider({
 
   // Derived values for convenience
   const collateralAssetTicker =
-    marketData?.market_group?.quoteTokenName || 'sUSDS';
-  const collateralAssetAddress = marketData?.market_group?.collateralAsset as
+    marketData?.marketGroup?.quoteTokenName || 'sUSDS';
+  const collateralAssetAddress = marketData?.marketGroup?.collateralAsset as
     | Address
     | undefined;
-  const baseTokenName = marketData?.market_group?.baseTokenName || 'Yes';
-  const quoteTokenName = marketData?.market_group?.quoteTokenName || 'No';
+  const baseTokenName = marketData?.marketGroup?.baseTokenName || 'Yes';
+  const quoteTokenName = marketData?.marketGroup?.quoteTokenName || 'No';
   const minTick = marketContractData?.baseAssetMinPriceTick || 0;
   const maxTick = marketContractData?.baseAssetMaxPriceTick || 0;
 
@@ -165,9 +165,9 @@ export function MarketPageProvider({
     }
 
     // Assuming GraphQL provides marketData.marketGroup structured appropriately
-    // for all cases, including single markets (e.g., marketGroup.markets = [singleMarket]).
-    // getMarketGroupClassification handles cases where marketGroup.markets is undefined or empty.
-    return getMarketGroupClassification(marketData.market_group || {});
+    // for all cases, including single markets (e.g., marketGroup.market = [singleMarket]).
+    // getMarketGroupClassification handles cases where marketGroup.market is undefined or empty.
+    return getMarketGroupClassification(marketData.marketGroup || {});
   }, [marketData]);
 
   const value = {

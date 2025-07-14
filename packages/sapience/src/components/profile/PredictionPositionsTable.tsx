@@ -21,6 +21,64 @@ import React from 'react';
 import type { FormattedAttestation } from '~/hooks/graphql/usePredictions';
 import { useSapience } from '~/lib/context/SapienceProvider';
 
+// Helper function to extract market address from attestation data
+const extractMarketAddress = (
+  attestation: FormattedAttestation
+): string | null => {
+  const marketAddressField = attestation.decodedData.find(
+    (field) => field.name === 'marketAddress'
+  );
+
+  const potentialMarketAddress =
+    marketAddressField &&
+    typeof marketAddressField.value === 'object' &&
+    marketAddressField.value !== null &&
+    'value' in marketAddressField.value
+      ? marketAddressField.value.value
+      : null;
+
+  return typeof potentialMarketAddress === 'string'
+    ? (potentialMarketAddress as string).toLowerCase()
+    : null;
+};
+
+// Helper function to extract market ID hex from attestation data
+const extractMarketIdHex = (
+  attestation: FormattedAttestation
+): string | null => {
+  const marketIdField = attestation.decodedData.find(
+    (field) => field.name === 'marketId'
+  );
+
+  return marketIdField &&
+    typeof marketIdField.value === 'object' &&
+    marketIdField.value !== null &&
+    'value' in marketIdField.value &&
+    typeof marketIdField.value.value === 'object' &&
+    marketIdField.value.value !== null &&
+    'hex' in marketIdField.value.value &&
+    typeof marketIdField.value.value.hex === 'string'
+    ? marketIdField.value.value.hex
+    : null;
+};
+
+// Helper function to check if market group has multiple markets
+const hasMultipleMarkets = (
+  marketAddress: string,
+  marketGroups: ReturnType<typeof useSapience>['marketGroups']
+): boolean => {
+  const marketGroup = marketGroups.find(
+    (group) => group.address?.toLowerCase() === marketAddress
+  );
+
+  return Boolean(
+    marketGroup &&
+      marketGroup.markets &&
+      Array.isArray(marketGroup.markets) &&
+      marketGroup.markets.length > 1
+  );
+};
+
 // Helper function to render prediction when baseTokenName is 'Yes'
 const renderConditionalPrediction = (value: string) => {
   if (value === '1000000000000000000' || value === '1') {
@@ -61,22 +119,7 @@ const renderPredictionCell = ({
   marketGroups: ReturnType<typeof useSapience>['marketGroups'];
   isMarketsLoading: boolean;
 }) => {
-  const marketAddressField = row.original.decodedData.find(
-    (field) => field.name === 'marketAddress'
-  );
-
-  // Safely extract marketAddress string
-  const potentialMarketAddress =
-    marketAddressField &&
-    typeof marketAddressField.value === 'object' &&
-    marketAddressField.value !== null &&
-    'value' in marketAddressField.value
-      ? marketAddressField.value.value
-      : null;
-  const marketAddress =
-    typeof potentialMarketAddress === 'string'
-      ? (potentialMarketAddress as string).toLowerCase()
-      : null;
+  const marketAddress = extractMarketAddress(row.original);
 
   let baseTokenName = '';
   if (!isMarketsLoading && marketAddress) {
@@ -118,39 +161,8 @@ const renderQuestionCell = ({
   marketGroups: ReturnType<typeof useSapience>['marketGroups'];
   isMarketsLoading: boolean;
 }) => {
-  const marketAddressField = row.original.decodedData.find(
-    (field) => field.name === 'marketAddress'
-  );
-
-  // Safely extract marketAddress string
-  const potentialMarketAddress =
-    marketAddressField &&
-    typeof marketAddressField.value === 'object' &&
-    marketAddressField.value !== null &&
-    'value' in marketAddressField.value
-      ? marketAddressField.value.value
-      : null;
-  const marketAddress =
-    typeof potentialMarketAddress === 'string'
-      ? (potentialMarketAddress as string).toLowerCase()
-      : null;
-
-  const marketIdField = row.original.decodedData.find(
-    (field) => field.name === 'marketId'
-  );
-
-  // Safely extract marketId hex string
-  const marketIdHex =
-    marketIdField &&
-    typeof marketIdField.value === 'object' &&
-    marketIdField.value !== null &&
-    'value' in marketIdField.value &&
-    typeof marketIdField.value.value === 'object' &&
-    marketIdField.value.value !== null &&
-    'hex' in marketIdField.value.value &&
-    typeof marketIdField.value.value.hex === 'string'
-      ? marketIdField.value.value.hex
-      : null;
+  const marketAddress = extractMarketAddress(row.original);
+  const marketIdHex = extractMarketIdHex(row.original);
 
   if (isMarketsLoading) {
     return (
@@ -166,7 +178,9 @@ const renderQuestionCell = ({
     );
 
     if (marketGroup) {
-      const market = marketGroup.markets.find((m) => m.marketId === marketId);
+      const market = marketGroup.markets?.find(
+        (m: any) => m.marketId === marketId
+      );
 
       if (market && typeof market.question === 'string') {
         return (
@@ -213,43 +227,18 @@ const PredictionPositionsTable = ({
 
   // Memoize the calculation for showing the question column
   const shouldDisplayQuestionColumn = React.useMemo(() => {
-    if (
-      isMarketPage ||
-      !attestations ||
-      attestations.length === 0 ||
-      !marketGroups ||
-      marketGroups.length === 0
-    ) {
-      return false;
-    }
-    return attestations.some((attestation) => {
-      const marketAddressField = attestation.decodedData.find(
-        (field) => field.name === 'marketAddress'
-      );
-      const potentialMarketAddress =
-        marketAddressField &&
-        typeof marketAddressField.value === 'object' &&
-        marketAddressField.value !== null &&
-        'value' in marketAddressField.value
-          ? marketAddressField.value.value
-          : null;
-      const marketAddress =
-        typeof potentialMarketAddress === 'string'
-          ? (potentialMarketAddress as string).toLowerCase()
-          : null;
+    // Early returns for simple conditions
+    if (isMarketPage) return false;
+    if (!attestations || attestations.length === 0) return false;
+    if (!marketGroups || marketGroups.length === 0) return false;
 
-      if (marketAddress) {
-        const marketGroup = marketGroups.find(
-          (group) => group.address?.toLowerCase() === marketAddress
-        );
-        return (
-          marketGroup &&
-          marketGroup.markets &&
-          Array.isArray(marketGroup.markets) &&
-          marketGroup.markets.length > 1
-        );
-      }
-      return false;
+    // Check if any attestation has a market with multiple markets
+    return attestations.some((attestation) => {
+      const marketAddress = extractMarketAddress(attestation);
+
+      if (!marketAddress) return false;
+
+      return hasMultipleMarkets(marketAddress, marketGroups);
     });
   }, [isMarketPage, attestations, marketGroups]);
 

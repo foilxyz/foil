@@ -1,5 +1,5 @@
 import type { Abi, PublicClient } from 'viem';
-import type { resource } from '../generated/prisma';
+import type { Resource } from '../generated/prisma';
 
 export enum EventType {
   LiquidityPositionCreated = 'LiquidityPositionCreated',
@@ -153,13 +153,13 @@ export interface PositionUpdatedEventLog {
 export interface IResourcePriceIndexer {
   client?: PublicClient;
   indexBlockPriceFromTimestamp(
-    resource: resource,
+    resource: Resource,
     startTimestamp: number,
     endTimestamp?: number,
     overwriteExisting?: boolean
   ): Promise<boolean>;
-  indexBlocks(resource: resource, blocks: number[]): Promise<boolean>;
-  watchBlocksForResource(resource: resource): Promise<void>;
+  indexBlocks(resource: Resource, blocks: number[]): Promise<boolean>;
+  watchBlocksForResource(resource: Resource): Promise<void>;
 }
 
 export interface LogData {
@@ -175,7 +175,7 @@ export interface LogData {
   transactionIndex: number;
 }
 
-export interface MarketInfo {
+export interface marketInfo {
   marketChainId: number;
   deployment: {
     address: string;
@@ -188,7 +188,7 @@ export interface MarketInfo {
     priceIndexer: {
       client?: PublicClient;
       indexBlocks: (
-        resource: resource,
+        resource: Resource,
         blockNumbers: number[]
       ) => Promise<boolean>;
     } | null;

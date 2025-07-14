@@ -19,7 +19,7 @@ router.post(
       return;
     }
 
-    const marketGroup = await prisma.market_group.findFirst({
+    const marketGroup = await prisma.marketGroup.findFirst({
       where: {
         chainId: Number(chainId),
         address: address.toLowerCase(),

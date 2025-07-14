@@ -2,7 +2,7 @@ import { formatDbBigInt } from '../utils/utils';
 import { Prisma } from '../../generated/prisma';
 
 // Prisma transaction type with all necessary includes
-export type PrismaTransactionWithIncludes = Prisma.transactionGetPayload<{
+export type PrismaTransactionWithIncludes = Prisma.TransactionGetPayload<{
   include: {
     position: {
       include: {

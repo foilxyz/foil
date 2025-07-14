@@ -1,25 +1,25 @@
 import type {
-  resource_price,
-  cache_candle,
-  resource,
+  ResourcePrice,
+  CacheCandle,
+  Resource,
 } from '../../../generated/prisma';
 import { CANDLE_TYPES, CANDLE_CACHE_CONFIG } from '../config';
 import { RuntimeCandleStore } from '../runtimeCandleStore';
 import { getTimtestampCandleInterval } from '../candleUtils';
 import { getOrCreateCandle, saveCandle } from '../dbUtils';
-import { MarketInfo, MarketInfoStore } from '../marketInfoStore';
+import { marketInfo, marketInfoStore } from '../marketInfoStore';
 import { Decimal } from '../../../generated/prisma/runtime/library';
 
-type ResourcePriceWithResource = resource_price & { resource: resource };
+type ResourcePriceWithResource = ResourcePrice & { resource: Resource };
 
 export class IndexCandleProcessor {
   constructor(
     private runtimeCandles: RuntimeCandleStore,
-    private marketInfoStore: MarketInfoStore
+    private marketInfoStore: marketInfoStore
   ) {}
 
   private getNewAvgPaidAndFee = (
-    prevCandle: cache_candle | undefined,
+    prevCandle: CacheCandle | undefined,
     price: ResourcePriceWithResource
   ) => {
     const feePaid =
@@ -38,9 +38,9 @@ export class IndexCandleProcessor {
     candleTimestamp: number,
     candleEndTimestamp: number,
     price: ResourcePriceWithResource,
-    marketInfo: MarketInfo,
-    prevCandle: cache_candle | undefined
-  ): Promise<cache_candle> {
+    marketInfo: marketInfo,
+    prevCandle: CacheCandle | undefined
+  ): Promise<CacheCandle> {
     const { feePaid, used, avg } = this.getNewAvgPaidAndFee(prevCandle, price);
 
     const candle = await getOrCreateCandle({

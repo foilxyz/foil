@@ -1,7 +1,7 @@
 import prisma from '../../db';
 import Sentry from '../../instrument';
 import { IResourcePriceIndexer } from '../../interfaces';
-import type { resource } from '../../../generated/prisma';
+import type { Resource } from '../../../generated/prisma';
 import axios from 'axios';
 import {
   getBlockByTimestamp,
@@ -106,7 +106,7 @@ class ethBlobsIndexer implements IResourcePriceIndexer {
     }
   }
 
-  private async storeBlockPrice(blockNumber: number, resource: resource) {
+  private async storeBlockPrice(blockNumber: number, resource: Resource) {
     try {
       const blobData = await this.fetchBlobDataFromBlobscan(blockNumber);
       if (!blobData) {
@@ -117,7 +117,7 @@ class ethBlobsIndexer implements IResourcePriceIndexer {
       const feePaid =
         BigInt(blobData.blobGasPrice) * BigInt(blobData.blobGasUsed);
 
-      await prisma.resource_price.upsert({
+      await prisma.resourcePrice.upsert({
         where: {
           resourceId_timestamp: {
             resourceId: resource.id,
@@ -156,7 +156,7 @@ class ethBlobsIndexer implements IResourcePriceIndexer {
   }
 
   async indexBlockPriceFromTimestamp(
-    resource: resource,
+    resource: Resource,
     startTimestamp: number,
     endTimestamp?: number,
     overwriteExisting: boolean = false
@@ -196,7 +196,7 @@ class ethBlobsIndexer implements IResourcePriceIndexer {
         blockNumber--
       ) {
         try {
-          const maybeResourcePrice = await prisma.resource_price.findFirst({
+          const maybeResourcePrice = await prisma.resourcePrice.findFirst({
             where: {
               resourceId: resource.id,
               blockNumber,
@@ -284,7 +284,7 @@ class ethBlobsIndexer implements IResourcePriceIndexer {
     return latestBlock.number;
   }
 
-  async indexBlocks(resource: resource, blocks: number[]): Promise<boolean> {
+  async indexBlocks(resource: Resource, blocks: number[]): Promise<boolean> {
     for (const blockNumber of blocks) {
       try {
         console.log('Indexing blob data from block', blockNumber);
@@ -307,7 +307,7 @@ class ethBlobsIndexer implements IResourcePriceIndexer {
     return true;
   }
 
-  async watchBlocksForResource(resource: resource) {
+  async watchBlocksForResource(resource: Resource) {
     if (this.isWatching) {
       console.log(
         '[EthBlobIndexer] Already watching blocks for resource:',

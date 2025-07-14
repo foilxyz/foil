@@ -1,8 +1,4 @@
-import type {
-  MarketGroupType,
-  MarketType,
-  TransactionType,
-} from '@sapience/ui/types';
+import type { MarketType, TransactionType } from '@sapience/ui/types';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { createPublicClient, formatEther, http } from 'viem';
@@ -106,7 +102,10 @@ export const formatQuestion = (
  * Determines which question to display based on active markets and market group data
  */
 export const getDisplayQuestion = (
-  marketGroupData: MarketGroupType | null | undefined, // Use MarketGroupType
+  marketGroupData:
+    | { question?: string | null; markets?: MarketType[] }
+    | null
+    | undefined,
   activeMarkets: MarketType[], // Use MarketType[]
   isLoading: boolean,
   defaultLoadingMessage: string = '', // Default loading message
@@ -158,9 +157,9 @@ export const getDisplayQuestion = (
 /**
  * Finds active markets for a market group based on current timestamp
  */
-export const findActiveMarkets = (
-  marketGroupData: MarketGroupType
-): MarketType[] => {
+export const findActiveMarkets = (marketGroupData: {
+  markets?: MarketType[];
+}): MarketType[] => {
   const nowInSeconds = Date.now() / 1000;
   // Filter markets based on timestamps
   return (marketGroupData.markets || []).filter(
@@ -211,7 +210,10 @@ export const formatTokenValue = (
 
 // Helper to determine Y-axis configuration based on market type
 export const getYAxisConfig = (
-  marketGroup: MarketGroupType | null | undefined // Use MarketGroupType
+  marketGroup:
+    | { baseTokenName?: string | null; quoteTokenName?: string | null }
+    | null
+    | undefined
 ) => {
   // Check for Yes/No market (based on base token name)
   // Removed isGroupMarket check as it's not directly on MarketGroupType
@@ -309,6 +311,44 @@ export const parseUrlParameter = (
 // --- Function: Calculate Effective Entry Price ---
 
 /**
+ * Helper function to check if position direction has flipped
+ */
+function hasPositionFlipped(
+  isLong: boolean,
+  totalBaseTokenDelta: number
+): boolean {
+  return (
+    (isLong && totalBaseTokenDelta <= 0) ||
+    (!isLong && totalBaseTokenDelta >= 0)
+  );
+}
+
+/**
+ * Helper function to calculate final entry price
+ */
+function calculateFinalPrice(
+  totalBaseTokenDelta: number,
+  totalQuoteTokenDelta: number,
+  isLong: boolean
+): number {
+  if (totalBaseTokenDelta === 0) {
+    return 0; // Avoid division by zero
+  }
+
+  // For short positions, we negate both values to get the correct ratio
+  let adjustedBase = totalBaseTokenDelta;
+  let adjustedQuote = totalQuoteTokenDelta;
+
+  if (!isLong) {
+    adjustedBase = -totalBaseTokenDelta;
+    adjustedQuote = -totalQuoteTokenDelta;
+  }
+
+  // Calculate the entry price as the ratio of quote tokens to base tokens
+  return Math.abs(adjustedQuote / adjustedBase);
+}
+
+/**
  * Calculate the effective entry price for a position based on its transactions
  * Uses the UI package TransactionType
  */
@@ -322,7 +362,9 @@ export function calculateEffectiveEntryPrice(
 
   // Sort transactions by timestamp (oldest first)
   const sortedTransactions = [...transactions].sort(
-    (a, b) => (a.timestamp || 0) - (b.timestamp || 0)
+    (a, b) =>
+      (new Date(a.createdAt).getTime() || 0) -
+      (new Date(b.createdAt).getTime() || 0)
   );
 
   // Initialize entry price calculation variables
@@ -332,7 +374,7 @@ export function calculateEffectiveEntryPrice(
   // Process transactions to calculate deltas
   for (const tx of sortedTransactions) {
     // Skip non-trade transactions
-    if (tx.type === 'trade') {
+    if (tx.type === 'long' || tx.type === 'short') {
       // Parse token deltas safely, handling null/undefined and converting from wei string
       // Use the correct property names from the GraphQL Transaction type
       const baseTokenDelta = parseFloat(
@@ -346,31 +388,15 @@ export function calculateEffectiveEntryPrice(
       totalBaseTokenDelta += baseTokenDelta;
       totalQuoteTokenDelta += quoteTokenDelta;
 
-      // If we've reached a point where the position is flipped (long to short or vice versa),
-      // we should reset our calculations as the effective entry price changes
-      if (
-        (isLong && totalBaseTokenDelta <= 0) ||
-        (!isLong && totalBaseTokenDelta >= 0)
-      ) {
+      // If we've reached a point where the position is flipped, reset calculations
+      if (hasPositionFlipped(isLong, totalBaseTokenDelta)) {
         totalBaseTokenDelta = 0;
         totalQuoteTokenDelta = 0;
       }
     }
   }
 
-  // Calculate final entry price based on accumulated deltas
-  if (totalBaseTokenDelta === 0) {
-    return 0; // Avoid division by zero
-  }
-
-  // For short positions, we negate both values to get the correct ratio
-  if (!isLong) {
-    totalBaseTokenDelta = -totalBaseTokenDelta;
-    totalQuoteTokenDelta = -totalQuoteTokenDelta;
-  }
-
-  // Calculate the entry price as the ratio of quote tokens to base tokens
-  return Math.abs(totalQuoteTokenDelta / totalBaseTokenDelta);
+  return calculateFinalPrice(totalBaseTokenDelta, totalQuoteTokenDelta, isLong);
 }
 
 /**

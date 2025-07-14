@@ -1,3 +1,5 @@
+import { graphqlRequest } from '@sapience/ui/lib';
+import type { MarketGroup as MarketGroupType } from '@sapience/ui/types/graphql';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
@@ -39,38 +41,26 @@ interface RawMarketLeaderboardEntry {
   totalPnL: string;
 }
 
-// Interface for the response of GET_MARKET_GROUPS
-interface MarketGroupData {
-  address: string;
-  chainId: number;
-  markets: { marketId: number; public: boolean }[];
-}
+// Type definitions for GraphQL responses
+type MarketGroupsQueryResponse = {
+  marketGroups: MarketGroupType[];
+};
+
+type MarketLeaderboardQueryResponse = {
+  getMarketLeaderboard: RawMarketLeaderboardEntry[];
+};
 
 // Hook revised for client-side aggregation
 const useAllTimeLeaderboard = () => {
   return useQuery<AggregatedLeaderboardEntry[]>({
     queryKey: ['allTimeLeaderboard'], // Query key remains simple for now
     queryFn: async () => {
-      const graphqlEndpoint =
-        process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || '/graphql';
-
       try {
         // 1. Fetch all markets
-        const marketGroupsResponse = await foilApi.post(graphqlEndpoint, {
-          query: GET_MARKET_GROUPS,
-        });
+        const marketGroupsData =
+          await graphqlRequest<MarketGroupsQueryResponse>(GET_MARKET_GROUPS);
 
-        if (marketGroupsResponse.errors) {
-          console.error(
-            'GraphQL Errors fetching market groups:',
-            marketGroupsResponse.errors
-          );
-          throw new Error('Failed to fetch market groups');
-        }
-
-        const marketGroupsData: MarketGroupData[] =
-          marketGroupsResponse.data?.marketGroups;
-        if (!marketGroupsData) {
+        if (!marketGroupsData?.marketGroups) {
           console.error('No market group data found');
           return [];
         }
@@ -81,11 +71,15 @@ const useAllTimeLeaderboard = () => {
           chainId: number;
           marketId: string;
         }[] = [];
-        marketGroupsData.forEach((marketGroup) => {
-          marketGroup.markets.forEach((market) => {
+        marketGroupsData.marketGroups.forEach((marketGroup) => {
+          // Type guard: skip if address or chainId is missing or not correct type
+          if (!marketGroup.address || typeof marketGroup.address !== 'string')
+            return;
+          if (typeof marketGroup.chainId !== 'number') return;
+          (marketGroup.markets || []).forEach((market) => {
             if (market.public) {
               publicMarketIdentifiers.push({
-                address: marketGroup.address,
+                address: marketGroup.address!,
                 chainId: marketGroup.chainId,
                 marketId: String(market.marketId), // Ensure marketId is string for query variable
               });
@@ -99,10 +93,10 @@ const useAllTimeLeaderboard = () => {
 
         // 3. Fetch leaderboards for all public markets in parallel
         const leaderboardPromises = publicMarketIdentifiers.map((identifier) =>
-          foilApi.post(graphqlEndpoint, {
-            query: GET_MARKET_LEADERBOARD,
-            variables: identifier,
-          })
+          graphqlRequest<MarketLeaderboardQueryResponse>(
+            GET_MARKET_LEADERBOARD,
+            identifier
+          )
         );
 
         const leaderboardResponses = await Promise.all(leaderboardPromises);
@@ -112,17 +106,16 @@ const useAllTimeLeaderboard = () => {
 
         leaderboardResponses.forEach((response, index) => {
           const identifier = publicMarketIdentifiers[index]; // For logging context
-          if (response.errors) {
+
+          if (!response?.getMarketLeaderboard) {
             console.warn(
-              `GraphQL error fetching leaderboard for ${JSON.stringify(identifier)}:`,
-              response.errors
+              `No leaderboard data returned for ${JSON.stringify(identifier)}`
             );
             // Continue aggregation even if one market fails
             return;
           }
 
-          const marketLeaderboard: RawMarketLeaderboardEntry[] =
-            response.data?.getMarketLeaderboard;
+          const marketLeaderboard = response.getMarketLeaderboard;
 
           if (marketLeaderboard) {
             marketLeaderboard.forEach((entry) => {

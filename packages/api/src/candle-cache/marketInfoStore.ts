@@ -1,14 +1,14 @@
 import { Prisma } from '../../generated/prisma';
 
 // Define the type for MarketGroup with necessary includes
-type MarketGroupWithRelations = Prisma.market_groupGetPayload<{
+type MarketGroupWithRelations = Prisma.MarketGroupGetPayload<{
   include: {
     resource: true;
     market: true;
   };
 }>;
 
-export interface MarketInfo {
+export interface marketInfo {
   resourceSlug: string;
   marketGroupIdx: number;
   marketIdx: number;
@@ -20,15 +20,15 @@ export interface MarketInfo {
   isCumulative: boolean;
 }
 
-export class MarketInfoStore {
-  private static instance: MarketInfoStore;
-  private marketInfoByIdx: Map<number, MarketInfo> = new Map();
+export class marketInfoStore {
+  private static instance: marketInfoStore;
+  private marketInfoByIdx: Map<number, marketInfo> = new Map();
 
   private constructor() {}
 
   public static getInstance() {
     if (!this.instance) {
-      this.instance = new MarketInfoStore();
+      this.instance = new marketInfoStore();
     }
     return this.instance;
   }
@@ -60,7 +60,7 @@ export class MarketInfoStore {
     }
   }
 
-  public getMarketInfo(marketId: number): MarketInfo | undefined {
+  public getMarketInfo(marketId: number): marketInfo | undefined {
     return this.marketInfoByIdx.get(marketId);
   }
 
@@ -68,7 +68,7 @@ export class MarketInfoStore {
     chainId: number,
     address: string,
     marketId: string
-  ): MarketInfo | undefined {
+  ): marketInfo | undefined {
     for (const marketInfo of this.marketInfoByIdx.values()) {
       if (!marketInfo.marketGroupAddress || !address) {
         console.log(

@@ -30,7 +30,7 @@ export default function MultipleChoiceWagerForm({
   const successHandled = useRef(false);
 
   // Form validation schema
-  const formSchema = useMemo(() => {
+  const formSchema: z.ZodType = useMemo(() => {
     return z.object({
       predictionValue: z.string().min(0, 'Please select an option'),
       wagerAmount: wagerAmountSchema,
@@ -145,7 +145,7 @@ export default function MultipleChoiceWagerForm({
 
     // Get the selected option name based on predictionValue
     const selectedOptionName = (marketGroupData.markets || []).find(
-      (market) => market.marketId === Number(predictionValue)
+      (market: any) => market.marketId === Number(predictionValue)
     )?.optionName;
 
     return (
@@ -167,7 +167,7 @@ export default function MultipleChoiceWagerForm({
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(handleSubmit)} className="space-y-6">
         <MultipleChoicePredict
-          options={(marketGroupData.markets || []).map((market) => ({
+          options={(marketGroupData.markets || []).map((market: any) => ({
             name: market.optionName || '',
             marketId: market.marketId,
           }))}

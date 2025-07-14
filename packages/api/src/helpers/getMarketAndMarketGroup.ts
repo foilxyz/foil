@@ -6,8 +6,8 @@ export const getMarketGroupAndMarket = async (
   marketAddress: string,
   marketId: number
 ): Promise<{
-  market: Prisma.marketGetPayload<{ include: { market_group: true } }>;
-  marketGroup: Prisma.market_groupGetPayload<object>;
+  market: Prisma.MarketGetPayload<{ include: { market_group: true } }>;
+  marketGroup: Prisma.MarketGroupGetPayload<object>;
 } | null> => {
   const market = await prisma.market.findFirst({
     where: {

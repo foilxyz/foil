@@ -264,7 +264,7 @@ async function getMarket(
   chainId: string,
   marketAddress: string,
   marketId: string
-): Promise<Prisma.marketGetPayload<{
+): Promise<Prisma.MarketGetPayload<{
   include: { market_group: true };
 }> | null> {
   const market = await prisma.market.findFirst({

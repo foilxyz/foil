@@ -7,7 +7,7 @@ import {
   EventType,
   MarketGroupCreatedUpdatedEventLog,
   LogData,
-  MarketInfo,
+  marketInfo,
 } from '../interfaces';
 import {
   getProviderForChain,
@@ -36,15 +36,15 @@ import { alertEvent } from '../workers/discordBot';
 import Sapience from '@sapience/protocol/deployments/Sapience.json';
 import { PublicClient } from 'viem';
 import Sentry from '../instrument';
-import { transaction } from '../../generated/prisma';
+import { Transaction } from '../../generated/prisma';
 import { Decimal } from 'generated/prisma/runtime/library';
 
 const settledPositions: any[] = [];
 // Called when the process starts, upserts markets in the database to match those in the constants.ts file
-export const initializeMarket = async (marketInfo: MarketInfo) => {
+export const initializeMarket = async (marketInfo: marketInfo) => {
   const client = getProviderForChain(marketInfo.marketChainId);
 
-  const marketReadResult = (await client.readContract({
+  const MarketReadResult = (await client.readContract({
     address: marketInfo.deployment.address as `0x${string}`,
     abi: Sapience.abi,
     functionName: 'getMarket',
@@ -57,8 +57,8 @@ export const initializeMarket = async (marketInfo: MarketInfo) => {
     deployTxnBlockNumber: Number(marketInfo.deployment.deployTxnBlockNumber),
     deployTimestamp: Number(marketInfo.deployment.deployTimestamp),
     chainId: marketInfo.marketChainId,
-    owner: marketReadResult[0].toLowerCase(),
-    collateralAsset: marketReadResult[1],
+    owner: MarketReadResult[0].toLowerCase(),
+    collateralAsset: MarketReadResult[1],
     collateralDecimals: null as number | null,
     marketParamsFeerate: null as number | null,
     marketParamsAssertionliveness: null,
@@ -98,7 +98,7 @@ export const initializeMarket = async (marketInfo: MarketInfo) => {
     }
   }
 
-  const marketParamsRaw = marketReadResult[4];
+  const marketParamsRaw = MarketReadResult[4];
   if (marketParamsRaw) {
     updatedMarketData.marketParamsFeerate = marketParamsRaw.feeRate || null;
     updatedMarketData.marketParamsAssertionliveness =
@@ -121,7 +121,7 @@ export const initializeMarket = async (marketInfo: MarketInfo) => {
       marketParamsRaw.optimisticOracleV3 || null;
   }
 
-  const updatedMarket = await prisma.market_group.upsert({
+  const updatedMarket = await prisma.marketGroup.upsert({
     where: {
       address_chainId: {
         address: updatedMarketData.address,
@@ -184,7 +184,7 @@ export const indexMarketGroupEvents = async (
 
   try {
     await updateCollateralData(client, marketGroup);
-    await prisma.market_group.update({
+    await prisma.marketGroup.update({
       where: { id: marketGroup.id },
       data: extractMarketGroupFields(marketGroup),
     });
@@ -386,7 +386,7 @@ export const reindexMarketGroupEvents = async (marketGroup: any) => {
   // Update collateral data
 
   await updateCollateralData(client, marketGroup);
-  await prisma.market_group.update({
+  await prisma.marketGroup.update({
     where: { id: marketGroup.id },
     data: extractMarketGroupFields(marketGroup),
   });
@@ -569,7 +569,7 @@ export const reindexMarketGroupEvents = async (marketGroup: any) => {
 // Upserts an event into the database using the proper helper function.
 const upsertEvent = async (
   chainId: number,
-  marketGroupAddress: string,
+  market_groupAddress: string,
   marketId: number,
   blockNumber: bigint,
   timeStamp: bigint,
@@ -578,7 +578,7 @@ const upsertEvent = async (
 ) => {
   console.log('handling event upsert:', {
     chainId,
-    address: marketGroupAddress,
+    address: market_groupAddress,
     marketId: marketId,
     blockNumber,
     timeStamp,
@@ -587,13 +587,13 @@ const upsertEvent = async (
   });
 
   // Find market group
-  const marketGroup = await prisma.market_group.findFirst({
-    where: { chainId, address: marketGroupAddress.toLowerCase() },
+  const market_group = await prisma.marketGroup.findFirst({
+    where: { chainId, address: market_groupAddress.toLowerCase() },
   });
 
-  if (!marketGroup) {
+  if (!market_group) {
     throw new Error(
-      `Market group not found for chainId ${chainId} and address ${marketGroupAddress}. Cannot upsert event into db.`
+      `Market group not found for chainId ${chainId} and address ${market_groupAddress}. Cannot upsert event into db.`
     );
   }
 
@@ -602,7 +602,7 @@ const upsertEvent = async (
     const existingEvent = await prisma.event.findFirst({
       where: {
         transactionHash: logData.transactionHash,
-        marketGroupId: marketGroup.id,
+        marketGroupId: market_group.id,
         blockNumber: Number(blockNumber),
         logIndex: logIndex,
       },
@@ -623,7 +623,7 @@ const upsertEvent = async (
 
       await upsertEntitiesFromEvent(
         updatedEvent,
-        marketGroupAddress,
+        market_groupAddress,
         marketId,
         chainId
       );
@@ -633,7 +633,7 @@ const upsertEvent = async (
     console.log('inserting new event..');
     const newEvent = await prisma.event.create({
       data: {
-        marketGroupId: marketGroup.id,
+        marketGroupId: market_group.id,
         blockNumber: Number(blockNumber),
         timestamp: BigInt(timeStamp.toString()),
         logIndex: logIndex,
@@ -645,7 +645,7 @@ const upsertEvent = async (
 
     await upsertEntitiesFromEvent(
       newEvent,
-      marketGroupAddress,
+      market_groupAddress,
       marketId,
       chainId
     );
@@ -659,7 +659,7 @@ const upsertEvent = async (
 // Triggered by the callback in the Event model, this upserts related entities (Transaction, Position, MarketPrice).
 export const upsertEntitiesFromEvent = async (
   event: any, // Using any for now since this depends on helper functions that need migration
-  marketGroupAddress: string,
+  market_groupAddress: string,
   marketId: number,
   chainId: number
 ) => {
@@ -675,7 +675,7 @@ export const upsertEntitiesFromEvent = async (
   }
 
   let skipTransaction = false;
-  const newTransaction: transaction & {
+  const newTransaction: Transaction & {
     event: any;
     position?: any;
   } = {
@@ -813,7 +813,7 @@ export const upsertEntitiesFromEvent = async (
         updateTransactionFromPositionSettledEvent(
           newTransaction,
           event,
-          marketGroupAddress,
+          market_groupAddress,
           marketId,
           chainId
         ),

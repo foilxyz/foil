@@ -1,18 +1,21 @@
-import { gql } from '@apollo/client';
 import { useQuery } from '@tanstack/react-query';
-import { print } from 'graphql';
 
-import { foilApi } from '../lib';
+import { graphqlRequest } from '../lib';
 import { RESOURCE_ORDER, type ResourceSlug } from '../types/resources';
-import { ResourceType, CandleType } from '../types';
+import { CandleType } from '../types';
+import type { 
+  GetResourcesQuery, 
+  GetResourceCandlesQuery, 
+  GetIndexCandlesQuery
+} from '../types/graphql';
 
-const LATEST_RESOURCE_PRICE_QUERY = gql`
-  query GetLatestResourcePrice($slug: String!) {
+const LATEST_RESOURCE_PRICE_QUERY = `
+  query GetLatestResourcePrice($slug: String!, $from: Int!, $to: Int!, $interval: Int!) {
     resourceCandlesFromCache(
       slug: $slug
-      from: ${Math.floor(Date.now() / 1000) - 300}  # Last 5 minutes
-      to: ${Math.floor(Date.now() / 1000)}
-      interval: 60  # 1 minute intervals
+      from: $from
+      to: $to
+      interval: $interval
     ) {
       data {
         timestamp
@@ -23,15 +26,15 @@ const LATEST_RESOURCE_PRICE_QUERY = gql`
   }
 `;
 
-const LATEST_INDEX_PRICE_QUERY = gql`
-  query GetLatestIndexPrice($address: String!, $chainId: Int!, $marketId: String!) {
+const LATEST_INDEX_PRICE_QUERY = `
+  query GetLatestIndexPrice($address: String!, $chainId: Int!, $marketId: String!, $from: Int!, $to: Int!, $interval: Int!) {
     indexCandlesFromCache(
       address: $address
       chainId: $chainId
       marketId: $marketId
-      from: ${Math.floor(Date.now() / 1000) - 300}  # Last 5 minutes
-      to: ${Math.floor(Date.now() / 1000)}
-      interval: 60  # 1 minute intervals
+      from: $from
+      to: $to
+      interval: $interval
     ) {
       data {
         timestamp
@@ -42,7 +45,7 @@ const LATEST_INDEX_PRICE_QUERY = gql`
   }
 `;
 
-const RESOURCES_QUERY = gql`
+const RESOURCES_QUERY = `
   query GetResources {
     resources {
       id
@@ -53,7 +56,7 @@ const RESOURCES_QUERY = gql`
         address
         isBridged
         chainId
-        markets {
+        market {
           id
           marketId
           startTimestamp
@@ -67,19 +70,18 @@ const RESOURCES_QUERY = gql`
 `;
 
 export const useResources = () => {
-  return useQuery<(ResourceType & { iconPath: string })[]>({
+  return useQuery<(GetResourcesQuery['resources'][0] & { iconPath: string })[]>({
     queryKey: ['resources'],
     queryFn: async () => {
-      const { data } = await foilApi.post('/graphql', {
-        query: print(RESOURCES_QUERY),
-      });
-      const resources = data.resources.sort((a: ResourceType, b: ResourceType) => {
+      const data = await graphqlRequest<GetResourcesQuery>(RESOURCES_QUERY);
+      
+      const resources = data.resources.sort((a: any, b: any) => {
         const indexA = RESOURCE_ORDER.indexOf(a.slug as ResourceSlug);
         const indexB = RESOURCE_ORDER.indexOf(b.slug as ResourceSlug);
         return indexA - indexB;
       });
 
-      return resources.map((resource: ResourceType) => ({
+      return resources.map((resource: any) => ({
         ...resource,
         iconPath: `/resources/${resource.slug}.svg`,
       }));
@@ -91,15 +93,14 @@ export const useLatestResourcePrice = (slug: string) => {
   return useQuery<{ timestamp: string; value: string }>({
     queryKey: ['resourcePrice', slug],
     queryFn: async () => {
-      const { data } = await foilApi.post('/graphql', {
-        query: print(LATEST_RESOURCE_PRICE_QUERY),
-        variables: {
-          slug,
-          from: Math.floor(Date.now() / 1000) - 300, // Last 5 minutes
-          to: Math.floor(Date.now() / 1000),
-          interval: 60, // 1 minute intervals
-        },
-      });
+      const from = Math.floor(Date.now() / 1000) - 300; // Last 5 minutes
+      const to = Math.floor(Date.now() / 1000);
+      const interval = 60; // 1 minute intervals
+
+      const data = await graphqlRequest<GetResourceCandlesQuery>(
+        LATEST_RESOURCE_PRICE_QUERY,
+        { slug, from, to, interval }
+      );
 
       const candles = data.resourceCandlesFromCache.data as CandleType[];
       if (!candles || candles.length === 0) {
@@ -143,14 +144,21 @@ export const useLatestIndexPrice = (market: {
         return null;
       }
 
-      const { data } = await foilApi.post('/graphql', {
-        query: print(LATEST_INDEX_PRICE_QUERY),
-        variables: {
+      const from = Math.floor(Date.now() / 1000) - 300; // Last 5 minutes
+      const to = Math.floor(Date.now() / 1000);
+      const interval = 60; // 1 minute intervals
+
+      const data = await graphqlRequest<GetIndexCandlesQuery>(
+        LATEST_INDEX_PRICE_QUERY,
+        {
           address: market.address,
           chainId: market.chainId,
           marketId: market.marketId.toString(),
-        },
-      });
+          from,
+          to,
+          interval,
+        }
+      );
 
       const candles = data.indexCandlesFromCache.data as CandleType[];
       if (!candles || candles.length === 0) {

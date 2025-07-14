@@ -31,25 +31,27 @@ export default function PredictForm({
   const firstMarket = marketGroupData.markets?.[0];
   const lowerBound = tickToPrice(firstMarket?.baseAssetMinPriceTick ?? 0);
   const upperBound = tickToPrice(firstMarket?.baseAssetMaxPriceTick ?? 0);
-  // Create schema based on market category
+  // Create a unified schema that works for all market types
   const formSchema = useMemo(() => {
+    const baseValidation = z.string().min(1, 'Please enter a prediction');
+
     switch (marketClassification) {
       case MarketGroupClassification.MULTIPLE_CHOICE:
         return z.object({
-          predictionValue: z.string().min(1, 'Please select an option'),
+          predictionValue: baseValidation.refine((val) => val !== '', {
+            message: 'Please select an option',
+          }),
         });
       case MarketGroupClassification.YES_NO:
         return z.object({
-          predictionValue: z.enum([NO_SQRT_PRICE_X96, YES_SQRT_PRICE_X96], {
-            required_error: 'Please select Yes or No',
-            invalid_type_error: 'Please select Yes or No',
-          }),
+          predictionValue: baseValidation.refine(
+            (val) => val === NO_SQRT_PRICE_X96 || val === YES_SQRT_PRICE_X96,
+            { message: 'Please select Yes or No' }
+          ),
         });
       case MarketGroupClassification.NUMERIC:
         return z.object({
-          predictionValue: z
-            .string()
-            .min(1, 'Please enter a prediction value')
+          predictionValue: baseValidation
             .refine((val) => !Number.isNaN(Number(val)), {
               message: 'Must be a number',
             })
@@ -62,7 +64,7 @@ export default function PredictForm({
         });
       default:
         return z.object({
-          predictionValue: z.string().min(1, 'Please enter a prediction'),
+          predictionValue: baseValidation,
         });
     }
   }, [marketClassification, lowerBound, upperBound]);
@@ -78,7 +80,7 @@ export default function PredictForm({
       default:
         return '';
     }
-  }, [marketClassification, marketGroupData, lowerBound, upperBound]);
+  }, [marketClassification, firstMarket?.marketId, lowerBound, upperBound]);
 
   // Set up form with dynamic schema
   const methods = useForm({
@@ -101,7 +103,7 @@ export default function PredictForm({
       return Number(predictionValue);
     }
     return firstMarket?.marketId ?? 0;
-  }, [marketClassification, predictionValue, marketGroupData.markets]);
+  }, [marketClassification, predictionValue, firstMarket?.marketId]);
 
   const submissionValue = useMemo(() => {
     switch (marketClassification) {

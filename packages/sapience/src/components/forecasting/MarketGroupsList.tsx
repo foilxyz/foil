@@ -35,7 +35,7 @@ import MarketGroupsRow from './MarketGroupsRow';
 
 // Define Category type based on assumed hook return
 interface Category {
-  id: string;
+  id: number;
   slug: string;
   name: string;
   // Add other fields if known
@@ -77,6 +77,7 @@ export interface MarketWithContext extends GraphQLMarketType {
   collateralAsset: string;
   categorySlug: string;
   categoryId: string;
+  // currentPrice?: string | null; // Removed
 }
 
 // Interface for the final grouped market data structure
@@ -273,17 +274,6 @@ const ForecastingTable = () => {
     // 2. Map filteredMarketGroups to MarketWithContext[]
     const allMarkets: MarketWithContext[] = filteredByCategory.flatMap(
       (marketGroup) => {
-        // Ensure required fields for MarketWithContext from marketGroup are present AND are strings
-        if (
-          typeof marketGroup.address !== 'string' ||
-          typeof marketGroup.collateralAsset !== 'string' ||
-          !marketGroup.category || // Ensure category object itself exists
-          typeof marketGroup.category.slug !== 'string' ||
-          typeof marketGroup.category.id !== 'string'
-        ) {
-          return []; // Skip this marketGroup if essential context fields are missing or not strings
-        }
-
         // Filter and map markets within this marketGroup
         return marketGroup.markets
           .filter(
@@ -313,7 +303,7 @@ const ForecastingTable = () => {
               chainId: marketGroup.chainId,
               collateralAsset: marketGroup.collateralAsset!,
               categorySlug: marketGroup.category!.slug!,
-              categoryId: marketGroup.category!.id!,
+              categoryId: marketGroup.category!.id!.toString(),
             };
           });
       }
@@ -750,7 +740,7 @@ const ForecastingTable = () => {
                                 marketGroup.displayQuestion || 'Loading...'
                               }
                               color={marketGroup.color}
-                              markets={marketGroup.markets}
+                              market={marketGroup.markets}
                               isActive={marketGroup.isActive}
                               marketClassification={
                                 marketGroup.marketClassification

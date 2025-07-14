@@ -15,18 +15,17 @@ import {
 import { log } from 'src/utils/logs';
 import { RuntimeCandleStore } from './runtimeCandleStore';
 import { TrailingAvgHistoryStore } from './trailingAvgHistoryStore';
-import { MarketInfoStore } from './marketInfoStore';
+import { marketInfoStore } from './marketInfoStore';
 import { ResourceCandleProcessor } from './processors/resourceCandleProcessor';
 import { IndexCandleProcessor } from './processors/indexCandleProcessor';
 import { TrailingAvgCandleProcessor } from './processors/trailingAvgCandleProcessor';
 import { MarketCandleProcessor } from './processors/marketCandleProcessor';
-import type { resource_price, resource } from '../../generated/prisma';
-import type { Prisma } from '../../generated/prisma';
+import type { ResourcePrice, Resource, Prisma } from '../../generated/prisma';
 
-type ResourcePriceWithResource = resource_price & { resource: resource };
+type ResourcePriceWithResource = ResourcePrice & { resource: Resource };
 
 // Type for what getMarketGroups returns
-type MarketGroupWithRelations = Prisma.market_groupGetPayload<{
+type MarketGroupWithRelations = Prisma.MarketGroupGetPayload<{
   include: {
     resource: true;
     market: true;
@@ -61,7 +60,7 @@ export interface ProcessStatus {
 export abstract class BaseCandleCacheBuilder {
   protected runtimeCandles: RuntimeCandleStore;
   protected trailingAvgHistory: TrailingAvgHistoryStore;
-  protected marketInfoStore: MarketInfoStore;
+  protected marketInfoStore: marketInfoStore;
   protected resourceCandleProcessor: ResourceCandleProcessor;
   protected indexCandleProcessor: IndexCandleProcessor;
   protected trailingAvgCandleProcessor: TrailingAvgCandleProcessor;
@@ -86,7 +85,7 @@ export abstract class BaseCandleCacheBuilder {
   protected constructor() {
     this.runtimeCandles = new RuntimeCandleStore();
     this.trailingAvgHistory = new TrailingAvgHistoryStore();
-    this.marketInfoStore = MarketInfoStore.getInstance();
+    this.marketInfoStore = marketInfoStore.getInstance();
     this.resourceCandleProcessor = new ResourceCandleProcessor(
       this.runtimeCandles
     );
@@ -304,7 +303,7 @@ export abstract class BaseCandleCacheBuilder {
     );
   }
 
-  protected async processMarketPrices(initialTimestamp: number = 0) {
+  protected async processmarketPrices(initialTimestamp: number = 0) {
     log({
       message: 'step 1: process market prices',
       prefix: CANDLE_CACHE_CONFIG.logPrefix,
@@ -316,9 +315,9 @@ export abstract class BaseCandleCacheBuilder {
     );
     let getNextBatch = true;
 
-    const totalMarketPrices = await getMarketPricesCount(initialTimestamp);
+    const totalmarketPrices = await getMarketPricesCount(initialTimestamp);
     const totalBatches = Math.ceil(
-      totalMarketPrices / CANDLE_CACHE_CONFIG.batchSize
+      totalmarketPrices / CANDLE_CACHE_CONFIG.batchSize
     );
     let iter = 0;
 
@@ -475,7 +474,7 @@ export abstract class BaseCandleCacheBuilder {
 
     this.runtimeCandles = new RuntimeCandleStore();
     this.trailingAvgHistory = new TrailingAvgHistoryStore();
-    this.marketInfoStore = MarketInfoStore.getInstance();
+    this.marketInfoStore = marketInfoStore.getInstance();
     this.resourceCandleProcessor = new ResourceCandleProcessor(
       this.runtimeCandles
     );

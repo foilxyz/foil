@@ -26,7 +26,7 @@ async function getDbPrices(
     ? new Date(Date.now() - CACHE_TTL)
     : new Date(0);
 
-  const cachedPrices = await prisma.crypto_prices.findMany({
+  const cachedPrices = await prisma.cryptoPrices.findMany({
     where: {
       ticker: { in: [...TICKERS] },
       ...(useTimeCutoff && { timestamp: { gt: cutoffTime } }),
@@ -132,21 +132,31 @@ router.get('/', async (req, res) => {
     });
 
     // 5. Update DB with fresh prices (only those successfully fetched)
-    const pricesToSave: { ticker: string; price: number }[] = [];
+    const pricesToSave: { ticker: string; price: number; timestamp: Date }[] =
+      [];
+    const currentTimestamp = new Date();
+
     TICKERS.forEach((ticker) => {
       if (freshPrices[ticker] !== null) {
-        pricesToSave.push({ ticker, price: freshPrices[ticker]! });
+        pricesToSave.push({
+          ticker,
+          price: freshPrices[ticker]!,
+          timestamp: currentTimestamp,
+        });
       }
     });
 
     if (pricesToSave.length > 0) {
       // Perform save operation asynchronously but don't wait for it to return response
-      prisma.crypto_prices
+      prisma.cryptoPrices
         .createMany({
           data: pricesToSave,
         })
         .then(() => {
           console.log('[DB CACHE UPDATED]');
+        })
+        .catch((error) => {
+          console.error('[ERROR UPDATING DB CACHE]', error);
         });
     }
 

@@ -119,10 +119,10 @@ interface PositionData {
 //       ];
 
 //       const formattedInfo: MarketGroupData = {
-//         owner: marketGroupInfo[0],
-//         collateralAsset: marketGroupInfo[1],
-//         feeCollectorNFT: marketGroupInfo[2],
-//         callbackRecipient: marketGroupInfo[3],
+//         owner: MarketGroupInfo[0],
+//         collateralAsset: MarketGroupInfo[1],
+//         feeCollectorNFT: MarketGroupInfo[2],
+//         callbackRecipient: MarketGroupInfo[3],
 //         marketParams: formatMarketParams(marketGroupInfo[4]),
 //       };
 
@@ -178,27 +178,27 @@ interface PositionData {
 //       }
 
 //       const formattedInfo: MarketDetailsData = {
-//         marketData: marketDetailsResult[0]
+//         marketData: MarketDetailsResult[0]
 //           ? {
-//               id: marketDetailsResult[0].epochId,
-//               startTime: marketDetailsResult[0].startTime,
-//               endTime: marketDetailsResult[0].endTime,
-//               pool: marketDetailsResult[0].pool,
-//               ethToken: marketDetailsResult[0].ethToken,
-//               gasToken: marketDetailsResult[0].gasToken,
-//               minPriceD18: marketDetailsResult[0].minPriceD18,
-//               maxPriceD18: marketDetailsResult[0].maxPriceD18,
+//               id: MarketDetailsResult[0].epochId,
+//               startTime: MarketDetailsResult[0].startTime,
+//               endTime: MarketDetailsResult[0].endTime,
+//               pool: MarketDetailsResult[0].pool,
+//               ethToken: MarketDetailsResult[0].ethToken,
+//               gasToken: MarketDetailsResult[0].gasToken,
+//               minPriceD18: MarketDetailsResult[0].minPriceD18,
+//               maxPriceD18: MarketDetailsResult[0].maxPriceD18,
 //               baseAssetMinPriceTick:
 //                 marketDetailsResult[0].baseAssetMinPriceTick,
 //               baseAssetMaxPriceTick:
 //                 marketDetailsResult[0].baseAssetMaxPriceTick,
-//               settled: marketDetailsResult[0].settled,
-//               settlementPriceD18: marketDetailsResult[0].settlementPriceD18,
-//               assertionId: marketDetailsResult[0].assertionId,
-//               claimStatement: marketDetailsResult[0].claimStatement,
+//               settled: MarketDetailsResult[0].settled,
+//               settlementPriceD18: MarketDetailsResult[0].settlementPriceD18,
+//               assertionId: MarketDetailsResult[0].assertionId,
+//               claimStatement: MarketDetailsResult[0].claimStatement,
 //             }
 //           : null,
-//         marketGroupParams: marketDetailsResult[1]
+//         marketGroupParams: MarketDetailsResult[1]
 //           ? formatMarketParams(marketDetailsResult[1])
 //           : null,
 //       };
@@ -250,27 +250,27 @@ interface PositionData {
 //       }
 
 //       const formattedInfo: MarketDetailsData = {
-//         marketData: marketDetailsResult[0]
+//         marketData: MarketDetailsResult[0]
 //           ? {
-//               id: marketDetailsResult[0].epochId,
-//               startTime: marketDetailsResult[0].startTime,
-//               endTime: marketDetailsResult[0].endTime,
-//               pool: marketDetailsResult[0].pool,
-//               ethToken: marketDetailsResult[0].ethToken,
-//               gasToken: marketDetailsResult[0].gasToken,
-//               minPriceD18: marketDetailsResult[0].minPriceD18,
-//               maxPriceD18: marketDetailsResult[0].maxPriceD18,
+//               id: MarketDetailsResult[0].epochId,
+//               startTime: MarketDetailsResult[0].startTime,
+//               endTime: MarketDetailsResult[0].endTime,
+//               pool: MarketDetailsResult[0].pool,
+//               ethToken: MarketDetailsResult[0].ethToken,
+//               gasToken: MarketDetailsResult[0].gasToken,
+//               minPriceD18: MarketDetailsResult[0].minPriceD18,
+//               maxPriceD18: MarketDetailsResult[0].maxPriceD18,
 //               baseAssetMinPriceTick:
 //                 marketDetailsResult[0].baseAssetMinPriceTick,
 //               baseAssetMaxPriceTick:
 //                 marketDetailsResult[0].baseAssetMaxPriceTick,
-//               settled: marketDetailsResult[0].settled,
-//               settlementPriceD18: marketDetailsResult[0].settlementPriceD18,
-//               assertionId: marketDetailsResult[0].assertionId,
-//               claimStatement: marketDetailsResult[0].claimStatement,
+//               settled: MarketDetailsResult[0].settled,
+//               settlementPriceD18: MarketDetailsResult[0].settlementPriceD18,
+//               assertionId: MarketDetailsResult[0].assertionId,
+//               claimStatement: MarketDetailsResult[0].claimStatement,
 //             }
 //           : null,
-//         marketGroupParams: marketDetailsResult[1]
+//         marketGroupParams: MarketDetailsResult[1]
 //           ? formatMarketParams(marketDetailsResult[1])
 //           : null,
 //       };

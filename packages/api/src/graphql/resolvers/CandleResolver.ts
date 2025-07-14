@@ -1,6 +1,6 @@
 import { Resolver, Query, Arg, Int } from 'type-graphql';
 import prisma from '../../db';
-import { CandleType } from '../types';
+import { CandleType } from '../types/CandleType';
 import { CandleCacheRetriever } from 'src/candle-cache/candleCacheRetriever';
 import { CandleAndTimestampType } from '../types/CandleAndTimestampType';
 
@@ -42,7 +42,7 @@ const groupPricesByInterval = (
     timestamp <= normalizedEndTimestamp;
     timestamp += intervalSeconds
   ) {
-    const pricesInInterval = prices.filter((p) => {
+    const pricesInInterval = prices.filter((p: PricePoint) => {
       const priceInterval =
         Math.floor(p.timestamp / intervalSeconds) * intervalSeconds;
       return priceInterval === timestamp;
@@ -50,7 +50,7 @@ const groupPricesByInterval = (
 
     if (pricesInInterval.length > 0) {
       // Create candle with actual price data
-      const values = pricesInInterval.map((p) => BigInt(p.value));
+      const values = pricesInInterval.map((p: PricePoint) => BigInt(p.value));
       const currentOpen = lastClose || values[0].toString(); // Use previous close as open, or first value if no previous close
       lastClose = values[values.length - 1].toString();
 
@@ -118,7 +118,7 @@ export class CandleResolver {
     @Arg('timestamp', () => Int) timestamp: number
   ): Promise<CandleType | null> {
     try {
-      const marketGroup = await prisma.market_group.findFirst({
+      const marketGroup = await prisma.marketGroup.findFirst({
         where: {
           chainId,
           address: address.toLowerCase(),
@@ -161,7 +161,7 @@ export class CandleResolver {
         throw new Error(`Timestamp is before market start time`);
       }
 
-      const pricesInRange = await prisma.resource_price.findMany({
+      const pricesInRange = await prisma.resourcePrice.findMany({
         where: {
           resourceId: resource.id,
           timestamp: {
@@ -197,7 +197,7 @@ export class CandleResolver {
     @Arg('interval', () => Int) interval: number
   ): Promise<CandleType[]> {
     try {
-      const marketGroup = await prisma.market_group.findFirst({
+      const marketGroup = await prisma.marketGroup.findFirst({
         where: {
           chainId,
           address: address.toLowerCase(),
@@ -222,7 +222,7 @@ export class CandleResolver {
       }
 
       // First get the most recent price before the from timestamp
-      const lastPriceBefore = await prisma.market_price.findFirst({
+      const lastPriceBefore = await prisma.marketPrice.findFirst({
         where: {
           transaction: {
             event: {
@@ -263,7 +263,7 @@ export class CandleResolver {
       });
 
       // Then get all prices within the range
-      const pricesInRange = await prisma.market_price.findMany({
+      const pricesInRange = await prisma.marketPrice.findMany({
         where: {
           transaction: {
             event: {

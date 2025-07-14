@@ -1,14 +1,14 @@
-import { gql } from '@apollo/client';
+import { graphqlRequest } from '@sapience/ui/lib';
 import type { Market as MarketType } from '@sapience/ui/types/graphql';
 import { useQuery } from '@tanstack/react-query';
-import { print } from 'graphql';
 import { useEffect, useState } from 'react';
 
-import { foilApi } from '~/lib/utils/util';
-
-const MARKET_QUERY = gql`
-  query GetMarketData($chainId: Int!, $address: String!, $marketId: Int!) {
-    markets(chainId: $chainId, marketAddress: $address, marketId: $marketId) {
+const MARKET_QUERY = `
+  query GetMarketData($address: String!, $marketId: Int!) {
+    markets(where: {
+      marketGroup: { is: { address: { equals: $address } } },
+      marketId: { equals: $marketId }
+    }) {
       id
       marketId
       question
@@ -20,7 +20,7 @@ const MARKET_QUERY = gql`
       baseAssetMaxPriceTick
       optionName
       rules
-      market_group {
+      marketGroup {
         id
         address
         chainId
@@ -88,33 +88,26 @@ export const useMarket = ({
       queryKey: ['market', chainId, marketAddress, numericMarketId],
       queryFn: async () => {
         if (!chainId || !numericMarketId || !marketAddress) {
-          // Returning null or a specific error state might be better than placeholder
-          return null; // Changed from { placeholder: true }
+          return null;
         }
 
         try {
-          const response = await foilApi.post('/graphql', {
-            query: print(MARKET_QUERY),
-            variables: {
-              chainId,
-              address: marketAddress,
-              marketId: numericMarketId,
-            },
+          type MarketQueryResult = {
+            markets: MarketType[];
+          };
+
+          const data = await graphqlRequest<MarketQueryResult>(MARKET_QUERY, {
+            address: marketAddress,
+            marketId: numericMarketId,
           });
 
-          // The response structure might return an array or a single object depending on the query
-          // Adapting based on the provided query which filters by marketId server-side
-          const marketsData = response.data?.markets; // Corrected access path
+          const marketsData = data?.markets;
 
           if (!marketsData) {
-            console.error('No market data in response:', response.data);
+            console.error('No market data in response:', data);
             return null;
           }
 
-          // Assuming the query correctly returns only the specific market when marketId is provided
-          // If it still returns an array, you might need to find the market like before:
-          // const targetMarket = Array.isArray(marketsData) ? marketsData.find(...) : marketsData;
-          // For now, assuming the API returns the single expected market object or null/empty array
           if (Array.isArray(marketsData) && marketsData.length === 0) {
             console.error(
               `Market with ID ${numericMarketId} not found in response:`,
@@ -138,8 +131,7 @@ export const useMarket = ({
           return targetMarket as MarketType;
         } catch (error) {
           console.error('Error fetching market:', error);
-          // Propagate error state or return null
-          return null; // Consider returning an error object
+          return null;
         }
       },
       enabled: !!chainId && !!numericMarketId && !!marketAddress,
@@ -161,7 +153,7 @@ export const useMarket = ({
       return;
     }
 
-    const marketGroupQuestion = marketData?.market_group?.question;
+    const marketGroupQuestion = marketData?.marketGroup?.question;
     const marketSpecificQuestion = marketData?.question;
 
     // Set Market Group Question as the context question if available

@@ -3,7 +3,7 @@ import { initializeMarket } from '../../controllers/market';
 import { getMarketStartEndBlock } from '../../controllers/marketHelpers';
 import * as Sentry from '@sentry/node';
 import { INDEXERS } from '../../fixtures';
-import type { resource } from '../../../generated/prisma';
+import type { Resource } from '../../../generated/prisma';
 
 export async function reindexMissingBlocks(
   chainId: number,
@@ -15,7 +15,7 @@ export async function reindexMissingBlocks(
       `Starting reindex of missing resource blocks for market ${chainId}:${address}, market ${marketId}`
     );
 
-    const marketEntity = await prisma.market_group.findFirst({
+    const marketEntity = await prisma.marketGroup.findFirst({
       where: {
         chainId,
         address: address.toLowerCase(),
@@ -66,7 +66,7 @@ export async function reindexMissingBlocks(
         return { missingBlockNumbers: null, error };
       }
 
-      const resourcePrices = await prisma.resource_price.findMany({
+      const resourcePrices = await prisma.resourcePrice.findMany({
         where: {
           resourceId: market.resource?.id,
           blockNumber: {
@@ -96,7 +96,7 @@ export async function reindexMissingBlocks(
 
     if (marketInfo.resource && marketInfo.resource?.priceIndexer) {
       await marketInfo.resource.priceIndexer.indexBlocks(
-        market.resource as resource,
+        market.resource as Resource,
         missingBlockNumbers
       );
     }

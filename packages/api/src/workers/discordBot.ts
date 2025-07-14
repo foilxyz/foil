@@ -51,7 +51,7 @@ export const alertEvent = async (
         let questionName = 'Unknown Market';
         let collateralSymbol = 'token';
         try {
-          const marketObj = await prisma.market_group.findFirst({
+          const marketObj = await prisma.marketGroup.findFirst({
             where: { address: address.toLowerCase(), chainId },
             include: { resource: true },
           });
@@ -88,7 +88,7 @@ export const alertEvent = async (
         let questionName = 'Unknown Market';
         let collateralSymbol = 'token';
         try {
-          const marketObj = await prisma.market_group.findFirst({
+          const marketObj = await prisma.marketGroup.findFirst({
             where: { address: address.toLowerCase(), chainId },
             include: { resource: true },
           });

@@ -1,6 +1,5 @@
 'use client';
 
-import { gql } from '@apollo/client';
 import { Badge } from '@sapience/ui/components/ui/badge';
 import { Button } from '@sapience/ui/components/ui/button';
 import {
@@ -10,11 +9,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@sapience/ui/components/ui/dialog';
+import { graphqlRequest } from '@sapience/ui/lib';
 import type { MarketType } from '@sapience/ui/types';
 import { useQuery } from '@tanstack/react-query';
 import type { ColumnDef } from '@tanstack/react-table';
 import { formatDistanceToNow } from 'date-fns';
-import { print } from 'graphql';
 import { Pencil } from 'lucide-react';
 import { useState } from 'react';
 import type { Address } from 'viem';
@@ -23,7 +22,7 @@ import { formatEther } from 'viem';
 import { useMarketGroupBridgeStatus } from '~/hooks/contract/useMarketGroupBridgeStatus';
 import { useMarketGroupLatestMarket } from '~/hooks/contract/useMarketGroupLatestMarket';
 import type { EnrichedMarketGroup } from '~/hooks/graphql/useMarketGroups';
-import { shortenAddress, foilApi } from '~/lib/utils/util';
+import { shortenAddress } from '~/lib/utils/util';
 
 import AddMarketDialog from './AddMarketDialog';
 import EnableBridgedMarketGroupButton from './EnableBridgedMarketGroupButton';
@@ -34,7 +33,7 @@ import ReindexMarketButton from './ReindexMarketButton';
 import SettleMarketDialog from './SettleMarketDialog';
 
 // GraphQL query for index price at time
-const INDEX_PRICE_AT_TIME_QUERY = gql`
+const INDEX_PRICE_AT_TIME_QUERY = `
   query IndexPriceAtTime(
     $address: String!
     $chainId: Int!
@@ -52,6 +51,14 @@ const INDEX_PRICE_AT_TIME_QUERY = gql`
     }
   }
 `;
+
+// Type definition for GraphQL response
+type IndexPriceAtTimeResponse = {
+  indexPriceAtTime: {
+    timestamp: number;
+    close: string;
+  } | null;
+};
 
 // Helper function to convert gwei to ether
 const gweiToEther = (value: bigint): string => {
@@ -97,17 +104,17 @@ function useMarketPriceData(
         return null;
       }
 
-      const response = await foilApi.post('/graphql', {
-        query: print(INDEX_PRICE_AT_TIME_QUERY),
-        variables: {
+      const data = await graphqlRequest<IndexPriceAtTimeResponse>(
+        INDEX_PRICE_AT_TIME_QUERY,
+        {
           address: marketAddress,
           chainId,
           marketId: marketId.toString(),
           timestamp: timestampForApi,
-        },
-      });
+        }
+      );
 
-      const priceData = response.data?.indexPriceAtTime;
+      const priceData = data?.indexPriceAtTime;
       if (!priceData) {
         return null;
       }
@@ -295,17 +302,26 @@ const SettlementPriceCell = ({ group }: { group: EnrichedMarketGroup }) => {
 
   const marketToUse = currentMarket || mostRecentSettledMarket;
 
-  const marketId = Number(marketToUse?.marketId);
-  const endTimestamp = marketToUse?.endTimestamp ?? 0;
+  // Always call the hook, even if values are missing
+  const marketId = Number(marketToUse?.marketId) || 0;
+  const endTimestamp = marketToUse?.endTimestamp || 0;
+  const address = group.address || '';
+  const chainId = group.chainId || 0;
+  const hasResource = !!group.resource;
 
   const { indexPrice, isLoading, error, isActive } = useMarketPriceData(
-    group.address!,
-    group.chainId,
+    address,
+    chainId,
     marketId,
     endTimestamp
   );
 
-  if (!group.address) {
+  // Now handle early returns after the hook call
+  if (!hasResource) {
+    return <span className="text-muted-foreground">N/A</span>;
+  }
+
+  if (!address) {
     return <span className="text-muted-foreground">N/A</span>;
   }
 
@@ -318,7 +334,15 @@ const SettlementPriceCell = ({ group }: { group: EnrichedMarketGroup }) => {
   }
 
   if (error) {
-    return <span className="text-red-500">Error</span>;
+    // Check if the error message is about a missing resource
+    const isResourceNotFound =
+      typeof error?.message === 'string' &&
+      error.message.includes('Resource not found for market');
+    return (
+      <span className="text-muted-foreground">
+        {isResourceNotFound ? 'No price data' : 'N/A'}
+      </span>
+    );
   }
 
   if (indexPrice === undefined || indexPrice === null) {

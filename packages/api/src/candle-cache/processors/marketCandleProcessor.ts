@@ -1,5 +1,5 @@
 import { ReducedMarketPrice } from '../types';
-import type { cache_candle } from '../../../generated/prisma';
+import type { CacheCandle } from '../../../generated/prisma';
 import { CANDLE_TYPES, CANDLE_CACHE_CONFIG } from '../config';
 import { RuntimeCandleStore } from '../runtimeCandleStore';
 import { BNMax, BNMin, getTimtestampCandleInterval } from '../candleUtils';
@@ -8,7 +8,7 @@ import {
   getOrCreateCandle,
   saveCandle,
 } from '../dbUtils';
-import { MarketInfo, MarketInfoStore } from '../marketInfoStore';
+import { marketInfo, marketInfoStore } from '../marketInfoStore';
 
 export class MarketCandleProcessor {
   private lastClosePricesByMarketAndInterval: Record<
@@ -18,7 +18,7 @@ export class MarketCandleProcessor {
 
   constructor(
     private runtimeCandles: RuntimeCandleStore,
-    private marketInfoStore: MarketInfoStore
+    private marketInfoStore: marketInfoStore
   ) {}
 
   private async getNewCandle(
@@ -26,8 +26,8 @@ export class MarketCandleProcessor {
     candleTimestamp: number,
     candleEndTimestamp: number,
     price: ReducedMarketPrice,
-    marketInfo: MarketInfo
-  ): Promise<cache_candle> {
+    marketInfo: marketInfo
+  ): Promise<CacheCandle> {
     const candle = await getOrCreateCandle({
       candleType: CANDLE_TYPES.MARKET,
       interval: interval,

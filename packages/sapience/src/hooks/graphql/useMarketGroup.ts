@@ -1,24 +1,21 @@
-import { gql } from '@apollo/client';
+import { graphqlRequest } from '@sapience/ui/lib';
 import type {
   MarketGroup as MarketGroupType,
   Market as MarketType,
 } from '@sapience/ui/types/graphql';
 import { useQuery } from '@tanstack/react-query';
-import { print } from 'graphql';
 import { useEffect, useState } from 'react';
 
-import type { MarketGroupClassification } from '../../lib/types';
 import { getMarketGroupClassification } from '../../lib/utils/marketUtils';
 import {
   findActiveMarkets,
-  foilApi,
   getChainIdFromShortName,
 } from '../../lib/utils/util';
 
 // GraphQL query to fetch market data
-const MARKET_GROUP_QUERY = gql`
-  query GetMarketGroup($chainId: Int!, $address: String!) {
-    marketGroup(chainId: $chainId, address: $address) {
+const MARKET_GROUP_QUERY = `
+  query GetMarketGroup($where: MarketGroupWhereUniqueInput!) {
+    marketGroup(where: $where) {
       id
       address
       chainId
@@ -43,25 +40,13 @@ const MARKET_GROUP_QUERY = gql`
   }
 `;
 
-interface UseMarketGroupProps {
-  chainShortName: string;
-  marketAddress: string;
-}
-
-interface UseMarketGroupReturn {
-  marketGroupData: MarketGroupType | undefined;
-  isLoading: boolean;
-  isSuccess: boolean;
-  activeMarkets: MarketType[];
-  chainId: number;
-  isError: boolean;
-  marketClassification: MarketGroupClassification | undefined;
-}
-
 export const useMarketGroup = ({
   chainShortName,
   marketAddress,
-}: UseMarketGroupProps): UseMarketGroupReturn => {
+}: {
+  chainShortName: string;
+  marketAddress: string;
+}) => {
   const chainId = getChainIdFromShortName(chainShortName);
   const [activeMarkets, setActiveMarkets] = useState<MarketType[]>([]);
 
@@ -73,11 +58,23 @@ export const useMarketGroup = ({
   } = useQuery<MarketGroupType>({
     queryKey: ['marketGroup', chainId, marketAddress],
     queryFn: async () => {
-      const response = await foilApi.post('/graphql', {
-        query: print(MARKET_GROUP_QUERY),
-        variables: { chainId, address: marketAddress },
-      });
-      const marketResponse = response.data?.marketGroup;
+      type MarketGroupQueryResult = {
+        marketGroup: MarketGroupType;
+      };
+
+      const data = await graphqlRequest<MarketGroupQueryResult>(
+        MARKET_GROUP_QUERY,
+        {
+          where: {
+            address_chainId: {
+              address: marketAddress,
+              chainId,
+            },
+          },
+        }
+      );
+
+      const marketResponse = data?.marketGroup;
 
       if (!marketResponse) {
         throw new Error('No market group data in response');

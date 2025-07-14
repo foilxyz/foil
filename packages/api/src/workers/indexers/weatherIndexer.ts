@@ -99,7 +99,7 @@ export class WeatherIndexer implements IResourcePriceIndexer {
         );
 
         try {
-          await prisma.resource_price.upsert({
+          await prisma.resourcePrice.upsert({
             where: {
               resourceId_timestamp: {
                 resourceId: resource.id,
@@ -167,7 +167,7 @@ export class WeatherIndexer implements IResourcePriceIndexer {
         // console.log(`[WeatherIndexer.${this.resourceType}] Prepared precipitation price data:`, price);
 
         try {
-          await prisma.resource_price.upsert({
+          await prisma.resourcePrice.upsert({
             where: {
               resourceId_timestamp: {
                 resourceId: resource.id,
@@ -268,7 +268,7 @@ export class WeatherIndexer implements IResourcePriceIndexer {
 
       for (const reading of weatherData) {
         console.log(reading);
-        const maybeReading = await prisma.resource_price.findFirst({
+        const maybeReading = await prisma.resourcePrice.findFirst({
           where: {
             resourceId: resource.id,
             timestamp: Math.floor(new Date(reading.timestamp).getTime() / 1000),
