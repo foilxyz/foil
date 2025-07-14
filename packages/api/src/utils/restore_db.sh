@@ -68,7 +68,7 @@ fi
 
 # Replace all instances of the original database name with the local database name
 # This handles cases where the dump contains references to the original database name
-sed -i "s/$DB_NAME/$DB_NAME_LOCAL/g" ./db_backups/complete_dump.sql
+sed -i '' "s/$DB_NAME/$DB_NAME_LOCAL/g" ./db_backups/complete_dump.sql
 
 # Step 1: Drop and recreate local database
 echo "Dropping and recreating local database..."
@@ -80,7 +80,7 @@ psql -U $LOCAL_USER -c "CREATE DATABASE temp_connection_db;"
 
 # Step 2: Restore the database
 echo "Restoring database to local server..."
-psql -U $LOCAL_USER -d temp_connection_db -f ./db_backups/complete_dump.sql
+psql -U $LOCAL_USER -d $DB_NAME_LOCAL -f ./db_backups/complete_dump.sql
 
 # Step 3: Manually reset sequences to match current data
 echo "Manually resetting sequences..."

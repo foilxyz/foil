@@ -16,32 +16,32 @@ export const useMarketGroupLatestMarket = (
   const { abi } = useSapienceAbi();
 
   const {
-    data: latestEpochData,
+    data: latestMarketData,
     error: readError,
-    isLoading: isReadingEpoch,
-    refetch: refetchLatestEpoch, // Expose refetch if needed
+    isLoading: isReadingMarket,
+    refetch: refetchLatestMarket, // Expose refetch if needed
   } = useReadContract({
     address: marketGroupAddress,
     abi: abi as Abi, // Cast ABI to Viem's Abi type
-    functionName: 'getLatestEpoch',
+    functionName: 'getLatestMarket',
     chainId,
   });
 
   // Extract the epochId from the returned tuple
   const latestMarketId =
-    latestEpochData &&
-    Array.isArray(latestEpochData) &&
-    latestEpochData.length > 0 &&
-    typeof latestEpochData[0] === 'object' &&
-    latestEpochData[0] !== null &&
-    'epochId' in latestEpochData[0]
-      ? (latestEpochData[0] as { epochId: bigint }).epochId // Type assertion after checks
+    latestMarketData &&
+    Array.isArray(latestMarketData) &&
+    latestMarketData.length > 0 &&
+    typeof latestMarketData[0] === 'object' &&
+    latestMarketData[0] !== null &&
+    'marketId' in latestMarketData[0]
+      ? (latestMarketData[0] as { marketId: bigint }).marketId // Type assertion after checks
       : undefined;
 
   return {
     latestMarketId, // bigint | undefined
-    isLoading: isReadingEpoch,
+    isLoading: isReadingMarket,
     error: readError,
-    refetch: refetchLatestEpoch, // Optionally return refetch function
+    refetch: refetchLatestMarket, // Optionally return refetch function
   };
 };
