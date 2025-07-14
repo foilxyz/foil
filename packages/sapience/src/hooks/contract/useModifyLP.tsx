@@ -115,10 +115,10 @@ export function useModifyLP({
       const increaseParams = {
         positionId: BigInt(positionId!),
         collateralAmount: parsedCollateralDelta,
-        gasTokenAmount: amount0,
-        ethTokenAmount: amount1,
-        minGasAmount: minAmount0,
-        minEthAmount: minAmount1,
+        baseTokenAmount: amount0,
+        quoteTokenAmount: amount1,
+        minBaseAmount: minAmount0,
+        minQuoteAmount: minAmount1,
         deadline,
       };
       return writeContractAsync({
@@ -149,8 +149,8 @@ export function useModifyLP({
       const decreaseParams = {
         positionId: BigInt(positionId!),
         liquidity: liquidityDelta,
-        minGasAmount: minAmount0,
-        minEthAmount: minAmount1,
+        minBaseAmount: minAmount0,
+        minQuoteAmount: minAmount1,
         deadline,
       };
       return writeContractAsync({
