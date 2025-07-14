@@ -73,9 +73,9 @@ const hasMultipleMarkets = (
 
   return Boolean(
     marketGroup &&
-      marketGroup.market &&
-      Array.isArray(marketGroup.market) &&
-      marketGroup.market.length > 1
+      marketGroup.markets &&
+      Array.isArray(marketGroup.markets) &&
+      marketGroup.markets.length > 1
   );
 };
 
@@ -179,8 +179,8 @@ const renderQuestionCell = ({
 
     if (marketGroup) {
       const market =
-        marketGroup.market && marketGroup.market.marketId === marketId
-          ? marketGroup.market
+        marketGroup.markets && marketGroup.markets.marketId === marketId
+          ? marketGroup.markets
           : null;
 
       if (market && typeof market.question === 'string') {

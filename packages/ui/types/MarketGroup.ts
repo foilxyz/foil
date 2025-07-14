@@ -50,14 +50,14 @@ export interface MarketGroup {
     name: string;
     slug: string;
   };
-  market: {
+  markets: {
     id: number;
     marketId: number;
     startTimestamp: number;
     endTimestamp: number;
     public: boolean;
     question?: string;
-  };
+  }[];
 }
 
 export type MarketGroupParams = {

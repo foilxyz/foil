@@ -17,7 +17,7 @@ router.get(
 
     const formattedMarkets = markets.map((marketGroup) => ({
       ...marketGroup,
-      markets: marketGroup.market.map((market) => ({
+      markets: marketGroup.markets.map((market) => ({
         ...market,
         startTimestamp: Number(market.startTimestamp),
         endTimestamp: Number(market.endTimestamp),

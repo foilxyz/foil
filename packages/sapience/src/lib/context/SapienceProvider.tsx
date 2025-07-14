@@ -2,6 +2,7 @@
 
 import { useToast } from '@sapience/ui/hooks/use-toast';
 import { graphqlRequest } from '@sapience/ui/lib';
+import type { MarketGroup as GraphQLMarketGroup } from '@sapience/ui/types/graphql';
 import type {
   QueryObserverResult,
   RefetchOptions,
@@ -29,43 +30,6 @@ interface PermitResponse {
   permitted: boolean;
 }
 
-// Define the interface for a single Market based on GraphQL response
-export interface ApiMarket {
-  id: number;
-  marketId: number;
-  startTimestamp: number;
-  endTimestamp: number;
-  public: boolean;
-  question?: string;
-  startingSqrtPriceX96: string; // Added
-  baseAssetMinPriceTick: number; // Added
-  baseAssetMaxPriceTick: number; // Added
-  poolAddress?: string | null; // Added
-  claimStatementYesOrNumeric?: string | null; // Added
-  claimStatementNo?: string | null; // Added
-  settled?: boolean | null;
-  optionName?: string | null;
-}
-
-export interface MarketGroup {
-  id: number;
-  name: string;
-  chainId: number;
-  address: string;
-  collateralAsset: string;
-  baseTokenName?: string;
-  owner: string;
-  isCumulative: boolean;
-  resource: {
-    id: number;
-    name: string;
-    slug: string;
-  };
-  market: ApiMarket | null; // Use the new Market interface
-  nextMarket: ApiMarket | null; // Use the new Market interface
-  question?: string; // Added group-level question
-}
-
 interface SapienceContextType {
   // Permit data
   permitData: PermitResponse | undefined;
@@ -76,12 +40,12 @@ interface SapienceContextType {
   ) => Promise<QueryObserverResult<PermitResponse, Error>>;
 
   // Market data
-  marketGroups: MarketGroup[];
+  marketGroups: GraphQLMarketGroup[];
   isMarketsLoading: boolean;
   marketsError: Error | null;
   refetchMarketGroup: (
     options?: RefetchOptions
-  ) => Promise<QueryObserverResult<MarketGroup[], Error>>;
+  ) => Promise<QueryObserverResult<GraphQLMarketGroup[], Error>>;
   stEthPerToken: number | undefined;
 }
 
@@ -99,7 +63,7 @@ const MARKET_GROUPS_QUERY = `
       question
       baseTokenName
       quoteTokenName
-      market {
+      markets {
         id
         marketId
         question
@@ -117,38 +81,6 @@ const MARKET_GROUPS_QUERY = `
     }
   }
 `;
-
-// Define response types based on MARKET_GROUPS_QUERY
-interface ApiMarketResponse {
-  id: number;
-  marketId: number;
-  question?: string;
-  startTimestamp: number;
-  endTimestamp: number;
-  settled?: boolean | null;
-  optionName?: string | null;
-  startingSqrtPriceX96: string;
-  baseAssetMinPriceTick: number;
-  baseAssetMaxPriceTick: number;
-  poolAddress?: string | null;
-  marketParamsClaimstatementYesOrNumeric?: string | null;
-  marketParamsClaimstatementNo?: string | null;
-}
-
-interface ApiMarketGroupResponse {
-  id: number;
-  chainId: number;
-  address: string;
-  question?: string;
-  baseTokenName?: string;
-  quoteTokenName?: string;
-  market: ApiMarketResponse;
-}
-
-// Type definition for GraphQL response
-type MarketGroupsQueryResponse = {
-  marketGroups: ApiMarketGroupResponse[];
-};
 
 export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -201,88 +133,19 @@ export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
     isLoading: isMarketsLoading,
     error: marketsError,
     refetch: refetchMarketGroup,
-  } = useQuery<MarketGroup[], Error>({
+  } = useQuery<GraphQLMarketGroup[], Error>({
     queryKey: ['marketGroups'],
     queryFn: async () => {
       try {
-        const data =
-          await graphqlRequest<MarketGroupsQueryResponse>(MARKET_GROUPS_QUERY);
-
-        // Use renamed variable and check response.data existence
+        const data = await graphqlRequest<{
+          marketGroups: GraphQLMarketGroup[];
+        }>(MARKET_GROUPS_QUERY);
         if (!data || !data.marketGroups) {
           console.error('No marketGroups data in response:', data);
-          return []; // Return empty array if data is missing
+          return [];
         }
-        const apiMarketGroup = data.marketGroups; // Rename destructured variable
-        const currentTimestamp = Math.floor(Date.now() / 1000);
-
-        return apiMarketGroup.map((marketGroup: ApiMarketGroupResponse) => {
-          // Use ApiMarketGroupResponse type
-          // Transform the structure to match the expected Market interface
-          const market: ApiMarket = {
-            // Use ApiMarketResponse type
-            id: marketGroup.market.id,
-            marketId: marketGroup.market.marketId,
-            startTimestamp: marketGroup.market.startTimestamp,
-            endTimestamp: marketGroup.market.endTimestamp,
-            // Adjust public logic based on settled field if it exists in response
-            public:
-              marketGroup.market.settled !== undefined
-                ? !marketGroup.market.settled
-                : true,
-            question: marketGroup.market.question,
-            startingSqrtPriceX96: marketGroup.market.startingSqrtPriceX96,
-            baseAssetMinPriceTick: marketGroup.market.baseAssetMinPriceTick,
-            baseAssetMaxPriceTick: marketGroup.market.baseAssetMaxPriceTick,
-            poolAddress: marketGroup.market.poolAddress,
-            claimStatementYesOrNumeric:
-              marketGroup.market.marketParamsClaimstatementYesOrNumeric,
-            claimStatementNo: marketGroup.market.marketParamsClaimstatementNo,
-            // Add other fields required by ApiMarket if they exist in ApiMarketResponse
-            settled: marketGroup.market.settled,
-            optionName: marketGroup.market.optionName,
-          };
-
-          const sortedMarkets = [...[market]].sort(
-            (a, b) => a.startTimestamp - b.startTimestamp
-          );
-
-          const currentMarket =
-            sortedMarkets.find(
-              (market) =>
-                market.startTimestamp <= currentTimestamp &&
-                market.endTimestamp > currentTimestamp
-            ) ||
-            sortedMarkets[sortedMarkets.length - 1] ||
-            null;
-
-          const nextMarket =
-            sortedMarkets.find(
-              (market) => market.startTimestamp > currentTimestamp
-            ) ||
-            sortedMarkets[sortedMarkets.length - 1] ||
-            null;
-
-          return {
-            id: marketGroup.id,
-            name: marketGroup.question || `Market ${marketGroup.id}`, // Use question as name fallback
-            chainId: marketGroup.chainId,
-            address: marketGroup.address,
-            collateralAsset: marketGroup.baseTokenName || 'ETH', // Fallback
-            baseTokenName: marketGroup.baseTokenName,
-            owner: marketGroup.address, // Fallback
-            isCumulative: false, // Default
-            question: marketGroup.question, // Keep the group-level question if needed
-            resource: {
-              id: 0,
-              name: 'Unknown',
-              slug: 'unknown',
-            }, // Default resource info
-            market,
-            currentMarket,
-            nextMarket,
-          };
-        });
+        // Return the marketGroups as-is, since they match the generated type
+        return data.marketGroups;
       } catch (error) {
         console.error('Error fetching market groups via GraphQL:', error);
         throw error;

@@ -1,4 +1,5 @@
 import { graphqlRequest } from '@sapience/ui/lib';
+import type { MarketGroup as MarketGroupType } from '@sapience/ui/types/graphql';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
@@ -16,7 +17,7 @@ const GET_MARKET_GROUPS = `
     marketGroups {
       address
       chainId
-      market {
+      markets {
         marketId
         public
       }
@@ -40,16 +41,9 @@ interface RawMarketLeaderboardEntry {
   totalPnL: string;
 }
 
-// Interface for the response of GET_MARKET_GROUPS
-interface MarketGroupData {
-  address: string;
-  chainId: number;
-  market: { marketId: number; public: boolean }[];
-}
-
 // Type definitions for GraphQL responses
 type MarketGroupsQueryResponse = {
-  marketGroups: MarketGroupData[];
+  marketGroups: MarketGroupType[];
 };
 
 type MarketLeaderboardQueryResponse = {
@@ -78,7 +72,11 @@ const useAllTimeLeaderboard = () => {
           marketId: string;
         }[] = [];
         marketGroupsData.marketGroups.forEach((marketGroup) => {
-          marketGroup.market.forEach((market) => {
+          // Type guard: skip if address or chainId is missing or not correct type
+          if (!marketGroup.address || typeof marketGroup.address !== 'string')
+            return;
+          if (typeof marketGroup.chainId !== 'number') return;
+          (marketGroup.markets || []).forEach((market) => {
             if (market.public) {
               publicMarketIdentifiers.push({
                 address: marketGroup.address,

@@ -61,7 +61,7 @@ export const useCategories = () => {
 };
 
 export interface EnrichedMarketGroup
-  extends Omit<MarketGroupType, 'category' | 'market'> {
+  extends Omit<MarketGroupType, 'category' | 'markets'> {
   category: CategoryType & { iconSvg?: string; color?: string };
   markets: MarketType[];
   latestMarketId?: bigint;
@@ -277,18 +277,18 @@ export const useEnrichedMarketGroups = () => {
               name: 'Unknown',
               slug: 'unknown',
               createdAt: new Date().toISOString(),
-              resource: [],
+              resources: [],
               marketGroups: [],
               iconSvg: DEFAULT_FOCUS_AREA.iconSvg,
               color: '#9CA3AF', // Tailwind gray-400
             };
           }
 
-          const mappedMarkets = (marketGroup.market || []).map(
+          const mappedMarkets = (marketGroup.markets || []).map(
             (market: MarketType): MarketType => ({
               ...market,
               id: market.id,
-              position: market.position || [],
+              positions: market.positions || [],
             })
           );
 
@@ -299,7 +299,7 @@ export const useEnrichedMarketGroups = () => {
           return {
             ...marketGroup,
             category: categoryInfo,
-            market: mappedMarkets,
+            markets: mappedMarkets,
             marketClassification: classification,
           };
         }

@@ -43,9 +43,9 @@ export class marketInfoStore {
       const resourceSlug = marketGroup.resource?.slug ?? 'no-resource';
 
       // Add market with extra data
-      if (marketGroup.market) {
-        _debugCounter += marketGroup.market.length;
-        for (const market of marketGroup.market) {
+      if (marketGroup.markets) {
+        _debugCounter += marketGroup.markets.length;
+        for (const market of marketGroup.markets) {
           if (this.marketInfoByIdx.has(market.id) || !marketGroup.address) {
             continue;
           }

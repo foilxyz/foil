@@ -152,7 +152,7 @@ type Category {
   id: Int!
   marketGroups(cursor: MarketGroupWhereUniqueInput, distinct: [MarketGroupScalarFieldEnum!], orderBy: [MarketGroupOrderByWithRelationInput!], skip: Int, take: Int, where: MarketGroupWhereInput): [MarketGroup!]!
   name: String!
-  resource(cursor: ResourceWhereUniqueInput, distinct: [ResourceScalarFieldEnum!], orderBy: [ResourceOrderByWithRelationInput!], skip: Int, take: Int, where: ResourceWhereInput): [Resource!]!
+  resources(cursor: ResourceWhereUniqueInput, distinct: [ResourceScalarFieldEnum!], orderBy: [ResourceOrderByWithRelationInput!], skip: Int, take: Int, where: ResourceWhereInput): [Resource!]!
   slug: String!
 }
 
@@ -246,7 +246,7 @@ input CategoryOrderByWithRelationInput {
   id: SortOrder
   marketGroups: MarketGroupOrderByRelationAggregateInput
   name: SortOrder
-  resource: ResourceOrderByRelationAggregateInput
+  resources: ResourceOrderByRelationAggregateInput
   slug: SortOrder
 }
 
@@ -283,7 +283,7 @@ input CategoryWhereInput {
   id: IntFilter
   marketGroups: MarketGroupListRelationFilter
   name: StringFilter
-  resource: ResourceListRelationFilter
+  resources: ResourceListRelationFilter
   slug: StringFilter
 }
 
@@ -295,7 +295,7 @@ input CategoryWhereUniqueInput {
   id: Int
   marketGroups: MarketGroupListRelationFilter
   name: String
-  resource: ResourceListRelationFilter
+  resources: ResourceListRelationFilter
   slug: String
 }
 
@@ -799,14 +799,14 @@ type Market {
   minPriceD18: Decimal
   optionName: String
   poolAddress: String
-  position(cursor: PositionWhereUniqueInput, distinct: [PositionScalarFieldEnum!], orderBy: [PositionOrderByWithRelationInput!], skip: Int, take: Int, where: PositionWhereInput): [Position!]!
+  positions(cursor: PositionWhereUniqueInput, distinct: [PositionScalarFieldEnum!], orderBy: [PositionOrderByWithRelationInput!], skip: Int, take: Int, where: PositionWhereInput): [Position!]!
   public: Boolean!
   question: String
   rules: String
   settled: Boolean
   settlementPriceD18: Decimal
   startTimestamp: Int
-  startingSqrtPriceX96: Decimal
+  startingSqrtPriceX96: String
 }
 
 type MarketAvgAggregate {
@@ -823,7 +823,6 @@ type MarketAvgAggregate {
   minPriceD18: Decimal
   settlementPriceD18: Decimal
   startTimestamp: Float
-  startingSqrtPriceX96: Decimal
 }
 
 input MarketAvgOrderByAggregateInput {
@@ -840,7 +839,6 @@ input MarketAvgOrderByAggregateInput {
   minPriceD18: SortOrder
   settlementPriceD18: SortOrder
   startTimestamp: SortOrder
-  startingSqrtPriceX96: SortOrder
 }
 
 type MarketCount {
@@ -923,13 +921,12 @@ type MarketGroup {
   createdAt: DateTimeISO!
   deployTimestamp: Int
   deployTxnBlockNumber: Int
-  event(cursor: EventWhereUniqueInput, distinct: [EventScalarFieldEnum!], orderBy: [EventOrderByWithRelationInput!], skip: Int, take: Int, where: EventWhereInput): [Event!]!
+  events(cursor: EventWhereUniqueInput, distinct: [EventScalarFieldEnum!], orderBy: [EventOrderByWithRelationInput!], skip: Int, take: Int, where: EventWhereInput): [Event!]!
   factoryAddress: String
   id: Int!
   initializationNonce: String
   isBridged: Boolean!
   isCumulative: Boolean!
-  market(cursor: MarketWhereUniqueInput, distinct: [MarketScalarFieldEnum!], orderBy: [MarketOrderByWithRelationInput!], skip: Int, take: Int, where: MarketWhereInput): [Market!]!
   marketParamsAssertionliveness: Decimal
   marketParamsBondamount: Decimal
   marketParamsBondcurrency: String
@@ -940,6 +937,7 @@ type MarketGroup {
   marketParamsUniswappositionmanager: String
   marketParamsUniswapquoter: String
   marketParamsUniswapswaprouter: String
+  markets(cursor: MarketWhereUniqueInput, distinct: [MarketScalarFieldEnum!], orderBy: [MarketOrderByWithRelationInput!], skip: Int, take: Int, where: MarketWhereInput): [Market!]!
   minTradeSize: Decimal
   owner: String
   question: String
@@ -1014,7 +1012,7 @@ type MarketGroupBy {
   settled: Boolean
   settlementPriceD18: Decimal
   startTimestamp: Int
-  startingSqrtPriceX96: Decimal
+  startingSqrtPriceX96: String
 }
 
 type MarketGroupCount {
@@ -1324,13 +1322,12 @@ input MarketGroupOrderByWithRelationInput {
   createdAt: SortOrder
   deployTimestamp: SortOrderInput
   deployTxnBlockNumber: SortOrderInput
-  event: EventOrderByRelationAggregateInput
+  events: EventOrderByRelationAggregateInput
   factoryAddress: SortOrderInput
   id: SortOrder
   initializationNonce: SortOrderInput
   isBridged: SortOrder
   isCumulative: SortOrder
-  market: MarketOrderByRelationAggregateInput
   marketParamsAssertionliveness: SortOrderInput
   marketParamsBondamount: SortOrderInput
   marketParamsBondcurrency: SortOrderInput
@@ -1341,6 +1338,7 @@ input MarketGroupOrderByWithRelationInput {
   marketParamsUniswappositionmanager: SortOrderInput
   marketParamsUniswapquoter: SortOrderInput
   marketParamsUniswapswaprouter: SortOrderInput
+  markets: MarketOrderByRelationAggregateInput
   minTradeSize: SortOrderInput
   owner: SortOrderInput
   question: SortOrderInput
@@ -1461,13 +1459,12 @@ input MarketGroupWhereInput {
   createdAt: DateTimeFilter
   deployTimestamp: IntNullableFilter
   deployTxnBlockNumber: IntNullableFilter
-  event: EventListRelationFilter
+  events: EventListRelationFilter
   factoryAddress: StringNullableFilter
   id: IntFilter
   initializationNonce: StringNullableFilter
   isBridged: BoolFilter
   isCumulative: BoolFilter
-  market: MarketListRelationFilter
   marketParamsAssertionliveness: DecimalNullableFilter
   marketParamsBondamount: DecimalNullableFilter
   marketParamsBondcurrency: StringNullableFilter
@@ -1478,6 +1475,7 @@ input MarketGroupWhereInput {
   marketParamsUniswappositionmanager: StringNullableFilter
   marketParamsUniswapquoter: StringNullableFilter
   marketParamsUniswapswaprouter: StringNullableFilter
+  markets: MarketListRelationFilter
   minTradeSize: DecimalNullableFilter
   owner: StringNullableFilter
   question: StringNullableFilter
@@ -1502,13 +1500,12 @@ input MarketGroupWhereUniqueInput {
   createdAt: DateTimeFilter
   deployTimestamp: IntNullableFilter
   deployTxnBlockNumber: IntNullableFilter
-  event: EventListRelationFilter
+  events: EventListRelationFilter
   factoryAddress: StringNullableFilter
   id: Int
   initializationNonce: StringNullableFilter
   isBridged: BoolFilter
   isCumulative: BoolFilter
-  market: MarketListRelationFilter
   marketParamsAssertionliveness: DecimalNullableFilter
   marketParamsBondamount: DecimalNullableFilter
   marketParamsBondcurrency: StringNullableFilter
@@ -1519,6 +1516,7 @@ input MarketGroupWhereUniqueInput {
   marketParamsUniswappositionmanager: StringNullableFilter
   marketParamsUniswapquoter: StringNullableFilter
   marketParamsUniswapswaprouter: StringNullableFilter
+  markets: MarketListRelationFilter
   minTradeSize: DecimalNullableFilter
   owner: StringNullableFilter
   question: StringNullableFilter
@@ -1566,7 +1564,7 @@ type MarketMaxAggregate {
   settled: Boolean
   settlementPriceD18: Decimal
   startTimestamp: Int
-  startingSqrtPriceX96: Decimal
+  startingSqrtPriceX96: String
 }
 
 input MarketMaxOrderByAggregateInput {
@@ -1628,7 +1626,7 @@ type MarketMinAggregate {
   settled: Boolean
   settlementPriceD18: Decimal
   startTimestamp: Int
-  startingSqrtPriceX96: Decimal
+  startingSqrtPriceX96: String
 }
 
 input MarketMinOrderByAggregateInput {
@@ -1730,7 +1728,7 @@ input MarketOrderByWithRelationInput {
   minPriceD18: SortOrderInput
   optionName: SortOrderInput
   poolAddress: SortOrderInput
-  position: PositionOrderByRelationAggregateInput
+  positions: PositionOrderByRelationAggregateInput
   public: SortOrder
   question: SortOrderInput
   rules: SortOrderInput
@@ -1953,7 +1951,7 @@ input MarketScalarWhereWithAggregatesInput {
   settled: BoolNullableWithAggregatesFilter
   settlementPriceD18: DecimalNullableWithAggregatesFilter
   startTimestamp: IntNullableWithAggregatesFilter
-  startingSqrtPriceX96: DecimalNullableWithAggregatesFilter
+  startingSqrtPriceX96: StringNullableWithAggregatesFilter
 }
 
 type MarketSumAggregate {
@@ -1970,7 +1968,6 @@ type MarketSumAggregate {
   minPriceD18: Decimal
   settlementPriceD18: Decimal
   startTimestamp: Int
-  startingSqrtPriceX96: Decimal
 }
 
 input MarketSumOrderByAggregateInput {
@@ -1987,7 +1984,6 @@ input MarketSumOrderByAggregateInput {
   minPriceD18: SortOrder
   settlementPriceD18: SortOrder
   startTimestamp: SortOrder
-  startingSqrtPriceX96: SortOrder
 }
 
 input MarketWhereInput {
@@ -2016,14 +2012,14 @@ input MarketWhereInput {
   minPriceD18: DecimalNullableFilter
   optionName: StringNullableFilter
   poolAddress: StringNullableFilter
-  position: PositionListRelationFilter
+  positions: PositionListRelationFilter
   public: BoolFilter
   question: StringNullableFilter
   rules: StringNullableFilter
   settled: BoolNullableFilter
   settlementPriceD18: DecimalNullableFilter
   startTimestamp: IntNullableFilter
-  startingSqrtPriceX96: DecimalNullableFilter
+  startingSqrtPriceX96: StringNullableFilter
 }
 
 input MarketWhereUniqueInput {
@@ -2053,14 +2049,14 @@ input MarketWhereUniqueInput {
   minPriceD18: DecimalNullableFilter
   optionName: StringNullableFilter
   poolAddress: StringNullableFilter
-  position: PositionListRelationFilter
+  positions: PositionListRelationFilter
   public: BoolFilter
   question: StringNullableFilter
   rules: StringNullableFilter
   settled: BoolNullableFilter
   settlementPriceD18: DecimalNullableFilter
   startTimestamp: IntNullableFilter
-  startingSqrtPriceX96: DecimalNullableFilter
+  startingSqrtPriceX96: StringNullableFilter
 }
 
 input NestedBigIntFilter {
@@ -2401,7 +2397,7 @@ type Position {
   owner: String
   positionId: Int!
   quoteToken: Decimal
-  transaction(cursor: TransactionWhereUniqueInput, distinct: [TransactionScalarFieldEnum!], orderBy: [TransactionOrderByWithRelationInput!], skip: Int, take: Int, where: TransactionWhereInput): [Transaction!]!
+  transactions(cursor: TransactionWhereUniqueInput, distinct: [TransactionScalarFieldEnum!], orderBy: [TransactionOrderByWithRelationInput!], skip: Int, take: Int, where: TransactionWhereInput): [Transaction!]!
 }
 
 type PositionAvgAggregate {
@@ -2634,7 +2630,7 @@ input PositionOrderByWithRelationInput {
   owner: SortOrderInput
   positionId: SortOrder
   quoteToken: SortOrderInput
-  transaction: TransactionOrderByRelationAggregateInput
+  transactions: TransactionOrderByRelationAggregateInput
 }
 
 input PositionPositionIdMarketIdCompoundUniqueInput {
@@ -2734,7 +2730,7 @@ input PositionWhereInput {
   owner: StringNullableFilter
   positionId: IntFilter
   quoteToken: DecimalNullableFilter
-  transaction: TransactionListRelationFilter
+  transactions: TransactionListRelationFilter
 }
 
 input PositionWhereUniqueInput {
@@ -2759,7 +2755,7 @@ input PositionWhereUniqueInput {
   positionId: IntFilter
   positionId_marketId: PositionPositionIdMarketIdCompoundUniqueInput
   quoteToken: DecimalNullableFilter
-  transaction: TransactionListRelationFilter
+  transactions: TransactionListRelationFilter
 }
 
 type Query {
@@ -2849,7 +2845,7 @@ type Resource {
   id: Int!
   marketGroups(cursor: MarketGroupWhereUniqueInput, distinct: [MarketGroupScalarFieldEnum!], orderBy: [MarketGroupOrderByWithRelationInput!], skip: Int, take: Int, where: MarketGroupWhereInput): [MarketGroup!]!
   name: String!
-  resource_price(cursor: ResourcePriceWhereUniqueInput, distinct: [ResourcePriceScalarFieldEnum!], orderBy: [ResourcePriceOrderByWithRelationInput!], skip: Int, take: Int, where: ResourcePriceWhereInput): [ResourcePrice!]!
+  resourcePrices(cursor: ResourcePriceWhereUniqueInput, distinct: [ResourcePriceScalarFieldEnum!], orderBy: [ResourcePriceOrderByWithRelationInput!], skip: Int, take: Int, where: ResourcePriceWhereInput): [ResourcePrice!]!
   slug: String!
 }
 
@@ -2965,7 +2961,7 @@ input ResourceOrderByWithRelationInput {
   id: SortOrder
   marketGroups: MarketGroupOrderByRelationAggregateInput
   name: SortOrder
-  resource_price: ResourcePriceOrderByRelationAggregateInput
+  resourcePrices: ResourcePriceOrderByRelationAggregateInput
   slug: SortOrder
 }
 
@@ -3242,7 +3238,7 @@ input ResourceWhereInput {
   id: IntFilter
   marketGroups: MarketGroupListRelationFilter
   name: StringFilter
-  resource_price: ResourcePriceListRelationFilter
+  resourcePrices: ResourcePriceListRelationFilter
   slug: StringFilter
 }
 
@@ -3256,7 +3252,7 @@ input ResourceWhereUniqueInput {
   id: Int
   marketGroups: MarketGroupListRelationFilter
   name: String
-  resource_price: ResourcePriceListRelationFilter
+  resourcePrices: ResourcePriceListRelationFilter
   slug: String
 }
 
@@ -3341,16 +3337,16 @@ type Transaction {
   borrowedBaseToken: Decimal
   borrowedQuoteToken: Decimal
   collateral: Decimal!
+  collateralTransfer(where: CollateralTransferWhereInput): CollateralTransfer
   collateralTransferId: Int
-  collateral_transfer(where: CollateralTransferWhereInput): CollateralTransfer
   createdAt: DateTimeISO!
   event(where: EventWhereInput): Event
   eventId: Int
   id: Int!
   lpBaseDeltaToken: Decimal
   lpQuoteDeltaToken: Decimal
+  marketPrice(where: MarketPriceWhereInput): MarketPrice
   marketPriceId: Int
-  market_price(where: MarketPriceWhereInput): MarketPrice
   position(where: PositionWhereInput): Position
   positionId: Int
   quoteToken: Decimal
@@ -3565,16 +3561,16 @@ input TransactionOrderByWithRelationInput {
   borrowedBaseToken: SortOrderInput
   borrowedQuoteToken: SortOrderInput
   collateral: SortOrder
+  collateralTransfer: CollateralTransferOrderByWithRelationInput
   collateralTransferId: SortOrderInput
-  collateral_transfer: CollateralTransferOrderByWithRelationInput
   createdAt: SortOrder
   event: EventOrderByWithRelationInput
   eventId: SortOrderInput
   id: SortOrder
   lpBaseDeltaToken: SortOrderInput
   lpQuoteDeltaToken: SortOrderInput
+  marketPrice: MarketPriceOrderByWithRelationInput
   marketPriceId: SortOrderInput
-  market_price: MarketPriceOrderByWithRelationInput
   position: PositionOrderByWithRelationInput
   positionId: SortOrderInput
   quoteToken: SortOrderInput
@@ -3661,16 +3657,16 @@ input TransactionWhereInput {
   borrowedBaseToken: DecimalNullableFilter
   borrowedQuoteToken: DecimalNullableFilter
   collateral: DecimalFilter
+  collateralTransfer: CollateralTransferNullableRelationFilter
   collateralTransferId: IntNullableFilter
-  collateral_transfer: CollateralTransferNullableRelationFilter
   createdAt: DateTimeFilter
   event: EventNullableRelationFilter
   eventId: IntNullableFilter
   id: IntFilter
   lpBaseDeltaToken: DecimalNullableFilter
   lpQuoteDeltaToken: DecimalNullableFilter
+  marketPrice: MarketPriceNullableRelationFilter
   marketPriceId: IntNullableFilter
-  market_price: MarketPriceNullableRelationFilter
   position: PositionNullableRelationFilter
   positionId: IntNullableFilter
   quoteToken: DecimalNullableFilter
@@ -3686,16 +3682,16 @@ input TransactionWhereUniqueInput {
   borrowedBaseToken: DecimalNullableFilter
   borrowedQuoteToken: DecimalNullableFilter
   collateral: DecimalFilter
+  collateralTransfer: CollateralTransferNullableRelationFilter
   collateralTransferId: Int
-  collateral_transfer: CollateralTransferNullableRelationFilter
   createdAt: DateTimeFilter
   event: EventNullableRelationFilter
   eventId: Int
   id: Int
   lpBaseDeltaToken: DecimalNullableFilter
   lpQuoteDeltaToken: DecimalNullableFilter
+  marketPrice: MarketPriceNullableRelationFilter
   marketPriceId: Int
-  market_price: MarketPriceNullableRelationFilter
   position: PositionNullableRelationFilter
   positionId: IntNullableFilter
   quoteToken: DecimalNullableFilter

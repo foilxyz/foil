@@ -4,8 +4,11 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
 const MARKET_QUERY = `
-  query GetMarketData($chainId: Int!, $address: String!, $marketId: Int!) {
-    markets(chainId: $chainId, marketAddress: $address, marketId: $marketId) {
+  query GetMarketData($address: String!, $marketId: Int!) {
+    markets(where: {
+      marketGroup: { is: { address: { equals: $address } } },
+      marketId: { equals: $marketId }
+    }) {
       id
       marketId
       question
@@ -17,7 +20,7 @@ const MARKET_QUERY = `
       baseAssetMaxPriceTick
       optionName
       rules
-      market_group {
+      marketGroup {
         id
         address
         chainId
@@ -28,7 +31,7 @@ const MARKET_QUERY = `
         resource {
           slug
         }
-        market {
+        markets {
           id
           marketId
           question
@@ -94,7 +97,6 @@ export const useMarket = ({
           };
 
           const data = await graphqlRequest<MarketQueryResult>(MARKET_QUERY, {
-            chainId,
             address: marketAddress,
             marketId: numericMarketId,
           });
@@ -151,7 +153,7 @@ export const useMarket = ({
       return;
     }
 
-    const marketGroupQuestion = marketData?.market_group?.question;
+    const marketGroupQuestion = marketData?.marketGroup?.question;
     const marketSpecificQuestion = marketData?.question;
 
     // Set Market Group Question as the context question if available
