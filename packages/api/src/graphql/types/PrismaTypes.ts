@@ -145,7 +145,7 @@ export class Market {
   endTimestamp?: number | null;
 
   @Field(() => MarketGroup, { nullable: true })
-  marketGroup?: MarketGroup | null;
+  market_group?: MarketGroup | null;
 
   @Field(() => [Position], { nullable: true })
   positions?: Position[];

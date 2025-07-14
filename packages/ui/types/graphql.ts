@@ -44,7 +44,6 @@ export type Market = {
   currentPrice?: Maybe<Scalars['String']['output']>;
   endTimestamp?: Maybe<Scalars['Int']['output']>;
   id: Scalars['ID']['output'];
-  marketGroup?: Maybe<MarketGroup>;
   marketId: Scalars['Int']['output'];
   marketParamsAssertionliveness?: Maybe<Scalars['String']['output']>;
   marketParamsBondamount?: Maybe<Scalars['String']['output']>;
@@ -56,6 +55,7 @@ export type Market = {
   marketParamsUniswappositionmanager?: Maybe<Scalars['String']['output']>;
   marketParamsUniswapquoter?: Maybe<Scalars['String']['output']>;
   marketParamsUniswapswaprouter?: Maybe<Scalars['String']['output']>;
+  market_group?: Maybe<MarketGroup>;
   optionName?: Maybe<Scalars['String']['output']>;
   poolAddress?: Maybe<Scalars['String']['output']>;
   positions?: Maybe<Array<Position>>;
