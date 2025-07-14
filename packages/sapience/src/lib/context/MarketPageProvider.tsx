@@ -147,7 +147,7 @@ export function MarketPageProvider({
 
   // Derived values for convenience
   const collateralAssetTicker =
-    marketData?.marketGroup?.collateralSymbol || 'sUSDS';
+    marketData?.marketGroup?.quoteTokenName || 'sUSDS';
   const collateralAssetAddress = marketData?.marketGroup?.collateralAsset as
     | Address
     | undefined;

@@ -217,7 +217,7 @@ const OPEN_INTEREST_QUERY = `
       market {
         id
         marketId
-        marketGroup {
+        market_group {
           id
           collateralDecimals
         }

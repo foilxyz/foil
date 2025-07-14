@@ -29,7 +29,7 @@ export const POSITIONS_QUERY = `
         settlementPriceD18
         question
         optionName
-        marketGroup {
+        market_group {
           id
           chainId
           address
