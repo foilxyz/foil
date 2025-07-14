@@ -82,6 +82,7 @@ export default function PredictForm({
 
   // Set up form with dynamic schema
   const methods = useForm({
+    // @ts-expect-error - Dynamic schema causes type inference issues
     resolver: zodResolver(formSchema),
     defaultValues: {
       predictionValue: defaultPredictionValue,
