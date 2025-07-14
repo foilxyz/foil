@@ -29,7 +29,7 @@ export default function NumericWagerForm({
 }: NumericWagerFormProps) {
   const { toast } = useToast();
   const successHandled = useRef(false);
-  const firstMarket = marketGroupData.market?.[0];
+  const firstMarket = marketGroupData.markets?.[0];
   const lowerBound = tickToPrice(firstMarket?.baseAssetMinPriceTick ?? 0);
   const upperBound = tickToPrice(firstMarket?.baseAssetMaxPriceTick ?? 0);
   const unitDisplay = ''; // marketGroupData.unitDisplay || '';

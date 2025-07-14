@@ -143,7 +143,7 @@ export const getDisplayQuestion = (
 
   // 3. Fallback: If group question isn't available, find the first market (active or not) with a question.
   //    (Consider if this fallback is truly desired, might be better to show defaultErrorMessage)
-  const firstMarketWithQuestion = marketGroupData.market?.find(
+  const firstMarketWithQuestion = marketGroupData.markets?.find(
     (market: MarketType) => market.question // Explicitly type 'market'
   );
   if (firstMarketWithQuestion?.question) {

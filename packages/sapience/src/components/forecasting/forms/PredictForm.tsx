@@ -28,7 +28,7 @@ export default function PredictForm({
   marketClassification,
   chainId,
 }: PredictFormProps) {
-  const firstMarket = marketGroupData.market?.[0];
+  const firstMarket = marketGroupData.markets?.[0];
   const lowerBound = tickToPrice(firstMarket?.baseAssetMinPriceTick ?? 0);
   const upperBound = tickToPrice(firstMarket?.baseAssetMaxPriceTick ?? 0);
   // Create schema based on market category
