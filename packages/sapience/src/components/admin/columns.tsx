@@ -288,10 +288,6 @@ const OwnerCell = ({ group }: { group: EnrichedMarketGroup }) => {
 
 // Settlement Price Cell Component
 const SettlementPriceCell = ({ group }: { group: EnrichedMarketGroup }) => {
-  // If the group has no resource, do not query and show N/A
-  if (!group.resource) {
-    return <span className="text-muted-foreground">N/A</span>;
-  }
   // Find the current/active market or the most recent settled market
   const now = Math.floor(Date.now() / 1000);
   const currentMarket = group.markets.find((m) => {
@@ -306,17 +302,26 @@ const SettlementPriceCell = ({ group }: { group: EnrichedMarketGroup }) => {
 
   const marketToUse = currentMarket || mostRecentSettledMarket;
 
-  const marketId = Number(marketToUse?.marketId);
-  const endTimestamp = marketToUse?.endTimestamp ?? 0;
+  // Always call the hook, even if values are missing
+  const marketId = Number(marketToUse?.marketId) || 0;
+  const endTimestamp = marketToUse?.endTimestamp || 0;
+  const address = group.address || '';
+  const chainId = group.chainId || 0;
+  const hasResource = !!group.resource;
 
   const { indexPrice, isLoading, error, isActive } = useMarketPriceData(
-    group.address!,
-    group.chainId,
+    address,
+    chainId,
     marketId,
     endTimestamp
   );
 
-  if (!group.address) {
+  // Now handle early returns after the hook call
+  if (!hasResource) {
+    return <span className="text-muted-foreground">N/A</span>;
+  }
+
+  if (!address) {
     return <span className="text-muted-foreground">N/A</span>;
   }
 
