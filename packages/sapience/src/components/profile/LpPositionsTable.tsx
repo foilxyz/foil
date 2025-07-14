@@ -150,8 +150,8 @@ export default function LpPositionsTable({
     displayQuestionColumn = validPositions.some(
       (p) =>
         p.market?.marketGroup &&
-        p.market?.marketGroup?.market &&
-        p.market?.marketGroup?.market.length > 1
+        p.market?.marketGroup?.markets &&
+        p.market?.marketGroup?.markets.length > 1
     );
   }
 

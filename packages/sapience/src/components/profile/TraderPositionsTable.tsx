@@ -111,7 +111,7 @@ function MaxPayoutCell({ position }: { position: PositionType }) {
 }
 
 function PositionValueCell({ position }: { position: PositionType }) {
-  const { transaction: transactions } = position;
+  const { transactions } = position;
   const marketId = position.market?.marketId;
   const marketGroup = position.market?.marketGroup;
   const address = marketGroup?.address || '';
@@ -235,8 +235,8 @@ export default function TraderPositionsTable({
     displayQuestionColumn = validPositions.some(
       (p) =>
         p.market?.marketGroup &&
-        p.market?.marketGroup?.market &&
-        p.market?.marketGroup?.market.length > 1
+        p.market?.marketGroup?.markets &&
+        p.market?.marketGroup?.markets.length > 1
     );
   }
 

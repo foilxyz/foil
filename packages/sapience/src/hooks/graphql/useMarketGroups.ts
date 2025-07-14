@@ -520,10 +520,8 @@ export const useOpenInterest = (market: {
 
         // Get collateral decimals from the first position (they should all be the same market group)
         const collateralDecimals =
-          marketPositions.length > 0 &&
-          marketPositions[0].market &&
-          marketPositions[0].market.marketGroup
-            ? marketPositions[0].market.marketGroup.collateralDecimals || 18
+          marketPositions.length > 0
+            ? marketPositions[0].market?.marketGroup?.collateralDecimals || 18
             : 18;
 
         return unsettledPositions.reduce(

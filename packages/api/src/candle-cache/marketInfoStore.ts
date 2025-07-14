@@ -33,19 +33,14 @@ export class marketInfoStore {
     return this.instance;
   }
 
-  public async updatemarketInfo(marketGroups: MarketGroupWithRelations[]) {
-    console.log(
-      `updatemarketInfo: MarketGroups.length: ${marketGroups.length}`
-    );
-    let _debugCounter = 0;
+  public async updateMarketInfo(marketGroups: MarketGroupWithRelations[]) {
     for (const marketGroup of marketGroups) {
       // Add resource slug
       const resourceSlug = marketGroup.resource?.slug ?? 'no-resource';
 
       // Add market with extra data
-      if (marketGroup.markets) {
-        _debugCounter += marketGroup.markets.length;
-        for (const market of marketGroup.markets) {
+      if (marketGroup.market) {
+        for (const market of marketGroup.market) {
           if (this.marketInfoByIdx.has(market.id) || !marketGroup.address) {
             continue;
           }
@@ -63,14 +58,13 @@ export class marketInfoStore {
         }
       }
     }
-    console.log(`updatemarketInfo: Markets counter: ${_debugCounter}`);
   }
 
-  public getmarketInfo(marketId: number): marketInfo | undefined {
+  public getMarketInfo(marketId: number): marketInfo | undefined {
     return this.marketInfoByIdx.get(marketId);
   }
 
-  public getmarketInfoByChainAndAddress(
+  public getMarketInfoByChainAndAddress(
     chainId: number,
     address: string,
     marketId: string
@@ -78,7 +72,7 @@ export class marketInfoStore {
     for (const marketInfo of this.marketInfoByIdx.values()) {
       if (!marketInfo.marketGroupAddress || !address) {
         console.log(
-          'getmarketInfoByChainAndAddress: debug statement',
+          'getMarketInfoByChainAndAddress: debug statement',
           this.marketInfoByIdx,
           chainId,
           address,
