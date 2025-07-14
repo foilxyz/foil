@@ -42,7 +42,8 @@ interface MarketData {
   settled: boolean;
   settlementPriceD18: bigint;
   assertionId: `0x${string}`;
-  claimStatement: `0x${string}`; // This is a hex string for bytes
+  claimStatementYesOrNumeric: `0x${string}`;
+  claimStatementNo?: `0x${string}`; // This is a hex string for bytes
 }
 
 // Helper function (copied from PredictionInput) - Needs refinement for BigInt math
@@ -202,7 +203,7 @@ const SettleMarketDialog = ({
         market.marketId !== null,
     },
   });
-
+  console.log('marketResult', marketResult);
   // Destructure the result from getMarket with type safety
   const marketData: MarketData | undefined =
     Array.isArray(marketResult) && marketResult.length > 0
@@ -375,11 +376,17 @@ const SettleMarketDialog = ({
         return;
       }
 
+      const args = {
+        marketId,
+        asserter: connectedAddress,
+        settlementSqrtPriceX96: price,
+      };
+
       settleWrite({
         address: marketGroup.address as `0x${string}`, // Settle is called on the market group address
         abi: sapienceAbi, // Use the dynamically loaded ABI
         functionName: 'submitSettlementPrice', // Corrected function name
-        args: [marketId, connectedAddress, price], // Add asserter (connectedAddress)
+        args: [args],
         chainId: marketGroup.chainId,
       });
     } catch (settlePrepareError: unknown) {
@@ -466,7 +473,7 @@ const SettleMarketDialog = ({
             connectedAddress={connectedAddress}
             isYesNoMarket={isYesNoMarket}
             settlementValue={settlementValue}
-            claimStatement={marketData?.claimStatement ?? ''}
+            claimStatement={marketData?.claimStatementYesOrNumeric ?? ''}
           />
 
           {/* Submit Button */}
