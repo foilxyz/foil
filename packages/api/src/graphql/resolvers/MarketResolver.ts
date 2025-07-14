@@ -1,11 +1,10 @@
 import { Arg, FieldResolver, Int, Query, Resolver, Root } from 'type-graphql';
-import type { market } from '../../../generated/prisma';
+import { Market } from '../../../generated/prisma';
 import prisma from '../../db';
-import { Market } from '../types/PrismaTypes';
 
-@Resolver(() => Market)
+@Resolver(() => Object)
 export class MarketResolver {
-  @Query(() => [Market])
+  @Query(() => [Object])
   async markets(
     @Arg('marketId', () => Int) marketId: number,
     @Arg('chainId', () => Int) chainId: number,
@@ -38,7 +37,7 @@ export class MarketResolver {
   }
 
   @FieldResolver(() => String, { nullable: true })
-  async currentPrice(@Root() market: market): Promise<string | null> {
+  async currentPrice(@Root() market: Market): Promise<string | null> {
     if (market.settled) {
       return null;
     }
@@ -46,7 +45,7 @@ export class MarketResolver {
     try {
       // We need to find the latest MarketPrice associated with this Market.
       // The path is Market -> Position -> Transaction -> MarketPrice.
-      const latestMarketPrice = await prisma.market_price.findFirst({
+      const latestMarketPrice = await prisma.marketPrice.findFirst({
         where: {
           transaction: {
             position: {

@@ -970,7 +970,7 @@ export const createMarketFromEvent = async (
         marketId: Number(eventArgs.marketId),
         startTimestamp: Number(eventArgs.startTime),
         endTimestamp: Number(eventArgs.endTime),
-        startingSqrtPriceX96: toDecimal(eventArgs.startingSqrtPriceX96),
+        startingSqrtPriceX96: eventArgs.startingSqrtPriceX96?.toString(),
         marketParamsFeerate: marketGroup.marketParamsFeerate,
         marketParamsAssertionliveness:
           marketGroup.marketParamsAssertionliveness,
@@ -997,7 +997,7 @@ export const createMarketFromEvent = async (
         marketGroupId: marketGroup.id,
         startTimestamp: Number(eventArgs.startTime),
         endTimestamp: Number(eventArgs.endTime),
-        startingSqrtPriceX96: toDecimal(eventArgs.startingSqrtPriceX96),
+        startingSqrtPriceX96: eventArgs.startingSqrtPriceX96?.toString(),
         marketParamsFeerate: marketGroup.marketParamsFeerate,
         marketParamsAssertionliveness:
           marketGroup.marketParamsAssertionliveness,

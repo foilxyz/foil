@@ -57,7 +57,7 @@ export class MarketCandleProcessor {
 
   public async processMarketPrice(price: ReducedMarketPrice) {
     // Find the market data from marketIds using price.market
-    const marketInfo = this.marketInfoStore.getmarketInfo(price.market);
+    const marketInfo = this.marketInfoStore.getMarketInfo(price.market);
     if (!marketInfo) {
       throw Error(`Market ${price.market} not found`);
     }

@@ -72,7 +72,7 @@ export class CandleCacheRetriever {
   ) {
     this.checkInterval(interval);
     await this.getUpdatedMarketsAndMarketGroupsIfNeeded();
-    const marketInfo = this.marketInfoStore.getmarketInfoByChainAndAddress(
+    const marketInfo = this.marketInfoStore.getMarketInfoByChainAndAddress(
       chainId,
       address,
       marketId
@@ -147,7 +147,7 @@ export class CandleCacheRetriever {
   ) {
     this.checkInterval(interval);
     await this.getUpdatedMarketsAndMarketGroupsIfNeeded();
-    const marketInfo = this.marketInfoStore.getmarketInfoByChainAndAddress(
+    const marketInfo = this.marketInfoStore.getMarketInfoByChainAndAddress(
       chainId,
       address,
       marketId
@@ -308,7 +308,7 @@ export class CandleCacheRetriever {
     }
     // get all market groups
     const marketGroups = await getMarketGroups();
-    await this.marketInfoStore.updatemarketInfo(
+    await this.marketInfoStore.updateMarketInfo(
       marketGroups as unknown as MarketGroupWithRelations[]
     );
   }

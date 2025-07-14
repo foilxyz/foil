@@ -156,7 +156,7 @@ export abstract class BaseCandleCacheBuilder {
 
   protected async getUpdatedMarketsAndMarketGroups() {
     const marketGroups = await getMarketGroups();
-    await this.marketInfoStore.updatemarketInfo(
+    await this.marketInfoStore.updateMarketInfo(
       marketGroups as unknown as MarketGroupWithRelations[]
     );
   }

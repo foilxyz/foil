@@ -347,8 +347,8 @@ router.post(
         });
       }
 
-      const nextMarketIndex = marketGroup.markets
-        ? marketGroup.markets.length
+      const nextMarketIndex = marketGroup.market
+        ? marketGroup.market.length
         : 0;
 
       try {

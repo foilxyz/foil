@@ -77,7 +77,7 @@ export class IndexCandleProcessor {
         price.timestamp
       );
 
-      const marketInfo = this.marketInfoStore.getmarketInfo(marketIdx);
+      const marketInfo = this.marketInfoStore.getMarketInfo(marketIdx);
       if (!marketInfo) {
         throw Error(`Market ${marketIdx} not found`);
       }
