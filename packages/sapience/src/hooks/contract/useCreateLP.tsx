@@ -1,5 +1,5 @@
 import { useToast } from '@sapience/ui/hooks/use-toast';
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { Abi } from 'viem';
 import { parseUnits } from 'viem';
 import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
@@ -164,18 +164,26 @@ export function useCreateLP({
         slippagePercent
       );
 
+      console.log(
+        'Low Price Tick:',
+        lowPriceTick,
+        'High Price Tick:',
+        highPriceTick
+      );
+
       // Prepare the parameters for the createLiquidityPosition function
       const liquidityParams = {
         marketId,
         lowerTick: BigInt(lowPriceTick),
         upperTick: BigInt(highPriceTick),
-        amountTokenA: adjustedBaseToken,
-        amountTokenB: adjustedQuoteToken,
+        amountBaseToken: adjustedBaseToken,
+        amountQuoteToken: adjustedQuoteToken,
         collateralAmount: parsedCollateralAmount,
-        minAmountTokenA: minAmount0,
-        minAmountTokenB: minAmount1,
+        minAmountBaseToken: minAmount0,
+        minAmountQuoteToken: minAmount1,
         deadline,
       };
+      console.log('Liquidity Params:', liquidityParams);
 
       setProcessingTx(true);
       const hash = await writeContractAsync({
