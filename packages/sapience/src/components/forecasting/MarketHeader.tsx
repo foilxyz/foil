@@ -51,6 +51,7 @@ interface MarketHeaderProps {
   collateralAssetAddress: string | undefined;
   baseTokenName: string;
   quoteTokenName: string;
+  collateralSymbol: string;
   minTick: number;
   maxTick: number;
 }
@@ -61,6 +62,7 @@ const MarketHeader: React.FC<MarketHeaderProps> = ({
   marketAddress,
   collateralAssetAddress,
   quoteTokenName,
+  collateralSymbol,
   minTick,
   maxTick,
 }) => {
@@ -121,10 +123,26 @@ const MarketHeader: React.FC<MarketHeaderProps> = ({
   const minPrice = minTick ? tickToPrice(minTick) : undefined;
   const maxPrice = maxTick ? tickToPrice(maxTick) : undefined;
 
-  const unitDisplay = quoteTokenName || 'USD';
+  // Use collateral symbol for volume/open interest, quote token for price ranges
+  const collateralUnitDisplay = collateralSymbol || 'USD';
+  const priceUnitDisplay = quoteTokenName || 'USD';
 
   const links = (
     <>
+      <a
+        className="hover:no-underline inline-flex items-center"
+        target="_blank"
+        rel="noopener noreferrer"
+        href={`${chain?.blockExplorers?.default.url}/address/${marketAddress}`}
+      >
+        <span className="inline-block mr-1.5">
+          <IoDocumentTextOutline />
+        </span>
+        <span className="border-b border-dotted border-current font-medium">
+          Smart Contract
+        </span>
+      </a>
+
       {totalVolume !== null && totalVolume !== undefined && (
         <div className="inline-flex items-center">
           <span className="inline-block mr-1.5">
@@ -132,7 +150,7 @@ const MarketHeader: React.FC<MarketHeaderProps> = ({
           </span>
           <span className="font-medium mr-1">Volume:</span>
           <NumberDisplay value={totalVolume} />
-          <span className="ml-1">{unitDisplay}</span>
+          <span className="ml-1">{collateralUnitDisplay}</span>
         </div>
       )}
 
@@ -143,7 +161,7 @@ const MarketHeader: React.FC<MarketHeaderProps> = ({
           </span>
           <span className="font-medium mr-1">Open Interest:</span>
           <NumberDisplay value={openInterest} />
-          <span className="ml-1">{unitDisplay}</span>
+          <span className="ml-1">{collateralUnitDisplay}</span>
         </div>
       )}
 
@@ -168,20 +186,6 @@ const MarketHeader: React.FC<MarketHeaderProps> = ({
           </TooltipProvider>
         </div>
       )}
-
-      <a
-        className="hover:no-underline inline-flex items-center"
-        target="_blank"
-        rel="noopener noreferrer"
-        href={`${chain?.blockExplorers?.default.url}/address/${marketAddress}`}
-      >
-        <span className="inline-block mr-1.5">
-          <IoDocumentTextOutline />
-        </span>
-        <span className="border-b border-dotted border-current font-medium">
-          Smart Contract
-        </span>
-      </a>
 
       {collateralAssetAddress && (
         <a
@@ -208,7 +212,7 @@ const MarketHeader: React.FC<MarketHeaderProps> = ({
           <NumberDisplay value={minPrice} />
           <MoveHorizontal className="w-3 h-3 mx-1" />
           <NumberDisplay value={maxPrice} />
-          <span className="ml-1">{unitDisplay}</span>
+          <span className="ml-1">{priceUnitDisplay}</span>
         </div>
       )}
     </>
