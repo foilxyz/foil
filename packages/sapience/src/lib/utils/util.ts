@@ -103,7 +103,7 @@ export const formatQuestion = (
  */
 export const getDisplayQuestion = (
   marketGroupData:
-    | { question?: string | null; market?: MarketType[] }
+    | { question?: string | null; markets?: MarketType[] }
     | null
     | undefined,
   activeMarkets: MarketType[], // Use MarketType[]

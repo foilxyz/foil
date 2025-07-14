@@ -35,7 +35,7 @@ export default function NumericWagerForm({
   const unitDisplay = ''; // marketGroupData.unitDisplay || '';
 
   // Form validation schema
-  const formSchema = useMemo(() => {
+  const formSchema: z.ZodType = useMemo(() => {
     return z.object({
       predictionValue: z
         .string()

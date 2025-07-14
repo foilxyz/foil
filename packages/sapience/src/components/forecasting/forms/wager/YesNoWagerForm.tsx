@@ -34,7 +34,7 @@ export default function YesNoWagerForm({
   const successHandled = useRef(false);
 
   // Form validation schema
-  const formSchema = useMemo(() => {
+  const formSchema: z.ZodType = useMemo(() => {
     return z.object({
       predictionValue: z.enum([YES_SQRT_PRICE_X96, NO_SQRT_PRICE_X96], {
         required_error: 'Please select Yes or No',

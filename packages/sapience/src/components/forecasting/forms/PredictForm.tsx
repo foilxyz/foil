@@ -32,7 +32,7 @@ export default function PredictForm({
   const lowerBound = tickToPrice(firstMarket?.baseAssetMinPriceTick ?? 0);
   const upperBound = tickToPrice(firstMarket?.baseAssetMaxPriceTick ?? 0);
   // Create schema based on market category
-  const formSchema = useMemo(() => {
+  const formSchema: z.ZodType = useMemo(() => {
     switch (marketClassification) {
       case MarketGroupClassification.MULTIPLE_CHOICE:
         return z.object({
@@ -136,7 +136,7 @@ export default function PredictForm({
       case MarketGroupClassification.MULTIPLE_CHOICE:
         return (
           <MultipleChoicePredict
-            options={(marketGroupData.market || []).map((market) => ({
+            options={(marketGroupData.markets || []).map((market) => ({
               name: market.optionName || '',
               marketId: market.marketId,
             }))}

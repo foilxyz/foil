@@ -178,10 +178,9 @@ const renderQuestionCell = ({
     );
 
     if (marketGroup) {
-      const market =
-        marketGroup.markets && marketGroup.markets.marketId === marketId
-          ? marketGroup.markets
-          : null;
+      const market = marketGroup.markets?.find(
+        (m: any) => m.marketId === marketId
+      );
 
       if (market && typeof market.question === 'string') {
         return (
