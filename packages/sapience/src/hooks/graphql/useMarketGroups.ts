@@ -78,7 +78,7 @@ export interface Candle {
 
 const LATEST_INDEX_PRICE_QUERY = `
   query GetLatestIndexPrice($address: String!, $chainId: Int!, $marketId: String!, $from: Int!, $to: Int!, $interval: Int!) {
-    indexCandlesFromCache(
+    indexCandles(
       address: $address
       chainId: $chainId
       marketId: $marketId
@@ -165,7 +165,7 @@ const MARKETS_QUERY = `
 `;
 
 const MARKET_CANDLES_QUERY = `
-  query GetMarketCandlesFromCache(
+  query GetMarketCandles(
     $address: String!
     $chainId: Int!
     $marketId: String!
@@ -173,7 +173,7 @@ const MARKET_CANDLES_QUERY = `
     $to: Int!
     $interval: Int!
   ) {
-    marketCandlesFromCache(
+    marketCandles(
       address: $address
       chainId: $chainId
       marketId: $marketId
@@ -340,7 +340,7 @@ export const useLatestIndexPrice = (market: {
 
       try {
         type IndexPriceQueryResult = {
-          indexCandlesFromCache: {
+          indexCandles: {
             data: Candle[];
             lastUpdateTimestamp: number;
           };
@@ -358,7 +358,7 @@ export const useLatestIndexPrice = (market: {
           }
         );
 
-        const indexCandlesData = data.indexCandlesFromCache;
+        const indexCandlesData = data.indexCandles;
         if (
           !indexCandlesData ||
           !indexCandlesData.data ||
@@ -417,7 +417,7 @@ export const useMarketCandles = (market: {
 
       try {
         type MarketCandlesQueryResult = {
-          marketCandlesFromCache: {
+          marketCandles: {
             data: Candle[];
             lastUpdateTimestamp: number;
           };
@@ -435,7 +435,7 @@ export const useMarketCandles = (market: {
           }
         );
 
-        return data.marketCandlesFromCache.data || [];
+        return data.marketCandles.data || [];
       } catch (error) {
         console.error('Error fetching market candles:', error);
         return null;

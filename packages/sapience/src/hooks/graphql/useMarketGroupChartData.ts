@@ -13,7 +13,7 @@ import { useSapience } from '~/lib/context/SapienceProvider'; // Import useSapie
 
 // Adjust marketId type if needed (String! vs Int!) based on schema
 const GET_MARKET_CANDLES = `
-  query MarketCandlesFromCache(
+  query MarketCandles(
     $address: String!
     $chainId: Int!
     $marketId: String! # Assuming String! based on prior schema inspection
@@ -21,7 +21,7 @@ const GET_MARKET_CANDLES = `
     $to: Int!
     $interval: Int!
   ) {
-    marketCandlesFromCache(
+    marketCandles(
       address: $address
       chainId: $chainId
       marketId: $marketId
@@ -43,7 +43,7 @@ const GET_MARKET_CANDLES = `
 
 // Added query for index candles
 const GET_INDEX_CANDLES = `
-  query IndexCandlesFromCache(
+  query IndexCandles(
     $address: String!
     $chainId: Int!
     $marketId: String! # Required by schema, using first active market ID
@@ -51,7 +51,7 @@ const GET_INDEX_CANDLES = `
     $to: Int!
     $interval: Int!
   ) {
-    indexCandlesFromCache(
+    indexCandles(
       address: $address
       chainId: $chainId
       marketId: $marketId
@@ -86,7 +86,7 @@ interface UseMarketGroupChartDataReturn {
 }
 
 interface MarketCandlesResponse {
-  marketCandlesFromCache: {
+  marketCandles: {
     data: CandleType[] | null;
     lastUpdateTimestamp: number;
   } | null;
@@ -95,7 +95,7 @@ interface MarketCandlesResponse {
 // Added interface for IndexCandles response
 interface IndexCandlesResponse {
   // Updated to match the new structure
-  indexCandlesFromCache: {
+  indexCandles: {
     data: Pick<CandleType, 'timestamp' | 'close'>[] | null;
     lastUpdateTimestamp: number;
   } | null;
@@ -169,7 +169,7 @@ export const useMarketGroupChartData = ({
 
               return {
                 marketId: marketIdString,
-                candles: responseData.marketCandlesFromCache?.data ?? [],
+                candles: responseData.marketCandles?.data ?? [],
                 error: null,
               };
             } catch (error) {
@@ -202,7 +202,7 @@ export const useMarketGroupChartData = ({
         )
           .then((responseData) => {
             // Return raw index candles here
-            return responseData.indexCandlesFromCache?.data ?? [];
+            return responseData.indexCandles?.data ?? [];
           })
           .catch((err) => {
             console.error('Error fetching index candles directly:', err);

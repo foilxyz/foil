@@ -7,7 +7,7 @@ const WEI_PER_ETHER = 1e18;
 
 // --- GraphQL Query for Market Candles ---
 const MARKET_CANDLES_QUERY = `
-  query GetMarketCandlesFromCache(
+  query GetMarketCandles(
     $address: String!
     $chainId: Int!
     $marketId: String!
@@ -15,7 +15,7 @@ const MARKET_CANDLES_QUERY = `
     $from: Int!
     $to: Int!
   ) {
-    marketCandlesFromCache(
+    marketCandles(
       address: $address
       chainId: $chainId
       marketId: $marketId
@@ -68,7 +68,7 @@ export function useMarketPrice(
 
       try {
         type MarketCandlesQueryResult = {
-          marketCandlesFromCache: {
+          marketCandles: {
             data: CandleType[];
             lastUpdateTimestamp: number;
           };
@@ -86,7 +86,7 @@ export function useMarketPrice(
           }
         );
 
-        const candles = data?.marketCandlesFromCache?.data;
+        const candles = data?.marketCandles?.data;
         if (candles && candles.length > 0) {
           // Sort by timestamp descending to ensure we get the latest candle
           candles.sort(
