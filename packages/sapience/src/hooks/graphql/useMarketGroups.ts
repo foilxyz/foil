@@ -235,7 +235,7 @@ const OPEN_INTEREST_QUERY = gql`
       market {
         id
         marketId
-        marketGroup {
+        market_group {
           id
           collateralDecimals
         }
