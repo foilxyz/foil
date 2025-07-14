@@ -49,37 +49,6 @@ export async function typedGraphqlRequest<
   }
 }
 
-// Specific typed functions for generated queries
-import type { 
-  GetResourcesQuery, 
-  GetResourcesQueryVariables,
-  GetResourceCandlesQuery,
-  GetResourceCandlesQueryVariables,
-  GetIndexCandlesQuery,
-  GetIndexCandlesQueryVariables
-} from '../types/graphql';
-
-export const getResources = async (
-  query: string,
-  variables?: GetResourcesQueryVariables
-): Promise<GetResourcesQuery> => {
-  return typedGraphqlRequest<GetResourcesQuery, GetResourcesQueryVariables>(query, variables);
-};
-
-export const getResourceCandles = async (
-  query: string,
-  variables: GetResourceCandlesQueryVariables
-): Promise<GetResourceCandlesQuery> => {
-  return typedGraphqlRequest<GetResourceCandlesQuery, GetResourceCandlesQueryVariables>(query, variables);
-};
-
-export const getIndexCandles = async (
-  query: string,
-  variables: GetIndexCandlesQueryVariables
-): Promise<GetIndexCandlesQuery> => {
-  return typedGraphqlRequest<GetIndexCandlesQuery, GetIndexCandlesQueryVariables>(query, variables);
-};
-
 // Legacy API functions
 export const foilApi = {
   get: async (url: string) => {

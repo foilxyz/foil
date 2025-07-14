@@ -2991,11 +2991,11 @@ export type Query = {
   groupByResource: Array<ResourceGroupBy>;
   groupByResourcePrice: Array<ResourcePriceGroupBy>;
   groupByTransaction: Array<TransactionGroupBy>;
-  indexCandlesFromCache: CandleAndTimestampType;
+  indexCandles: CandleAndTimestampType;
   indexPriceAtTime?: Maybe<CandleType>;
   legacyMarketCandles: Array<CandleType>;
   market?: Maybe<Market>;
-  marketCandlesFromCache: CandleAndTimestampType;
+  marketCandles: CandleAndTimestampType;
   marketGroup?: Maybe<MarketGroup>;
   marketGroups: Array<MarketGroup>;
   marketPrice?: Maybe<MarketPrice>;
@@ -3004,10 +3004,10 @@ export type Query = {
   position?: Maybe<Position>;
   positions: Array<Position>;
   resource?: Maybe<Resource>;
-  resourceCandlesFromCache: CandleAndTimestampType;
+  resourceCandles: CandleAndTimestampType;
   resourcePrice?: Maybe<ResourcePrice>;
   resourcePrices: Array<ResourcePrice>;
-  resourceTrailingAverageCandlesFromCache: CandleAndTimestampType;
+  resourceTrailingAverageCandles: CandleAndTimestampType;
   resources: Array<Resource>;
   totalVolumeByMarket: Scalars['Float']['output'];
   transaction?: Maybe<Transaction>;
@@ -3448,7 +3448,7 @@ export type QueryGroupByTransactionArgs = {
 };
 
 
-export type QueryIndexCandlesFromCacheArgs = {
+export type QueryIndexCandlesArgs = {
   address: Scalars['String']['input'];
   chainId: Scalars['Int']['input'];
   from: Scalars['Int']['input'];
@@ -3481,7 +3481,7 @@ export type QueryMarketArgs = {
 };
 
 
-export type QueryMarketCandlesFromCacheArgs = {
+export type QueryMarketCandlesArgs = {
   address: Scalars['String']['input'];
   chainId: Scalars['Int']['input'];
   from: Scalars['Int']['input'];
@@ -3551,7 +3551,7 @@ export type QueryResourceArgs = {
 };
 
 
-export type QueryResourceCandlesFromCacheArgs = {
+export type QueryResourceCandlesArgs = {
   from: Scalars['Int']['input'];
   interval: Scalars['Int']['input'];
   slug: Scalars['String']['input'];
@@ -3574,7 +3574,7 @@ export type QueryResourcePricesArgs = {
 };
 
 
-export type QueryResourceTrailingAverageCandlesFromCacheArgs = {
+export type QueryResourceTrailingAverageCandlesArgs = {
   from: Scalars['Int']['input'];
   interval: Scalars['Int']['input'];
   slug: Scalars['String']['input'];

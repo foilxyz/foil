@@ -326,7 +326,7 @@ export class CandleResolver {
 
   // Same endpoints but using the candle cache
   @Query(() => CandleAndTimestampType)
-  async resourceCandlesFromCache(
+  async resourceCandles(
     @Arg('slug', () => String) slug: string,
     @Arg('from', () => Int) from: number,
     @Arg('to', () => Int) to: number,
@@ -339,7 +339,7 @@ export class CandleResolver {
   }
 
   @Query(() => CandleAndTimestampType)
-  async resourceTrailingAverageCandlesFromCache(
+  async resourceTrailingAverageCandles(
     @Arg('slug', () => String) slug: string,
     @Arg('from', () => Int) from: number,
     @Arg('to', () => Int) to: number,
@@ -359,7 +359,7 @@ export class CandleResolver {
   }
 
   @Query(() => CandleAndTimestampType)
-  async indexCandlesFromCache(
+  async indexCandles(
     @Arg('chainId', () => Int) chainId: number,
     @Arg('address', () => String) address: string,
     @Arg('marketId', () => String) marketId: string,
@@ -381,7 +381,7 @@ export class CandleResolver {
   }
 
   @Query(() => CandleAndTimestampType)
-  async marketCandlesFromCache(
+  async marketCandles(
     @Arg('chainId', () => Int) chainId: number,
     @Arg('address', () => String) address: string,
     @Arg('marketId', () => String) marketId: string,

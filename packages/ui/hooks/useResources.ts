@@ -2,16 +2,24 @@ import { useQuery } from '@tanstack/react-query';
 
 import { graphqlRequest } from '../lib';
 import { RESOURCE_ORDER, type ResourceSlug } from '../types/resources';
-import { CandleType } from '../types';
-import type { 
-  GetResourcesQuery, 
-  GetResourceCandlesQuery, 
-  GetIndexCandlesQuery
-} from '../types/graphql';
+import { CandleType, Resource, CandleAndTimestampType } from '../types/graphql';
+
+// Query response types
+interface GetResourcesQuery {
+  resources: Resource[];
+}
+
+interface GetResourceCandlesQuery {
+  resourceCandles: CandleAndTimestampType;
+}
+
+interface GetIndexCandlesQuery {
+  indexCandles: CandleAndTimestampType;
+}
 
 const LATEST_RESOURCE_PRICE_QUERY = `
   query GetLatestResourcePrice($slug: String!, $from: Int!, $to: Int!, $interval: Int!) {
-    resourceCandlesFromCache(
+    resourceCandles(
       slug: $slug
       from: $from
       to: $to
@@ -28,7 +36,7 @@ const LATEST_RESOURCE_PRICE_QUERY = `
 
 const LATEST_INDEX_PRICE_QUERY = `
   query GetLatestIndexPrice($address: String!, $chainId: Int!, $marketId: String!, $from: Int!, $to: Int!, $interval: Int!) {
-    indexCandlesFromCache(
+    indexCandles(
       address: $address
       chainId: $chainId
       marketId: $marketId
@@ -102,7 +110,7 @@ export const useLatestResourcePrice = (slug: string) => {
         { slug, from, to, interval }
       );
 
-      const candles = data.resourceCandlesFromCache.data as CandleType[];
+      const candles = data.resourceCandles.data as CandleType[];
       if (!candles || candles.length === 0) {
         throw new Error('No price data found');
       }
@@ -160,7 +168,7 @@ export const useLatestIndexPrice = (market: {
         }
       );
 
-      const candles = data.indexCandlesFromCache.data as CandleType[];
+      const candles = data.indexCandles.data as CandleType[];
       if (!candles || candles.length === 0) {
         throw new Error('No index price data found');
       }

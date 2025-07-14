@@ -2809,11 +2809,11 @@ type Query {
   groupByResource(by: [ResourceScalarFieldEnum!]!, having: ResourceScalarWhereWithAggregatesInput, orderBy: [ResourceOrderByWithAggregationInput!], skip: Int, take: Int, where: ResourceWhereInput): [ResourceGroupBy!]!
   groupByResourcePrice(by: [ResourcePriceScalarFieldEnum!]!, having: ResourcePriceScalarWhereWithAggregatesInput, orderBy: [ResourcePriceOrderByWithAggregationInput!], skip: Int, take: Int, where: ResourcePriceWhereInput): [ResourcePriceGroupBy!]!
   groupByTransaction(by: [TransactionScalarFieldEnum!]!, having: TransactionScalarWhereWithAggregatesInput, orderBy: [TransactionOrderByWithAggregationInput!], skip: Int, take: Int, where: TransactionWhereInput): [TransactionGroupBy!]!
-  indexCandlesFromCache(address: String!, chainId: Int!, from: Int!, interval: Int!, marketId: String!, to: Int!): CandleAndTimestampType!
+  indexCandles(address: String!, chainId: Int!, from: Int!, interval: Int!, marketId: String!, to: Int!): CandleAndTimestampType!
   indexPriceAtTime(address: String!, chainId: Int!, marketId: String!, timestamp: Int!): CandleType
   legacyMarketCandles(address: String!, chainId: Int!, from: Int!, interval: Int!, marketId: String!, to: Int!): [CandleType!]!
   market(where: MarketWhereUniqueInput!): Market
-  marketCandlesFromCache(address: String!, chainId: Int!, from: Int!, interval: Int!, marketId: String!, to: Int!): CandleAndTimestampType!
+  marketCandles(address: String!, chainId: Int!, from: Int!, interval: Int!, marketId: String!, to: Int!): CandleAndTimestampType!
   marketGroup(where: MarketGroupWhereUniqueInput!): MarketGroup
   marketGroups(cursor: MarketGroupWhereUniqueInput, distinct: [MarketGroupScalarFieldEnum!], orderBy: [MarketGroupOrderByWithRelationInput!], skip: Int, take: Int, where: MarketGroupWhereInput): [MarketGroup!]!
   marketPrice(where: MarketPriceWhereUniqueInput!): MarketPrice
@@ -2822,10 +2822,10 @@ type Query {
   position(where: PositionWhereUniqueInput!): Position
   positions(cursor: PositionWhereUniqueInput, distinct: [PositionScalarFieldEnum!], orderBy: [PositionOrderByWithRelationInput!], skip: Int, take: Int, where: PositionWhereInput): [Position!]!
   resource(where: ResourceWhereUniqueInput!): Resource
-  resourceCandlesFromCache(from: Int!, interval: Int!, slug: String!, to: Int!): CandleAndTimestampType!
+  resourceCandles(from: Int!, interval: Int!, slug: String!, to: Int!): CandleAndTimestampType!
   resourcePrice(where: ResourcePriceWhereUniqueInput!): ResourcePrice
   resourcePrices(cursor: ResourcePriceWhereUniqueInput, distinct: [ResourcePriceScalarFieldEnum!], orderBy: [ResourcePriceOrderByWithRelationInput!], skip: Int, take: Int, where: ResourcePriceWhereInput): [ResourcePrice!]!
-  resourceTrailingAverageCandlesFromCache(from: Int!, interval: Int!, slug: String!, to: Int!, trailingAvgTime: Int!): CandleAndTimestampType!
+  resourceTrailingAverageCandles(from: Int!, interval: Int!, slug: String!, to: Int!, trailingAvgTime: Int!): CandleAndTimestampType!
   resources(cursor: ResourceWhereUniqueInput, distinct: [ResourceScalarFieldEnum!], orderBy: [ResourceOrderByWithRelationInput!], skip: Int, take: Int, where: ResourceWhereInput): [Resource!]!
   totalVolumeByMarket(chainId: Int!, marketAddress: String!, marketId: Int!): Float!
   transaction(where: TransactionWhereUniqueInput!): Transaction

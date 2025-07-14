@@ -7,7 +7,7 @@ import { useSapience } from '../../lib/context/SapienceProvider'; // Corrected p
 
 // GraphQL Queries
 const GET_MARKET_CANDLES = `
-  query MarketCandlesFromCache(
+  query MarketCandles(
     $address: String!
     $chainId: Int!
     $marketId: String!
@@ -15,7 +15,7 @@ const GET_MARKET_CANDLES = `
     $to: Int!
     $interval: Int!
   ) {
-    marketCandlesFromCache(
+    marketCandles(
       address: $address
       chainId: $chainId
       marketId: $marketId
@@ -36,7 +36,7 @@ const GET_MARKET_CANDLES = `
 `;
 
 const GET_INDEX_CANDLES = `
-  query IndexCandlesFromCache(
+  query IndexCandles(
     $address: String!
     $chainId: Int!
     $marketId: String!
@@ -44,7 +44,7 @@ const GET_INDEX_CANDLES = `
     $to: Int!
     $interval: Int!
   ) {
-    indexCandlesFromCache(
+    indexCandles(
       address: $address
       chainId: $chainId
       marketId: $marketId
@@ -63,13 +63,13 @@ const GET_INDEX_CANDLES = `
 
 // Add Resource Candles Query
 const GET_RESOURCE_CANDLES = `
-  query ResourceCandlesFromCache(
+  query ResourceCandles(
     $slug: String!
     $from: Int!
     $to: Int!
     $interval: Int!
   ) {
-    resourceCandlesFromCache(
+    resourceCandles(
       slug: $slug
       from: $from
       to: $to
@@ -88,14 +88,14 @@ const TRAILING_AVG_TIME_SECONDS_7_DAYS = 604800; // 7 day trailing average
 const TRAILING_AVG_TIME_SECONDS_28_DAYS = 2419200; // 28 day trailing average
 
 const GET_RESOURCE_TRAILING_AVG_CANDLES = `
-  query ResourceTrailingAverageCandlesFromCache(
+  query ResourceTrailingAverageCandles(
     $slug: String!
     $from: Int!
     $to: Int!
     $interval: Int!
     $trailingAvgTime: Int!
   ) {
-    resourceTrailingAverageCandlesFromCache(
+    resourceTrailingAverageCandles(
       slug: $slug
       from: $from
       to: $to
@@ -191,28 +191,28 @@ const parseCandleResponse = <
 
 // Type definitions for GraphQL responses
 type MarketCandlesQueryResponse = {
-  marketCandlesFromCache: {
+  marketCandles: {
     data: CandleType[] | null;
     lastUpdateTimestamp: number;
   } | null;
 };
 
 type IndexCandlesQueryResponse = {
-  indexCandlesFromCache: {
+  indexCandles: {
     data: Pick<CandleType, 'timestamp' | 'close'>[] | null;
     lastUpdateTimestamp: number;
   } | null;
 };
 
 type ResourceCandlesQueryResponse = {
-  resourceCandlesFromCache: {
+  resourceCandles: {
     data: Pick<CandleType, 'timestamp' | 'close'>[] | null;
     lastUpdateTimestamp: number;
   } | null;
 };
 
 type TrailingAvgCandlesQueryResponse = {
-  resourceTrailingAverageCandlesFromCache: {
+  resourceTrailingAverageCandles: {
     data: Pick<CandleType, 'timestamp' | 'close'>[] | null;
     lastUpdateTimestamp: number;
   } | null;
@@ -228,7 +228,7 @@ const parseCandleResponses = (
   // Parse market candles
   const marketCandlesData = parseCandleResponse(
     marketResponse,
-    'marketCandlesFromCache',
+    'marketCandles',
     'market'
   );
   const marketCandles = marketCandlesData?.data || [];
@@ -236,7 +236,7 @@ const parseCandleResponses = (
   // Parse index candles
   const indexCandlesData = parseCandleResponse(
     indexResponse,
-    'indexCandlesFromCache',
+    'indexCandles',
     'index'
   );
   const indexCandlesRaw = indexCandlesData?.data || [];
@@ -246,7 +246,7 @@ const parseCandleResponses = (
   if (resourceSlug) {
     const resourceCandlesData = parseCandleResponse(
       resourceResponse,
-      'resourceCandlesFromCache',
+      'resourceCandles',
       'resource'
     );
     resourceCandlesRaw = resourceCandlesData?.data || [];
@@ -257,7 +257,7 @@ const parseCandleResponses = (
   if (resourceSlug) {
     const trailingAvgCandlesData = parseCandleResponse(
       trailingAvgResponse,
-      'resourceTrailingAverageCandlesFromCache',
+      'resourceTrailingAverageCandles',
       'trailing average'
     );
     trailingAvgCandlesRaw = trailingAvgCandlesData?.data || [];
