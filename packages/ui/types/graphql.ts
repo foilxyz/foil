@@ -1024,8 +1024,8 @@ export type MarketGroup = {
   isBridged: Scalars['Boolean']['output'];
   isCumulative: Scalars['Boolean']['output'];
   market: Array<Market>;
-  marketParamsAssertionliveness?: Maybe<Scalars['Decimal']['output']>;
-  marketParamsBondamount?: Maybe<Scalars['Decimal']['output']>;
+  marketParamsAssertionliveness?: Maybe<Scalars['String']['output']>;
+  marketParamsBondamount?: Maybe<Scalars['String']['output']>;
   marketParamsBondcurrency?: Maybe<Scalars['String']['output']>;
   marketParamsClaimstatementNo?: Maybe<Scalars['String']['output']>;
   marketParamsClaimstatementYesOrNumeric?: Maybe<Scalars['String']['output']>;

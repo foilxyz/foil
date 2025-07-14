@@ -12,9 +12,9 @@ router.get(
   '/',
   validateRequestParams(['contractId']),
   handleAsyncErrors(async (req: Request, res: Response) => {
-    const { contractId, epochId, positionId } = req.query as {
+    const { contractId, marketId, positionId } = req.query as {
       contractId: string;
-      epochId?: string;
+      marketId?: string;
       positionId?: string;
     };
 
@@ -33,12 +33,12 @@ router.get(
     };
 
     // Add optional filters
-    if (epochId) {
+    if (marketId) {
       // Note: In the new schema, there's no direct market relationship
       // This might need to be adjusted based on your business logic
-      // For now, we'll use marketId as a substitute if that's what epochId represents
+      // For now, we'll use marketId as a substitute if that's what marketId represents
       if (whereClause.position && whereClause.position.market) {
-        whereClause.position.market.marketId = parseInt(epochId);
+        whereClause.position.market.marketId = parseInt(marketId);
       }
     }
 

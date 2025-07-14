@@ -154,18 +154,18 @@ export const createOrModifyPositionFromTransaction = async (
 
       if (!foundMarket) {
         console.error(
-          'Epoch not found: ',
+          'Market not found: ',
           marketId,
           'market:',
           transaction.event.market_group.address
         );
-        throw new Error(`Epoch not found: ${marketId}`);
+        throw new Error(`Market not found: ${marketId}`);
       }
       market = foundMarket;
     }
 
     if (!market) {
-      throw new Error('Epoch is undefined');
+      throw new Error('Market is undefined');
     }
 
     const positionId = Number(eventArgs.positionId);

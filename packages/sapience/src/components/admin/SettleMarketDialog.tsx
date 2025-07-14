@@ -27,9 +27,9 @@ interface MarketParams {
   uniswapSwapRouter: `0x${string}`;
 }
 
-// Interface for EpochData based on ABI
-interface EpochData {
-  epochId: bigint;
+// Interface for MarketData based on ABI
+interface MarketData {
+  marketId: bigint;
   startTime: bigint;
   endTime: bigint;
   pool: `0x${string}`;
@@ -181,16 +181,16 @@ const SettleMarketDialog = ({
   // 1. Get the ABI using the hook
   const { abi: sapienceAbi } = useSapienceAbi();
 
-  // 2. Fetch epoch data (which includes marketParams and claimStatement) using the ABI
+  // 2. Fetch market data (which includes marketParams and claimStatement) using the ABI
   const {
-    data: epochResult, // Typed as [EpochData, MarketParams] | undefined based on ABI
-    isLoading: isLoadingEpochAndMarketData,
-    error: epochAndMarketDataError,
+    data: marketResult, // Typed as [MarketData, MarketParams] | undefined based on ABI
+    isLoading: isLoadingMarketAndMarketGroupData,
+    error: marketAndMarketGroupDataError,
   } = useReadContract({
     address: marketGroup.address as `0x${string}`,
     abi: sapienceAbi, // Use the fetched ABI
-    functionName: 'getEpoch',
-    args: [BigInt(market.marketId)], // market.marketId is the epochId
+    functionName: 'getMarket',
+    args: [BigInt(market.marketId)],
     chainId: marketGroup.chainId,
     query: {
       enabled:
@@ -203,14 +203,14 @@ const SettleMarketDialog = ({
     },
   });
 
-  // Destructure the result from getEpoch with type safety
-  const epochData: EpochData | undefined =
-    Array.isArray(epochResult) && epochResult.length > 0
-      ? (epochResult[0] as EpochData)
+  // Destructure the result from getMarket with type safety
+  const marketData: MarketData | undefined =
+    Array.isArray(marketResult) && marketResult.length > 0
+      ? (marketResult[0] as MarketData)
       : undefined;
   const marketParams: MarketParams | undefined =
-    Array.isArray(epochResult) && epochResult.length > 1
-      ? (epochResult[1] as MarketParams)
+    Array.isArray(marketResult) && marketResult.length > 1
+      ? (marketResult[1] as MarketParams)
       : undefined;
 
   const bondCurrency = marketParams?.bondCurrency;
@@ -277,8 +277,9 @@ const SettleMarketDialog = ({
 
   // Combined loading and error states
   const isLoading =
-    isLoadingEpochAndMarketData || (!!connectedAddress && isLoadingAllowance); // Check connectedAddress existence
-  const error = epochAndMarketDataError || allowanceError;
+    isLoadingMarketAndMarketGroupData ||
+    (!!connectedAddress && isLoadingAllowance); // Check connectedAddress existence
+  const error = marketAndMarketGroupDataError || allowanceError;
 
   const requiresApproval =
     bondAmount !== undefined &&
@@ -359,7 +360,7 @@ const SettleMarketDialog = ({
     }
 
     try {
-      const epochId = BigInt(market.marketId);
+      const marketId = BigInt(market.marketId);
       const { price, errorMessage } = calculateSettlementPrice(
         settlementValue,
         marketGroup.baseTokenName === 'Yes'
@@ -378,7 +379,7 @@ const SettleMarketDialog = ({
         address: marketGroup.address as `0x${string}`, // Settle is called on the market group address
         abi: sapienceAbi, // Use the dynamically loaded ABI
         functionName: 'submitSettlementPrice', // Corrected function name
-        args: [epochId, connectedAddress, price], // Add asserter (connectedAddress)
+        args: [marketId, connectedAddress, price], // Add asserter (connectedAddress)
         chainId: marketGroup.chainId,
       });
     } catch (settlePrepareError: unknown) {
@@ -465,7 +466,7 @@ const SettleMarketDialog = ({
             connectedAddress={connectedAddress}
             isYesNoMarket={isYesNoMarket}
             settlementValue={settlementValue}
-            claimStatement={epochData?.claimStatement ?? ''}
+            claimStatement={marketData?.claimStatement ?? ''}
           />
 
           {/* Submit Button */}

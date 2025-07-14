@@ -190,7 +190,7 @@ export const createLiquidityPosition = {
   }): Promise<CallToolResult> => {
     try {
       const params = {
-        epochId: BigInt(args.marketId),
+        marketId: BigInt(args.marketId),
         amountTokenA: BigInt(args.amountTokenA),
         amountTokenB: BigInt(args.amountTokenB),
         collateralAmount: BigInt(args.collateralAmount),

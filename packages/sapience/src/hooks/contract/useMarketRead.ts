@@ -5,7 +5,7 @@ import { useReadContract } from 'wagmi';
 
 // Define the types based on the provided structs
 interface MarketData {
-  epochId: bigint;
+  marketId: bigint;
   startTime: bigint;
   endTime: bigint;
   pool: Address;
@@ -61,7 +61,7 @@ export function useMarketRead({
     address: marketAddress,
     abi,
     chainId: 8453,
-    functionName: 'getEpoch',
+    functionName: 'getMarket',
     args: [marketId],
   });
 

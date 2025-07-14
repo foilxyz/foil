@@ -63,8 +63,8 @@ export const useCategories = () => {
 export interface EnrichedMarketGroup
   extends Omit<MarketGroupType, 'category' | 'market'> {
   category: CategoryType & { iconSvg?: string; color?: string };
-  market: MarketType[];
-  latestEpochId?: bigint;
+  markets: MarketType[];
+  latestMarketId?: bigint;
   marketClassification: MarketGroupClassification;
 }
 
@@ -295,7 +295,7 @@ export const useEnrichedMarketGroups = () => {
           // Get classification
           const classification = getMarketGroupClassification(marketGroup);
 
-          // Return the enriched group WITHOUT fetching epochId here
+          // Return the enriched group WITHOUT fetching marketId here
           return {
             ...marketGroup,
             category: categoryInfo,

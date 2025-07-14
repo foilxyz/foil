@@ -120,7 +120,7 @@ model Market {
   marketId                           Int
   startTimestamp                     Int?
   endTimestamp                       Int?
-  startingSqrtPriceX96               Decimal?      @db.Decimal(78, 0)
+  startingSqrtPriceX96               String?      
   settlementPriceD18                 Decimal?      @db.Decimal(78, 0)
   settled                            Boolean?
   baseAssetMinPriceTick              Int?
