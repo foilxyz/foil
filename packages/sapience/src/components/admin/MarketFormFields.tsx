@@ -154,7 +154,7 @@ const MarketFormFields = ({
         const hasMatchingQuestion = question.includes(query);
 
         // Also check if any market in the group matches the search
-        const hasMatchingMarket = group.market.some((marketItem) => {
+        const hasMatchingMarket = group.markets.some((marketItem) => {
           const marketQuestion = marketItem.question?.toLowerCase() || '';
           const optionName = marketItem.optionName?.toLowerCase() || '';
           return marketQuestion.includes(query) || optionName.includes(query);
@@ -725,7 +725,7 @@ const MarketFormFields = ({
       );
       if (!selectedMarketGroup) return;
 
-      const selectedMarket = selectedMarketGroup.market.find(
+      const selectedMarket = selectedMarketGroup.markets.find(
         (marketItem) => marketItem.id.toString() === selectedMarketId
       );
       if (!selectedMarket) return;
@@ -1031,7 +1031,7 @@ const MarketFormFields = ({
                     );
                     if (!selectedGroup) return null;
 
-                    if (selectedGroup.market.length === 0) {
+                    if (selectedGroup.markets.length === 0) {
                       return (
                         <SelectItem value="no-markets" disabled>
                           No markets found
@@ -1039,7 +1039,7 @@ const MarketFormFields = ({
                       );
                     }
 
-                    return selectedGroup.market.map((marketItem) => (
+                    return selectedGroup.markets.map((marketItem) => (
                       <SelectItem
                         key={marketItem.id}
                         value={marketItem.id.toString()}
