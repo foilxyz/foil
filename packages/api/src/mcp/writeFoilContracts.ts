@@ -1,17 +1,7 @@
 import { encodeFunctionData } from 'viem';
-// import { base } from 'viem/chains';
-// import { createPublicClient, http } from 'viem';
 import SapienceABI from '@sapience/protocol/deployments/Sapience.json';
 import { CallToolResult } from '@modelcontextprotocol/sdk/types';
 import { z } from 'zod';
-
-// Create a public client for interacting with the blockchain
-// const client = createPublicClient({
-//   chain: base,
-//   transport: process.env.TRANSPORT_URL
-//     ? http(process.env.TRANSPORT_URL)
-//     : http(),
-// });
 
 // Helper function to encode function data
 function encodeFunction(
@@ -29,7 +19,8 @@ function encodeFunction(
 
 export const createTraderPosition = {
   name: 'create_sapience_trader_position',
-  description: 'Creates a new trader position with specified parameters',
+  description:
+    'Generates calldata for creating a new trader position with specified parameters',
   parameters: {
     properties: {
       marketGroupAddress: z
@@ -89,7 +80,8 @@ export const createTraderPosition = {
 
 export const modifyTraderPosition = {
   name: 'modify_sapience_trader_position',
-  description: 'Modifies an existing trader position with new parameters',
+  description:
+    'Generates calldata for modifying an existing trader position with new parameters',
   parameters: {
     properties: {
       marketGroupAddress: z
@@ -153,7 +145,8 @@ export const modifyTraderPosition = {
 
 export const createLiquidityPosition = {
   name: 'create_sapience_liquidity_position',
-  description: 'Creates a new liquidity position with specified parameters',
+  description:
+    'Generates calldata for creating a new liquidity position with specified parameters',
   parameters: {
     properties: {
       marketGroupAddress: z
@@ -233,7 +226,8 @@ export const createLiquidityPosition = {
 
 export const increaseLiquidityPosition = {
   name: 'increase_sapience_liquidity_position',
-  description: 'Increases an existing liquidity position with new parameters',
+  description:
+    'Generates calldata for increasing an existing liquidity position with new parameters',
   parameters: {
     properties: {
       marketGroupAddress: z
@@ -307,7 +301,8 @@ export const increaseLiquidityPosition = {
 
 export const decreaseLiquidityPosition = {
   name: 'decrease_sapience_liquidity_position',
-  description: 'Decreases an existing liquidity position',
+  description:
+    'Generates calldata for decreasing an existing liquidity position',
   parameters: {
     properties: {
       marketGroupAddress: z
@@ -376,7 +371,7 @@ export const decreaseLiquidityPosition = {
 export const settlePosition = {
   name: 'settle_sapience_position',
   description:
-    'Settles a position, closing it and returning any remaining collateral, after the market has ended and settled',
+    'Generates calldata for settling a position, closing it and returning any remaining collateral, after the market has ended and settled',
   parameters: {
     properties: {
       marketGroupAddress: z
