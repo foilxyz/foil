@@ -87,7 +87,7 @@ const GET_RESOURCE_CANDLES = /* GraphQL */ `
 const TRAILING_AVG_TIME_SECONDS_7_DAYS = 604800; // 7 day trailing average
 const TRAILING_AVG_TIME_SECONDS_28_DAYS = 2419200; // 28 day trailing average
 
-const GET_RESOURCE_TRAILING_AVG_CANDLES =  /* GraphQL */ `
+const GET_RESOURCE_TRAILING_AVG_CANDLES = /* GraphQL */ `
   query ResourceTrailingAverageCandlesFromCache(
     $slug: String!
     $from: Int!

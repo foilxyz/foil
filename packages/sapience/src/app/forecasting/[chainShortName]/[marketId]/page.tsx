@@ -205,7 +205,9 @@ const ForecastContent = () => {
   useEffect(() => {
     if (selectedPosition) {
       // Set tab based on position kind (1 = Liquidity, 2 = Trade)
-      setActiveFormTab(selectedPosition.kind === PositionKind.Liquidity ? 'liquidity' : 'trade');
+      setActiveFormTab(
+        selectedPosition.kind === PositionKind.Liquidity ? 'liquidity' : 'trade'
+      );
     }
   }, [selectedPosition]);
 
@@ -449,18 +451,20 @@ const ForecastContent = () => {
                       </div>
                     )}
                     <div className="mt-4 relative">
-                      {selectedPosition && selectedPosition.kind === PositionKind.Trade && (
-                        <SimpleTradeWrapper
-                          positionId={positionId || undefined}
-                          onActionComplete={handleUserPositionsRefetch}
-                        />
-                      )}
-                      {selectedPosition && selectedPosition.kind === PositionKind.Liquidity && (
-                        <SimpleLiquidityWrapper
-                          positionId={positionId || undefined}
-                          onActionComplete={handleUserPositionsRefetch}
-                        />
-                      )}
+                      {selectedPosition &&
+                        selectedPosition.kind === PositionKind.Trade && (
+                          <SimpleTradeWrapper
+                            positionId={positionId || undefined}
+                            onActionComplete={handleUserPositionsRefetch}
+                          />
+                        )}
+                      {selectedPosition &&
+                        selectedPosition.kind === PositionKind.Liquidity && (
+                          <SimpleLiquidityWrapper
+                            positionId={positionId || undefined}
+                            onActionComplete={handleUserPositionsRefetch}
+                          />
+                        )}
                       {!selectedPosition && activeFormTab === 'trade' && (
                         <SimpleTradeWrapper
                           positionId={positionId || undefined}

@@ -5,18 +5,14 @@ import { useQuery } from '@tanstack/react-query';
 // GraphQL query to fetch positions by owner address and optional market address
 export const POSITIONS_QUERY = /* GraphQL */ `
   query Positions($owner: String, $marketAddress: String) {
-    positions(where: {
-      market: {
-        is: {
-          marketGroup: {
-            is: {
-              address: { equals: $marketAddress }
-            }
-          }
+    positions(
+      where: {
+        market: {
+          is: { marketGroup: { is: { address: { equals: $marketAddress } } } }
         }
+        owner: { equals: $owner }
       }
-      owner: { equals: $owner }
-    }) {
+    ) {
       id
       positionId
       owner

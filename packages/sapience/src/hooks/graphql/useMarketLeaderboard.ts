@@ -19,8 +19,16 @@ interface RawMarketLeaderboardEntry {
 }
 
 const GET_MARKET_LEADERBOARD = /* GraphQL */ `
-  query MarketLeaderboard($chainId: Int!, $address: String!, $marketId: String!) {
-    getMarketLeaderboard(chainId: $chainId, address: $address, marketId: $marketId) {
+  query MarketLeaderboard(
+    $chainId: Int!
+    $address: String!
+    $marketId: String!
+  ) {
+    getMarketLeaderboard(
+      chainId: $chainId
+      address: $address
+      marketId: $marketId
+    ) {
       marketId
       owner
       totalPnL

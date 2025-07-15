@@ -27,8 +27,16 @@ const GET_MARKET_GROUPS = /* GraphQL */ `
 
 // Query to fetch leaderboard for a specific market
 const GET_MARKET_LEADERBOARD = /* GraphQL */ `
-  query MarketLeaderboard($chainId: Int!, $address: String!, $marketId: String!) {
-    getMarketLeaderboard(chainId: $chainId, address: $address, marketId: $marketId) {
+  query MarketLeaderboard(
+    $chainId: Int!
+    $address: String!
+    $marketId: String!
+  ) {
+    getMarketLeaderboard(
+      chainId: $chainId
+      address: $address
+      marketId: $marketId
+    ) {
       owner
       totalPnL # This is a string representing BigInt
     }

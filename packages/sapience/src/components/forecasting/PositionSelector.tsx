@@ -17,7 +17,8 @@ import { PositionKind } from '~/hooks/contract/usePositions';
 
 import { useMarketPage } from '~/lib/context/MarketPageProvider';
 
-const PositionSelector: React.FC<null> = () => {
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+const PositionSelector: React.FC<{}> = () => {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
@@ -72,7 +73,9 @@ const PositionSelector: React.FC<null> = () => {
                 <>
                   <span>#{selectedPosition.id.toString()}</span>
                   <Badge variant="outline">
-                    {selectedPosition.kind === PositionKind.Liquidity ? 'Liquidity' : 'Trader'}
+                    {selectedPosition.kind === PositionKind.Liquidity
+                      ? 'Liquidity'
+                      : 'Trader'}
                   </Badge>
                 </>
               ) : (

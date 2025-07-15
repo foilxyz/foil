@@ -5,10 +5,12 @@ import { useEffect, useState } from 'react';
 
 const MARKET_QUERY = /* GraphQL */ `
   query MarketData($address: String!, $marketId: Int!) {
-    markets(where: {
-      marketGroup: { is: { address: { equals: $address } } },
-      marketId: { equals: $marketId }
-    }) {
+    markets(
+      where: {
+        marketGroup: { is: { address: { equals: $address } } }
+        marketId: { equals: $marketId }
+      }
+    ) {
       id
       marketId
       question

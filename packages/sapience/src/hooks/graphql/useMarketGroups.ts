@@ -77,7 +77,14 @@ export interface Candle {
 }
 
 const LATEST_INDEX_PRICE_QUERY = /* GraphQL */ `
-  query LatestIndexPrice($address: String!, $chainId: Int!, $marketId: String!, $from: Int!, $to: Int!, $interval: Int!) {
+  query LatestIndexPrice(
+    $address: String!
+    $chainId: Int!
+    $marketId: String!
+    $from: Int!
+    $to: Int!
+    $interval: Int!
+  ) {
     indexCandlesFromCache(
       address: $address
       chainId: $chainId
@@ -194,11 +201,7 @@ const MARKET_CANDLES_QUERY = /* GraphQL */ `
 `;
 
 const TOTAL_VOLUME_QUERY = /* GraphQL */ `
-  query TotalVolume(
-    $marketAddress: String!
-    $chainId: Int!
-    $marketId: Int!
-  ) {
+  query TotalVolume($marketAddress: String!, $chainId: Int!, $marketId: Int!) {
     totalVolumeByMarket(
       marketAddress: $marketAddress
       chainId: $chainId
