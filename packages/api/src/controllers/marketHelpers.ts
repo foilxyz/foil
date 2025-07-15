@@ -437,6 +437,7 @@ export const createOrUpdateMarketFromContract = async (
     args,
   });
   const marketData: MarketData = (marketReadResult as MarketReadResult)[0];
+  const marketGroupParams = (marketReadResult as MarketReadResult)[1];
 
   const _marketId = marketId || Number(marketData.marketId);
 
@@ -465,18 +466,19 @@ export const createOrUpdateMarketFromContract = async (
         poolAddress: marketData.pool,
         claimStatementYesOrNumeric: marketData.claimStatementYesOrNumeric,
         claimStatementNo: marketData.claimStatementNo,
-        marketParamsFeerate: marketGroup.marketParamsFeerate,
-        marketParamsAssertionliveness:
-          marketGroup.marketParamsAssertionliveness,
-        marketParamsBondcurrency: marketGroup.marketParamsBondcurrency,
-        marketParamsBondamount: marketGroup.marketParamsBondamount,
+        marketParamsFeerate: marketGroupParams.feeRate,
+        marketParamsAssertionliveness: toDecimal(
+          marketGroupParams.assertionLiveness.toString()
+        ),
+        marketParamsBondcurrency: marketGroupParams.bondCurrency,
+        marketParamsBondamount: toDecimal(
+          marketGroupParams.bondAmount.toString()
+        ),
         marketParamsUniswappositionmanager:
-          marketGroup.marketParamsUniswappositionmanager,
-        marketParamsUniswapswaprouter:
-          marketGroup.marketParamsUniswapswaprouter,
-        marketParamsUniswapquoter: marketGroup.marketParamsUniswapquoter,
-        marketParamsOptimisticoraclev3:
-          marketGroup.marketParamsOptimisticoraclev3,
+          marketGroupParams.uniswapPositionManager,
+        marketParamsUniswapswaprouter: marketGroupParams.uniswapSwapRouter,
+        marketParamsUniswapquoter: marketGroupParams.uniswapQuoter,
+        marketParamsOptimisticoraclev3: marketGroupParams.optimisticOracleV3,
       },
     });
   } else {
@@ -494,20 +496,21 @@ export const createOrUpdateMarketFromContract = async (
         minPriceD18: toDecimal(marketData.minPriceD18.toString()),
         poolAddress: marketData.pool,
         marketGroupId: marketGroup.id,
-        marketParamsFeerate: marketGroup.marketParamsFeerate,
-        marketParamsAssertionliveness:
-          marketGroup.marketParamsAssertionliveness,
-        marketParamsBondcurrency: marketGroup.marketParamsBondcurrency,
-        marketParamsBondamount: marketGroup.marketParamsBondamount,
         claimStatementYesOrNumeric: marketData.claimStatementYesOrNumeric,
         claimStatementNo: marketData.claimStatementNo,
+        marketParamsFeerate: marketGroupParams.feeRate,
+        marketParamsAssertionliveness: toDecimal(
+          marketGroupParams.assertionLiveness.toString()
+        ),
+        marketParamsBondcurrency: marketGroupParams.bondCurrency,
+        marketParamsBondamount: toDecimal(
+          marketGroupParams.bondAmount.toString()
+        ),
         marketParamsUniswappositionmanager:
-          marketGroup.marketParamsUniswappositionmanager,
-        marketParamsUniswapswaprouter:
-          marketGroup.marketParamsUniswapswaprouter,
-        marketParamsUniswapquoter: marketGroup.marketParamsUniswapquoter,
-        marketParamsOptimisticoraclev3:
-          marketGroup.marketParamsOptimisticoraclev3,
+          marketGroupParams.uniswapPositionManager,
+        marketParamsUniswapswaprouter: marketGroupParams.uniswapSwapRouter,
+        marketParamsUniswapquoter: marketGroupParams.uniswapQuoter,
+        marketParamsOptimisticoraclev3: marketGroupParams.optimisticOracleV3,
       },
     });
   }
