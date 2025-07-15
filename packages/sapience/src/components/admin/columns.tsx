@@ -19,11 +19,6 @@ import { useState } from 'react';
 import type { Address } from 'viem';
 import { formatEther } from 'viem';
 
-import { useMarketGroupBridgeStatus } from '~/hooks/contract/useMarketGroupBridgeStatus';
-import { useMarketGroupLatestMarket } from '~/hooks/contract/useMarketGroupLatestMarket';
-import type { EnrichedMarketGroup } from '~/hooks/graphql/useMarketGroups';
-import { shortenAddress } from '~/lib/utils/util';
-
 import AddMarketDialog from './AddMarketDialog';
 import EnableBridgedMarketGroupButton from './EnableBridgedMarketGroupButton';
 import MarketDeployButton from './MarketDeployButton';
@@ -31,9 +26,13 @@ import MarketGroupDeployButton from './MarketGroupDeployButton';
 import OwnershipDialog from './OwnershipDialog';
 import ReindexMarketButton from './ReindexMarketButton';
 import SettleMarketDialog from './SettleMarketDialog';
+import { shortenAddress } from '~/lib/utils/util';
+import type { EnrichedMarketGroup } from '~/hooks/graphql/useMarketGroups';
+import { useMarketGroupLatestMarket } from '~/hooks/contract/useMarketGroupLatestMarket';
+import { useMarketGroupBridgeStatus } from '~/hooks/contract/useMarketGroupBridgeStatus';
 
 // GraphQL query for index price at time
-const INDEX_PRICE_AT_TIME_QUERY = `
+const INDEX_PRICE_AT_TIME_QUERY = /* GraphQL */ `
   query IndexPriceAtTime(
     $address: String!
     $chainId: Int!
@@ -53,12 +52,12 @@ const INDEX_PRICE_AT_TIME_QUERY = `
 `;
 
 // Type definition for GraphQL response
-type IndexPriceAtTimeResponse = {
+interface IndexPriceAtTimeResponse {
   indexPriceAtTime: {
     timestamp: number;
     close: string;
   } | null;
-};
+}
 
 // Helper function to convert gwei to ether
 const gweiToEther = (value: bigint): string => {
@@ -104,7 +103,7 @@ function useMarketPriceData(
         return null;
       }
 
-      const data = await graphqlRequest<IndexPriceAtTimeResponse>(
+      const responseData = await graphqlRequest<IndexPriceAtTimeResponse>(
         INDEX_PRICE_AT_TIME_QUERY,
         {
           address: marketAddress,
@@ -114,7 +113,7 @@ function useMarketPriceData(
         }
       );
 
-      const priceData = data?.indexPriceAtTime;
+      const priceData = responseData?.indexPriceAtTime;
       if (!priceData) {
         return null;
       }

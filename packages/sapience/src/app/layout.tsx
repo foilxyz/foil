@@ -12,9 +12,9 @@ import PasswordScrim from '~/components/shared/PasswordScrim';
 import { LoadingProvider } from '~/lib/context/LoadingContext';
 import '../styles/globals.css';
 
-type RootLayoutProps = {
+interface RootLayoutProps {
   children: React.ReactNode;
-};
+}
 
 const APP_NAME = 'Sapience';
 const APP_DESCRIPTION = 'Sapience Prediction Markets';

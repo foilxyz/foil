@@ -23,6 +23,7 @@ import PositionSelector from '~/components/forecasting/PositionSelector';
 import UserPositionsTable from '~/components/forecasting/UserPositionsTable';
 import { useOrderBookData } from '~/hooks/charts/useOrderBookData';
 import { useUniswapPool } from '~/hooks/charts/useUniswapPool';
+import { PositionKind } from '~/hooks/contract/usePositions';
 import { usePositions } from '~/hooks/graphql/usePositions';
 import {
   MarketPageProvider,
@@ -204,7 +205,7 @@ const ForecastContent = () => {
   useEffect(() => {
     if (selectedPosition) {
       // Set tab based on position kind (1 = Liquidity, 2 = Trade)
-      setActiveFormTab(selectedPosition.kind === 1 ? 'liquidity' : 'trade');
+      setActiveFormTab(selectedPosition.kind === PositionKind.Liquidity ? 'liquidity' : 'trade');
     }
   }, [selectedPosition]);
 
@@ -448,13 +449,13 @@ const ForecastContent = () => {
                       </div>
                     )}
                     <div className="mt-4 relative">
-                      {selectedPosition && selectedPosition.kind === 2 && (
+                      {selectedPosition && selectedPosition.kind === PositionKind.Trade && (
                         <SimpleTradeWrapper
                           positionId={positionId || undefined}
                           onActionComplete={handleUserPositionsRefetch}
                         />
                       )}
-                      {selectedPosition && selectedPosition.kind === 1 && (
+                      {selectedPosition && selectedPosition.kind === PositionKind.Liquidity && (
                         <SimpleLiquidityWrapper
                           positionId={positionId || undefined}
                           onActionComplete={handleUserPositionsRefetch}

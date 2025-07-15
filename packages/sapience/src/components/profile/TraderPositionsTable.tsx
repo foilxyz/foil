@@ -216,9 +216,7 @@ export default function TraderPositionsTable({
     return null;
   }
 
-  const validPositions = positions.filter(
-    (p) => p && p.market && p.id && !p.isLP
-  );
+  const validPositions = positions.filter((p) => p?.market && p.id && !p.isLP);
 
   if (validPositions.length === 0) {
     return null;
@@ -234,7 +232,6 @@ export default function TraderPositionsTable({
     // Market group page (parentMarketAddress & parentChainId are present, but parentMarketId is not)
     displayQuestionColumn = validPositions.some(
       (p) =>
-        p.market?.marketGroup &&
         p.market?.marketGroup?.markets &&
         p.market?.marketGroup?.markets.length > 1
     );

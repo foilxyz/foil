@@ -32,9 +32,9 @@ export const useCategories = () => {
     queryKey: ['categories'],
     queryFn: async (): Promise<CategoryType[]> => {
       try {
-        type CategoriesQueryResult = {
+        interface CategoriesQueryResult {
           categories: CategoryType[];
-        };
+        }
 
         const data =
           await graphqlRequest<CategoriesQueryResult>(GET_CATEGORIES);
@@ -259,13 +259,13 @@ export const useEnrichedMarketGroups = () => {
       });
 
       // --- Fetch initial market group data ---
-      type MarketGroupsQueryResult = {
+      interface MarketGroupsQueryResult {
         marketGroups: MarketGroupType[];
-      };
+      }
 
       const data = await graphqlRequest<MarketGroupsQueryResult>(MARKETS_QUERY);
 
-      if (!data || !data.marketGroups) {
+      if (!data?.marketGroups) {
         console.error(
           '[useEnrichedMarketGroups] No market groups data received from API or data structure invalid.'
         );
@@ -339,12 +339,12 @@ export const useLatestIndexPrice = (market: {
       }
 
       try {
-        type IndexPriceQueryResult = {
+        interface IndexPriceQueryResult {
           indexCandlesFromCache: {
             data: Candle[];
             lastUpdateTimestamp: number;
           };
-        };
+        }
 
         const data = await graphqlRequest<IndexPriceQueryResult>(
           LATEST_INDEX_PRICE_QUERY,
@@ -359,11 +359,7 @@ export const useLatestIndexPrice = (market: {
         );
 
         const indexCandlesData = data.indexCandlesFromCache;
-        if (
-          !indexCandlesData ||
-          !indexCandlesData.data ||
-          indexCandlesData.data.length === 0
-        ) {
+        if (!indexCandlesData?.data || indexCandlesData.data.length === 0) {
           return { timestamp: null, value: null };
         }
 
@@ -416,12 +412,12 @@ export const useMarketCandles = (market: {
       }
 
       try {
-        type MarketCandlesQueryResult = {
+        interface MarketCandlesQueryResult {
           marketCandlesFromCache: {
             data: Candle[];
             lastUpdateTimestamp: number;
           };
-        };
+        }
 
         const data = await graphqlRequest<MarketCandlesQueryResult>(
           MARKET_CANDLES_QUERY,
@@ -463,9 +459,9 @@ export const useTotalVolume = (market: {
       }
 
       try {
-        type TotalVolumeQueryResult = {
+        interface TotalVolumeQueryResult {
           totalVolumeByMarket: number;
-        };
+        }
 
         const data = await graphqlRequest<TotalVolumeQueryResult>(
           TOTAL_VOLUME_QUERY,
@@ -504,9 +500,9 @@ export const useOpenInterest = (market: {
       }
 
       try {
-        type OpenInterestQueryResult = {
+        interface OpenInterestQueryResult {
           positions: PositionType[];
-        };
+        }
 
         const data = await graphqlRequest<OpenInterestQueryResult>(
           OPEN_INTEREST_QUERY,
@@ -517,7 +513,7 @@ export const useOpenInterest = (market: {
           }
         );
 
-        if (!data || !data.positions) {
+        if (!data?.positions) {
           console.log('No positions data received');
           return 0;
         }

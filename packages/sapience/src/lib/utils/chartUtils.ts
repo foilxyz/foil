@@ -8,10 +8,7 @@ export type IndexCandleData = Pick<CandleType, 'timestamp' | 'close'>;
 // Define the new data point structure
 export interface MultiMarketChartDataPoint {
   timestamp: number;
-  markets: {
-    // Store close price per market ID (using string keys for object compatibility)
-    [marketId: string]: number | undefined;
-  };
+  markets: Record<string, number | undefined>;
   indexClose?: number; // Renamed from resourceClose to indexClose
 }
 
@@ -97,7 +94,7 @@ export const processCandleData = (
         // Check for valid number
         if (!Number.isNaN(closeValue)) {
           // Multiply raw close value by multiplier to get Wei value (consistent with usePriceChartData)
-          combinedData[ts]!.indexClose = closeValue * indexMultiplier;
+          combinedData[ts].indexClose = closeValue * indexMultiplier;
         } else {
           console.warn(
             `Invalid index close value encountered: ${candle.close} at timestamp ${ts}`

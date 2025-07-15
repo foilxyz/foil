@@ -872,10 +872,7 @@ const MarketFormFields = ({
               onBlur={(e) => {
                 // Check if the related target is within the dropdown
                 const relatedTarget = e.relatedTarget as HTMLElement;
-                if (
-                  relatedTarget &&
-                  relatedTarget.closest('.market-group-dropdown')
-                ) {
+                if (relatedTarget?.closest('.market-group-dropdown')) {
                   return; // Don't hide dropdown if clicking inside it
                 }
                 // Delay hiding to allow clicking on dropdown items

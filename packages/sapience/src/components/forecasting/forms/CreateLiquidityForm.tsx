@@ -1,5 +1,3 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-
 import { NumberDisplay } from '@sapience/ui/components/NumberDisplay';
 import { SlippageTolerance } from '@sapience/ui/components/SlippageTolerance';
 import {
@@ -23,6 +21,8 @@ import { useEffect, useRef, useState } from 'react';
 import type { Abi } from 'viem';
 import { formatUnits } from 'viem';
 
+import CollateralBalance from './inputs/CollateralBalance';
+import type { WalletData } from './ModifyLiquidityForm';
 import LottieLoader from '~/components/shared/LottieLoader';
 import { useCreateLP, useCreateLiquidityQuoter } from '~/hooks/contract';
 import { useLiquidityForm } from '~/hooks/forms/useLiquidityForm';
@@ -31,10 +31,7 @@ import { useMarketPage } from '~/lib/context/MarketPageProvider';
 import { priceToTick, tickToPrice } from '~/lib/utils/tickUtils';
 import { getChainShortName } from '~/lib/utils/util';
 
-import CollateralBalance from './inputs/CollateralBalance';
-import type { WalletData } from './ModifyLiquidityForm';
-
-export type LiquidityFormMarketDetails = {
+export interface LiquidityFormMarketDetails {
   marketAddress: `0x${string}`;
   chainId: number;
   marketAbi: Abi;
@@ -46,7 +43,7 @@ export type LiquidityFormMarketDetails = {
   lowPriceTick?: number;
   highPriceTick?: number;
   marketId: bigint;
-};
+}
 
 export interface LiquidityFormProps {
   marketDetails: LiquidityFormMarketDetails;

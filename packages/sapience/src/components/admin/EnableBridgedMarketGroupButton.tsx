@@ -77,7 +77,7 @@ const EnableBridgedMarketGroupButton: React.FC<
 
   // Effect for confirmation
   useEffect(() => {
-    if (isConfirmed && receipt && receipt.transactionHash) {
+    if (isConfirmed && receipt?.transactionHash) {
       setEnabledTxHash(receipt.transactionHash);
       setEnableError(null);
     }

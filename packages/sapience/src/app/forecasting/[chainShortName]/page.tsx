@@ -251,7 +251,7 @@ const MarketGroupPageContent = () => {
               <div className="border border-border rounded flex flex-col flex-1 shadow-sm">
                 <div className="flex-1 min-h-[400px]">
                   <MarketGroupChart
-                    chainShortName={chainShortName as string}
+                    chainShortName={chainShortName}
                     marketAddress={marketAddress}
                     marketIds={activeMarkets.map((market) =>
                       Number(market.marketId)
@@ -275,7 +275,7 @@ const MarketGroupPageContent = () => {
             {/* Form (Right Column) */}
             <div className="w-full lg:w-[340px]">
               <ForecastingForm
-                marketGroupData={marketGroupData!}
+                marketGroupData={marketGroupData}
                 marketClassification={marketClassification!}
                 permitData={permitData!}
                 onWagerSuccess={handleUserPositionsRefetch}

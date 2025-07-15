@@ -124,9 +124,7 @@ export default function LpPositionsTable({
 
   const validPositions = positions.filter(
     (p) =>
-      p &&
-      p.market &&
-      p.market?.marketGroup &&
+      p?.market?.marketGroup &&
       p.id &&
       p.isLP && // Ensure it's an LP position
       p.lowPriceTick !== undefined && // Check necessary fields exist
@@ -149,7 +147,6 @@ export default function LpPositionsTable({
     // Market group page (parentMarketAddress & parentChainId are present, but parentMarketId is not)
     displayQuestionColumn = validPositions.some(
       (p) =>
-        p.market?.marketGroup &&
         p.market?.marketGroup?.markets &&
         p.market?.marketGroup?.markets.length > 1
     );

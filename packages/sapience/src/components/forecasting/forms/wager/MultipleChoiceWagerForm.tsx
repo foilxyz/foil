@@ -10,10 +10,9 @@ import { z } from 'zod';
 
 import MultipleChoicePredict from '../inputs/MultipleChoicePredict';
 import { WagerInput, wagerAmountSchema } from '../inputs/WagerInput';
+import PermittedAlert from './PermittedAlert';
 import { useCreateTrade } from '~/hooks/contract/useCreateTrade';
 import { useQuoter } from '~/hooks/forms/useQuoter';
-
-import PermittedAlert from './PermittedAlert';
 
 interface MultipleChoiceWagerFormProps {
   marketGroupData: MarketGroupType;

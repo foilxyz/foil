@@ -3,9 +3,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { formatUnits, type Abi } from 'viem';
 import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 
-import { TOKEN_DECIMALS } from '~/lib/constants/numbers';
-
 import { useTokenApproval } from './useTokenApproval';
+import { TOKEN_DECIMALS } from '~/lib/constants/numbers';
 
 interface UseModifyTradeProps {
   marketAddress?: `0x${string}`;

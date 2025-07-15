@@ -123,7 +123,7 @@ const DateTimePicker = ({
 
   // Helper function to determine time values based on date selection
   const getTimeValuesForDate = (
-    newDate: Date,
+    _newDate: Date,
     isToday: boolean
   ): { hours: number; minutes: number } => {
     if (isToday) {

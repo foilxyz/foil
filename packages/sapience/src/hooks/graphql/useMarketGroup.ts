@@ -58,9 +58,9 @@ export const useMarketGroup = ({
   } = useQuery<MarketGroupType>({
     queryKey: ['marketGroup', chainId, marketAddress],
     queryFn: async () => {
-      type MarketGroupQueryResult = {
+      interface MarketGroupQueryResult {
         marketGroup: MarketGroupType;
-      };
+      }
 
       const data = await graphqlRequest<MarketGroupQueryResult>(
         MARKET_GROUP_QUERY,

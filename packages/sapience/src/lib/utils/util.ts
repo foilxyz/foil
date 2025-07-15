@@ -65,7 +65,7 @@ export const gweiToEther = (gweiValue: bigint): string => {
   return formatEther(weiValue);
 };
 
-export const formatNumber = (value: number, decimals: number = 2): string => {
+export const formatNumber = (value: number, decimals = 2): string => {
   return value.toLocaleString('en-US', {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
@@ -108,8 +108,8 @@ export const getDisplayQuestion = (
     | undefined,
   activeMarkets: MarketType[], // Use MarketType[]
   isLoading: boolean,
-  defaultLoadingMessage: string = '', // Default loading message
-  defaultErrorMessage: string = 'This market question is not available' // Default error message
+  defaultLoadingMessage = '', // Default loading message
+  defaultErrorMessage = 'This market question is not available' // Default error message
 ): string => {
   // Helper function to format question or return default message
   const formatOrDefault = (question: string | null | undefined): string => {
@@ -191,8 +191,8 @@ export const formatPercentage = (value: number): string => {
 // Helper to format a numeric value (like a price) to a specified number of decimal places, optionally adding a unit.
 export const formatTokenValue = (
   value: number | string | undefined | null,
-  unit: string = '',
-  decimals: number = 2
+  unit = '',
+  decimals = 2
 ): string => {
   if (value === undefined || value === null) {
     return ''; // Handle undefined/null

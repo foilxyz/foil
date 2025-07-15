@@ -82,7 +82,7 @@ export function usePositions({
     abi: sapienceAbi,
     address: marketAddress,
     functionName: 'balanceOf',
-    args: [address as `0x${string}`],
+    args: [address!],
     chainId,
     query: {
       enabled:
@@ -104,7 +104,7 @@ export function usePositions({
         abi: sapienceAbi,
         address: marketAddress,
         functionName: 'tokenOfOwnerByIndex',
-        args: [address as `0x${string}`, index],
+        args: [address!, index],
         chainId,
       }));
     }, [balanceData, sapienceAbi, marketAddress, address, chainId]),
@@ -165,7 +165,6 @@ export function usePositions({
     if (!positionsData) return result;
 
     for (const response of positionsData) {
-      // eslint-disable-next-line no-continue
       if (!response.result) continue;
 
       const position = response.result as unknown as FoilPosition;
@@ -177,7 +176,6 @@ export function usePositions({
         position.marketId !== undefined &&
         position.marketId.toString() !== marketId.toString()
       ) {
-        // eslint-disable-next-line no-continue
         continue;
       }
 

@@ -27,6 +27,7 @@ import {
   useSwitchChain,
 } from 'wagmi';
 
+import TradeOrderQuote from './TradeOrderQuote';
 import LottieLoader from '~/components/shared/LottieLoader';
 import { useUniswapPool } from '~/hooks/charts/useUniswapPool';
 import { useCreateTrade } from '~/hooks/contract/useCreateTrade';
@@ -36,18 +37,16 @@ import { HIGH_PRICE_IMPACT, TOKEN_DECIMALS } from '~/lib/constants/numbers';
 import { useMarketPage } from '~/lib/context/MarketPageProvider';
 import { MarketGroupClassification } from '~/lib/types';
 
-import TradeOrderQuote from './TradeOrderQuote';
-
 const COLLATERAL_DECIMALS = TOKEN_DECIMALS;
 
-export type TradeFormMarketDetails = {
+export interface TradeFormMarketDetails {
   marketAddress: `0x${string}`;
   chainId: number;
   numericMarketId: number;
   marketAbi: Abi;
   collateralAssetTicker: string;
   collateralAssetAddress?: `0x${string}`;
-};
+}
 
 export interface TradeFormProps {
   marketDetails: TradeFormMarketDetails;
@@ -110,7 +109,7 @@ export function CreateTradeForm({
   const sizeBigInt = React.useMemo(() => {
     try {
       return parseUnits(sizeInput || '0', TOKEN_DECIMALS);
-    } catch (e) {
+    } catch (_e) {
       return BigInt(0);
     }
   }, [sizeInput]);
@@ -162,7 +161,7 @@ export function CreateTradeForm({
     return formatUnits(quotedFillPriceBI, TOKEN_DECIMALS);
   }, [quotedFillPriceBI]);
 
-  const poolAddress = marketContractData?.pool as `0x${string}` | undefined;
+  const poolAddress = marketContractData?.pool;
 
   const { pool } = useUniswapPool(
     chainId ?? undefined,

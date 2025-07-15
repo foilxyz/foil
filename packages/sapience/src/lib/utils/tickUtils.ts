@@ -8,10 +8,7 @@
  * @param tickSpacing Optional tick spacing to round to
  * @returns The price represented by the tick
  */
-export const tickToPrice = (
-  tick: number,
-  tickSpacing: number = 200
-): number => {
+export const tickToPrice = (tick: number, tickSpacing = 200): number => {
   // If tickSpacing is provided, round the tick to the nearest valid tick
   const roundedTick = tickSpacing
     ? Math.round(tick / tickSpacing) * tickSpacing
@@ -26,10 +23,7 @@ export const tickToPrice = (
  * @param tickSpacing Optional tick spacing to round to
  * @returns The tick representing the price
  */
-export const priceToTick = (
-  price: number,
-  tickSpacing: number = 200
-): number => {
+export const priceToTick = (price: number, tickSpacing = 200): number => {
   // Convert price to tick using logarithm
   const tick = Math.log(price) / Math.log(1.0001);
   // Round to the nearest valid tick if tickSpacing is provided
@@ -65,7 +59,7 @@ export const priceToSqrtPriceX96 = (price: number): bigint => {
 export const createTickPriceValue = (
   value: number | string,
   isTick: boolean,
-  tickSpacing: number = 200
+  tickSpacing = 200
 ): { tick: number; price: number } => {
   const numValue = typeof value === 'string' ? parseFloat(value) : value;
 

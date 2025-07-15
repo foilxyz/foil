@@ -161,7 +161,7 @@ const getMarket = {
   }): Promise<CallToolResult> => {
     // The schema has markets(chainId: Int!, marketAddress: String!, marketId: Int!): [MarketType!]!
     // It returns an array, so we'll query for that and typically expect one result for a specific marketId.
-    const query = `
+    const query = /* GraphQL */ `
       query GetMarket($chainId: Int!, $marketAddress: String!, $marketId: Int!) {
         markets(chainId: $chainId, marketAddress: $marketAddress, marketId: $marketId) {
           id

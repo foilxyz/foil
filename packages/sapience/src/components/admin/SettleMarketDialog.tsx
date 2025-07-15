@@ -1,5 +1,3 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-
 import { useWallets } from '@privy-io/react-auth'; // Import useWallets from Privy
 import { Button } from '@sapience/ui/components/ui/button'; // Import Button
 import { Input } from '@sapience/ui/components/ui/input'; // Import Input

@@ -13,11 +13,10 @@ import {
 } from 'recharts';
 
 import LottieLoader from '../shared/LottieLoader';
+import ChartLegend from './ChartLegend';
 import { useMarketGroupChartData } from '~/hooks/graphql/useMarketGroupChartData';
 import type { MultiMarketChartDataPoint } from '~/lib/utils/chartUtils'; // Added for type safety
 import { formatTimestamp, getYAxisConfig } from '~/lib/utils/util'; // Import moved functions
-
-import ChartLegend from './ChartLegend';
 
 // Define a simple color palette for the lines
 const lineColors = ['#3B82F6', '#F87171', '#4ADE80'];
@@ -62,7 +61,7 @@ const MarketGroupChart: React.FC<MarketGroupChartProps> = ({
           ? point.indexClose / 1e18 // Scale Wei down by 10^18
           : point.indexClose; // Keep null/undefined as is
 
-      const scaledMarkets: { [marketId: string]: number | undefined } = {};
+      const scaledMarkets: Record<string, number | undefined> = {};
       if (point.markets) {
         Object.entries(point.markets).forEach(([marketId, value]) => {
           scaledMarkets[marketId] =
@@ -107,7 +106,7 @@ const MarketGroupChart: React.FC<MarketGroupChartProps> = ({
         index < firstNonZeroMarketDataIndex;
 
       if (isLeadingSegment && point.markets) {
-        const updatedMarkets: { [marketId: string]: number | undefined } = {};
+        const updatedMarkets: Record<string, number | undefined> = {};
         Object.entries(point.markets).forEach(([marketId, value]) => {
           // If the value is 0 in the leading segment, set to undefined
           // Otherwise, keep the original value (could be non-zero, null, or already undefined)

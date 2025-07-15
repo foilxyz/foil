@@ -140,7 +140,7 @@ export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
         const data = await graphqlRequest<{
           marketGroups: GraphQLMarketGroup[];
         }>(MARKET_GROUPS_QUERY);
-        if (!data || !data.marketGroups) {
+        if (!data?.marketGroups) {
           console.error('No marketGroups data in response:', data);
           return [];
         }
@@ -176,7 +176,7 @@ export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
           ],
           functionName: 'stEthPerToken',
         });
-        setStEthPerToken(Number(gweiToEther(data as bigint)));
+        setStEthPerToken(Number(gweiToEther(data)));
       } catch (error) {
         toast({
           variant: 'destructive',

@@ -190,33 +190,33 @@ const parseCandleResponse = <
 };
 
 // Type definitions for GraphQL responses
-type MarketCandlesQueryResponse = {
+interface MarketCandlesQueryResponse {
   marketCandlesFromCache: {
     data: CandleType[] | null;
     lastUpdateTimestamp: number;
   } | null;
-};
+}
 
-type IndexCandlesQueryResponse = {
+interface IndexCandlesQueryResponse {
   indexCandlesFromCache: {
     data: Pick<CandleType, 'timestamp' | 'close'>[] | null;
     lastUpdateTimestamp: number;
   } | null;
-};
+}
 
-type ResourceCandlesQueryResponse = {
+interface ResourceCandlesQueryResponse {
   resourceCandlesFromCache: {
     data: Pick<CandleType, 'timestamp' | 'close'>[] | null;
     lastUpdateTimestamp: number;
   } | null;
-};
+}
 
-type TrailingAvgCandlesQueryResponse = {
+interface TrailingAvgCandlesQueryResponse {
   resourceTrailingAverageCandlesFromCache: {
     data: Pick<CandleType, 'timestamp' | 'close'>[] | null;
     lastUpdateTimestamp: number;
   } | null;
-};
+}
 
 const parseCandleResponses = (
   marketResponse: MarketCandlesQueryResponse | null,
@@ -409,9 +409,9 @@ export const usePriceChartData = ({
 
     const marketCandlesFiltered = [];
     let flag = true;
-    for (let i = 0; i < marketCandles.length; i++) {
-      if (!(flag && marketCandles[i].close === '0')) {
-        marketCandlesFiltered.push(marketCandles[i]);
+    for (const candle of marketCandles) {
+      if (!(flag && candle.close === '0')) {
+        marketCandlesFiltered.push(candle);
         flag = false;
       }
     }

@@ -4,7 +4,7 @@ import { useFormContext } from 'react-hook-form';
 
 interface MultipleChoicePredictProps {
   name?: string;
-  options: Array<{ name: string; marketId: number }>;
+  options: { name: string; marketId: number }[];
 }
 
 export default function MultipleChoicePredict({

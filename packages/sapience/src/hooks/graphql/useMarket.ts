@@ -92,9 +92,9 @@ export const useMarket = ({
         }
 
         try {
-          type MarketQueryResult = {
+          interface MarketQueryResult {
             markets: MarketType[];
-          };
+          }
 
           const data = await graphqlRequest<MarketQueryResult>(MARKET_QUERY, {
             address: marketAddress,
@@ -128,7 +128,7 @@ export const useMarket = ({
             return null;
           }
 
-          return targetMarket as MarketType;
+          return targetMarket;
         } catch (error) {
           console.error('Error fetching market:', error);
           return null;

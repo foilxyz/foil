@@ -91,9 +91,9 @@ export function usePositions({ address, marketAddress }: UsePositionsProps) {
         variables.marketAddress = marketAddress;
       }
 
-      type PositionsQueryResult = {
+      interface PositionsQueryResult {
         positions: PositionType[];
-      };
+      }
 
       const data = await graphqlRequest<PositionsQueryResult>(
         POSITIONS_QUERY,

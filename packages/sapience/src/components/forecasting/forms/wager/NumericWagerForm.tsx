@@ -10,11 +10,10 @@ import { z } from 'zod';
 
 import NumericPredict from '../inputs/NumericPredict';
 import { WagerInput, wagerAmountSchema } from '../inputs/WagerInput';
+import PermittedAlert from './PermittedAlert';
 import { useCreateTrade } from '~/hooks/contract/useCreateTrade';
 import { useQuoter } from '~/hooks/forms/useQuoter';
 import { tickToPrice } from '~/lib/utils/tickUtils';
-
-import PermittedAlert from './PermittedAlert';
 
 interface NumericWagerFormProps {
   marketGroupData: MarketGroupType;

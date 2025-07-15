@@ -51,8 +51,8 @@ export function useTokenApproval({
     abi: erc20ABI,
     address: tokenAddress,
     functionName: 'allowance',
-    args: [address as `0x${string}`, spenderAddress as `0x${string}`],
-    account: (address || zeroAddress) as `0x${string}`,
+    args: [address!, spenderAddress!],
+    account: address || zeroAddress,
     chainId,
     query: {
       enabled:
@@ -68,7 +68,7 @@ export function useTokenApproval({
   // Write contract for approval
   const {
     data: approveHash,
-    writeContract: approveWrite,
+    writeContractAsync: approveWrite,
     isPending: isWritePending,
     isError: isWriteError,
     error: writeError,

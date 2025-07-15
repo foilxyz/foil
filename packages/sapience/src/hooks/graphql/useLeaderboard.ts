@@ -42,13 +42,13 @@ interface RawMarketLeaderboardEntry {
 }
 
 // Type definitions for GraphQL responses
-type MarketGroupsQueryResponse = {
+interface MarketGroupsQueryResponse {
   marketGroups: MarketGroupType[];
-};
+}
 
-type MarketLeaderboardQueryResponse = {
+interface MarketLeaderboardQueryResponse {
   getMarketLeaderboard: RawMarketLeaderboardEntry[];
-};
+}
 
 // Hook revised for client-side aggregation
 const useAllTimeLeaderboard = () => {
@@ -102,7 +102,7 @@ const useAllTimeLeaderboard = () => {
         const leaderboardResponses = await Promise.all(leaderboardPromises);
 
         // 4. Aggregate results
-        const aggregatedPnL: { [owner: string]: number } = {};
+        const aggregatedPnL: Record<string, number> = {};
 
         leaderboardResponses.forEach((response, index) => {
           const identifier = publicMarketIdentifiers[index]; // For logging context

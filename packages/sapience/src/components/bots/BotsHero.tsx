@@ -9,7 +9,7 @@ export default function BotsHero() {
   useEffect(() => {
     const iframe = iframeRef.current;
     if (typeof document === 'undefined') return;
-    if (iframe && iframe.contentDocument) {
+    if (iframe?.contentDocument) {
       const style = iframe.contentDocument.createElement('style');
       style.textContent = `
         @tailwind base;
@@ -35,7 +35,6 @@ export default function BotsHero() {
               filter: 'none',
             }}
           >
-            {/* eslint-disable-next-line jsx-a11y/iframe-has-title */}
             <iframe
               ref={iframeRef}
               src="https://my.spline.design/particlesbots-7HFsdWxSwiyuWxwi8RkBNbtE/"

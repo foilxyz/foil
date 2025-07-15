@@ -18,7 +18,7 @@ export default function Hero() {
     const handleIframeLoad = () => {
       const iframe = iframeRef.current;
       if (typeof document === 'undefined') return;
-      if (iframe && iframe.contentDocument) {
+      if (iframe?.contentDocument) {
         try {
           // Try to inject a style element to force light mode
           const style = iframe.contentDocument.createElement('style');
@@ -62,7 +62,6 @@ export default function Hero() {
           filter: 'none',
         }}
       >
-        {/* eslint-disable-next-line jsx-a11y/iframe-has-title */}
         <iframe
           ref={iframeRef}
           src="https://my.spline.design/particles-672e935f9191bddedd3ff0105af8f117/"

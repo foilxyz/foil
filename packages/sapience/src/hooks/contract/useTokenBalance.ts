@@ -32,7 +32,7 @@ export function useTokenBalance({
     abi: erc20ABI,
     address: tokenAddress,
     functionName: 'balanceOf',
-    args: [address as `0x${string}`],
+    args: [address!],
     chainId,
     query: {
       enabled:

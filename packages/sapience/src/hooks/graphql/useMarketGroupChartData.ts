@@ -234,7 +234,7 @@ export const useMarketGroupChartData = ({
             .filter((r) => r.candles !== null) // Filter out errors/null data
             .map((r) => ({
               marketId: r.marketId,
-              candles: r.candles as CandleType[], // Safe due to filter
+              candles: r.candles, // Safe due to filter
             }));
 
         // Calculate index multiplier (unchanged)

@@ -42,9 +42,9 @@ const GET_ATTESTATIONS_QUERY = `
 `;
 
 // Type definition for GraphQL response
-type AttestationsQueryResponse = {
+interface AttestationsQueryResponse {
   attestations: RawAttestation[];
-};
+}
 
 export interface DecodedField {
   name: string;
@@ -59,7 +59,7 @@ export interface DecodedField {
 }
 
 // Define the data type for the formatted attestation record used in the table
-export type FormattedAttestation = {
+export interface FormattedAttestation {
   id: string;
   attester: string;
   shortAttester: string;
@@ -67,7 +67,7 @@ export type FormattedAttestation = {
   time: string; // Formatted time string
   rawTime: number; // Original timestamp
   decodedData: DecodedField[];
-};
+}
 
 // Helper function to parse the JSON string in decodedDataJson
 const parseDecodedData = (decodedDataJson: string): DecodedField[] => {
@@ -188,7 +188,7 @@ const getPredictionDisplayValue = (
   const marketId = extractMarketId(decodedData);
 
   // Prioritize optionNames based on marketId if available
-  if (marketId !== null && optionNames && optionNames[marketId - 1]) {
+  if (marketId !== null && optionNames?.[marketId - 1]) {
     // Adjust marketId (often 1-based) to 0-based index
     return optionNames[marketId - 1];
   }

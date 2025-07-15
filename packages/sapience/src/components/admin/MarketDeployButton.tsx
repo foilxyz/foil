@@ -66,7 +66,7 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
   // Simplified Effect for confirmation
   useEffect(() => {
     // Only run if confirmed and receipt exists
-    if (isConfirmed && receipt && receipt.transactionHash) {
+    if (isConfirmed && receipt?.transactionHash) {
       setDeployedTxHash(receipt.transactionHash);
       setDeployError(null);
     }
@@ -125,13 +125,13 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
         market.marketParamsClaimstatementYesOrNumeric;
       const claimStatementNo = market.marketParamsClaimstatementNo;
       const claimStatementBytesYesOrNumeric = toBytes(
-        claimStatementYesOrNumeric as string
+        claimStatementYesOrNumeric!
       );
       const claimStatementHexYesOrNumeric = bytesToHex(
         claimStatementBytesYesOrNumeric
       );
 
-      const claimStatementBytesNo = toBytes(claimStatementNo as string);
+      const claimStatementBytesNo = toBytes(claimStatementNo!);
       const claimStatementHexNo = bytesToHex(claimStatementBytesNo);
 
       // Ensure numeric values are correctly typed for BigInt/Number conversion
@@ -160,9 +160,8 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
         baseAssetMinPriceTick: minPriceTickNum,
         baseAssetMaxPriceTick: maxPriceTickNum,
         salt,
-        claimStatementYesOrNumeric:
-          claimStatementHexYesOrNumeric as `0x${string}`,
-        claimStatementNo: claimStatementHexNo as `0x${string}`,
+        claimStatementYesOrNumeric: claimStatementHexYesOrNumeric,
+        claimStatementNo: claimStatementHexNo,
       };
 
       console.log('Calling writeContract (createMarket) with args:', args);

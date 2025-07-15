@@ -33,9 +33,9 @@ const GET_MARKET_LEADERBOARD = `
 `;
 
 // Type definition for GraphQL response
-type MarketLeaderboardQueryResponse = {
+interface MarketLeaderboardQueryResponse {
   getMarketLeaderboard: RawMarketLeaderboardEntry[];
-};
+}
 
 const useCryptoPrices = () => {
   return useQuery({

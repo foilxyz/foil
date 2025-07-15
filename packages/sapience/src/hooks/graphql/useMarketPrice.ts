@@ -67,12 +67,12 @@ export function useMarketPrice(
       const interval = 60; // 1 minute intervals
 
       try {
-        type MarketCandlesQueryResult = {
+        interface MarketCandlesQueryResult {
           marketCandlesFromCache: {
             data: CandleType[];
             lastUpdateTimestamp: number;
           };
-        };
+        }
 
         const data = await graphqlRequest<MarketCandlesQueryResult>(
           MARKET_CANDLES_QUERY,

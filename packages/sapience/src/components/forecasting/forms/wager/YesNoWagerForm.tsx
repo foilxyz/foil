@@ -10,10 +10,9 @@ import { z } from 'zod';
 
 import { WagerInput, wagerAmountSchema } from '../inputs/WagerInput';
 import YesNoPredict from '../inputs/YesNoPredict';
+import PermittedAlert from './PermittedAlert';
 import { useCreateTrade } from '~/hooks/contract/useCreateTrade';
 import { useQuoter } from '~/hooks/forms/useQuoter';
-
-import PermittedAlert from './PermittedAlert';
 
 interface YesNoWagerFormProps {
   marketGroupData: MarketGroupType;
