@@ -229,12 +229,19 @@ export function useModifyTrade({
     try {
       const deadline = BigInt(Math.floor(Date.now() / 1000) + 30 * 60); // 30 minutes deadline
 
+      const modifyTradeParams = {
+        positionId,
+        size: BigInt(0),
+        deltaCollateralLimit: BigInt(0),
+        deadline,
+      };
+
       // Close position by setting size to 0
       const hash = await writeContractAsync({
         address: marketAddress,
         abi: marketAbi,
         functionName: 'modifyTraderPosition',
-        args: [positionId, BigInt(0), BigInt(0), deadline], // size = 0, no collateral delta needed for closing
+        args: [modifyTradeParams],
         chainId,
       });
       setTxHash(hash);
