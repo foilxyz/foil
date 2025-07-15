@@ -859,6 +859,7 @@ export const upsertEntitiesFromEvent = async (
       break;
 
     default:
+      console.log('Unhandled event: ', event.logData.eventName);
       skipTransaction = true;
       break;
   }
@@ -883,7 +884,8 @@ export const upsertEntitiesFromEvent = async (
       console.log('Saving new transaction: ', newTransaction);
       const savedTransaction = await prisma.transaction.create({
         data: {
-          ...newTransaction,
+          eventId: newTransaction.eventId,
+          type: newTransaction.type,
           baseToken: newTransaction.baseToken,
           quoteToken: newTransaction.quoteToken,
           borrowedBaseToken: newTransaction.borrowedBaseToken,
@@ -892,6 +894,9 @@ export const upsertEntitiesFromEvent = async (
           lpBaseDeltaToken: newTransaction.lpBaseDeltaToken,
           lpQuoteDeltaToken: newTransaction.lpQuoteDeltaToken,
           tradeRatioD18: newTransaction.tradeRatioD18,
+          positionId: newTransaction.positionId,
+          marketPriceId: newTransaction.marketPriceId,
+          collateralTransferId: newTransaction.collateralTransferId,
         },
       });
 

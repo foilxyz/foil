@@ -51,7 +51,7 @@ export const handleTransferEvent = async (
 
   if (!existingPosition) {
     // Ignore the transfer event until the position is created from another event
-    console.log('Position not found for transfer event: ', Event);
+    console.log('Position not found for transfer event: ', event);
     return;
   }
 
