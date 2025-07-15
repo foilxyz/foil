@@ -1,6 +1,6 @@
-import type { MarketGroupType, MarketType } from '@sapience/ui/types';
 import type { ReactNode } from 'react';
 import { createContext, useContext } from 'react';
+import type { MarketGroupType, MarketType } from '@sapience/ui/types';
 
 import { useMarketGroup } from '~/hooks/graphql/useMarketGroup';
 import type { MarketGroupClassification } from '~/lib/types';

@@ -3,7 +3,7 @@ import { Loader2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { foilApi } from '../../lib/api';
 import { cn } from '../../lib/utils';
-import { TimeInterval, TimeWindow } from '../../types/charts';
+import type { TimeInterval, TimeWindow } from '../../types/charts';
 import {
   Tooltip,
   TooltipContent,
@@ -18,7 +18,7 @@ interface ChartProps {
     chainId: number;
     address: string;
   };
-  seriesVisibility?: {
+  _seriesVisibility?: {
     candles: boolean;
     index: boolean;
     resource: boolean;
@@ -34,7 +34,7 @@ interface ChartProps {
 export const Chart = ({
   resourceSlug,
   market,
-  seriesVisibility = {
+  _seriesVisibility = {
     candles: true,
     index: true,
     resource: true,
@@ -45,10 +45,10 @@ export const Chart = ({
   onHoverChange,
 }: ChartProps) => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
-  const [isHovering, setIsHovering] = useState(false);
+  const [_isHovering, setIsHovering] = useState(false);
   const [isLogarithmic, setIsLogarithmic] = useState(false);
 
-  const { data: chartData, isLoading } = useQuery({
+  const { data: _chartData, isLoading } = useQuery({
     queryKey: [
       'chart',
       market.chainId,

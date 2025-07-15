@@ -3,17 +3,16 @@ import { NumberDisplay } from '@sapience/ui/components/NumberDisplay';
 import { Button } from '@sapience/ui/components/ui/button';
 import { useToast } from '@sapience/ui/hooks/use-toast';
 import { sapienceAbi } from '@sapience/ui/lib/abi';
-import type { MarketGroupType } from '@sapience/ui/types';
 import { useEffect, useMemo, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import type { MarketGroupType } from '@sapience/ui/types';
 import MultipleChoicePredict from '../inputs/MultipleChoicePredict';
 import { WagerInput, wagerAmountSchema } from '../inputs/WagerInput';
+import PermittedAlert from './PermittedAlert';
 import { useCreateTrade } from '~/hooks/contract/useCreateTrade';
 import { useQuoter } from '~/hooks/forms/useQuoter';
-
-import PermittedAlert from './PermittedAlert';
 
 interface MultipleChoiceWagerFormProps {
   marketGroupData: MarketGroupType;
@@ -145,7 +144,7 @@ export default function MultipleChoiceWagerForm({
 
     // Get the selected option name based on predictionValue
     const selectedOptionName = (marketGroupData.markets || []).find(
-      (market: any) => market.marketId === Number(predictionValue)
+      (market) => market.marketId === Number(predictionValue)
     )?.optionName;
 
     return (
@@ -167,7 +166,7 @@ export default function MultipleChoiceWagerForm({
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(handleSubmit)} className="space-y-6">
         <MultipleChoicePredict
-          options={(marketGroupData.markets || []).map((market: any) => ({
+          options={(marketGroupData.markets || []).map((market) => ({
             name: market.optionName || '',
             marketId: market.marketId,
           }))}

@@ -35,9 +35,8 @@ import {
   DEFAULT_FOCUS_AREA,
   FOCUS_AREAS,
 } from '../../lib/constants/focusAreas';
-import { ADMIN_AUTHENTICATE_MSG } from '~/lib/constants';
-
 import MarketFormFields, { type MarketInput } from './MarketFormFields'; // Import shared form and type
+import { ADMIN_AUTHENTICATE_MSG } from '~/lib/constants';
 
 // Use environment variable for API base URL, fallback to /api
 const API_BASE_URL = process.env.NEXT_PUBLIC_FOIL_API_URL || '/api';
@@ -482,7 +481,7 @@ const CombinedMarketDialog = () => {
   const validateFormData = (): string | null => {
     // Prepare markets for validation by removing client-side 'id'
     const marketsToValidate = markets.map(
-      ({ id, ...marketData }) => marketData
+      ({ id: _id, ...marketData }) => marketData
     );
 
     const formData = {
@@ -589,7 +588,7 @@ const CombinedMarketDialog = () => {
         resourceId: selectedResourceId || undefined,
         isCumulative: selectedResourceId ? isCumulative : undefined,
         isBridged,
-        markets: markets.map(({ id, ...market }) => market), // Remove client-side id
+        markets: markets.map(({ id: _id, ...market }) => market), // Remove client-side id
         signature: undefined, // Will be set after signing
         signatureTimestamp,
       };
@@ -607,7 +606,7 @@ const CombinedMarketDialog = () => {
       payload.signature = signature;
 
       // Create the market group
-      await createMarketGroup(payload);
+      await createMarketGroup(payload); // eslint-disable-line @typescript-eslint/await-thenable
 
       // Play success sound
       const audio = new Audio(CAT_MEOW_FILE);

@@ -8,7 +8,6 @@ import {
   TableHeader,
   TableRow,
 } from '@sapience/ui/components/ui/table';
-import { cn } from '@sapience/ui/lib/utils';
 import {
   useReactTable,
   flexRender,
@@ -17,6 +16,7 @@ import {
 } from '@tanstack/react-table';
 import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
+import { cn } from '@sapience/ui/lib/utils';
 
 import ProfitCell from '~/components/leaderboard/ProfitCell';
 import { AddressDisplay } from '~/components/shared/AddressDisplay';

@@ -1,5 +1,3 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-
 import { NumberDisplay } from '@sapience/ui/components/NumberDisplay';
 import { SlippageTolerance } from '@sapience/ui/components/SlippageTolerance';
 import {
@@ -33,6 +31,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { useAccount, useReadContract } from 'wagmi';
 
+import type { TradeFormMarketDetails } from './CreateTradeForm';
 import LottieLoader from '~/components/shared/LottieLoader';
 import { useModifyTrade } from '~/hooks/contract/useModifyTrade';
 import { useModifyTradeQuoter } from '~/hooks/contract/useModifyTradeQuoter';
@@ -46,8 +45,6 @@ import {
 import { useMarketPage } from '~/lib/context/MarketPageProvider';
 import { MarketGroupClassification } from '~/lib/types'; // Added import
 import { bigIntAbs } from '~/lib/utils/util';
-
-import type { TradeFormMarketDetails } from './CreateTradeForm';
 
 // Define Props including marketDetails
 interface ModifyTradeFormProps {

@@ -1,5 +1,3 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-
 import { useWallets } from '@privy-io/react-auth'; // Import useWallets from Privy
 import { Button } from '@sapience/ui/components/ui/button'; // Import Button
 import { Input } from '@sapience/ui/components/ui/input'; // Import Input
@@ -7,11 +5,11 @@ import { Label } from '@sapience/ui/components/ui/label'; // Import Label
 import { Separator } from '@sapience/ui/components/ui/separator'; // Import Separator
 import { useToast } from '@sapience/ui/hooks/use-toast'; // Import useToast
 import { useSapienceAbi } from '@sapience/ui/hooks/useSapienceAbi'; // Import the hook
-import type { MarketType as Market } from '@sapience/ui/types'; // Import types
 import { Loader2 } from 'lucide-react'; // Import Loader2
 import { useState } from 'react'; // Import useState and useMemo
 import { erc20Abi, fromHex, zeroAddress } from 'viem'; // Import Abi type and fromHex
 import { useReadContract, useWriteContract } from 'wagmi'; // Import wagmi hooks
+import type { MarketType as Market } from '@sapience/ui/types'; // Import types
 
 import { NO_SQRT_RATIO, YES_SQRT_RATIO } from '~/lib/constants/numbers';
 

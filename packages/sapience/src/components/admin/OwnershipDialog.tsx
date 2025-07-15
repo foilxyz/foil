@@ -59,7 +59,7 @@ const OwnershipDialog = ({
       await nominateNewOwner(nomineeAddress as Address);
       setNomineeAddress('');
       onOpenChange(false);
-    } catch (err) {
+    } catch (_err) {
       setNomineeError(nominateError?.message || 'Failed to nominate owner');
     }
   };
@@ -68,7 +68,7 @@ const OwnershipDialog = ({
     try {
       await acceptOwnership();
       onOpenChange(false);
-    } catch (err) {
+    } catch (_err) {
       // Optionally handle error
     }
   };

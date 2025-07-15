@@ -1,8 +1,10 @@
+import Link from 'next/link';
+import { CircleHelp } from 'lucide-react';
+
 import { Toggle } from '../ui/toggle';
 import { cn } from '../../lib/utils';
 import { LineType } from '../../types/charts';
-import Link from 'next/link';
-import { CircleHelp } from 'lucide-react';
+
 import {
   Tooltip,
   TooltipContent,

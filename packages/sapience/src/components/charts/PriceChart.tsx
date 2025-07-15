@@ -4,12 +4,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@sapience/ui/components/ui/tooltip'; // Assuming shared UI components
-import { cn } from '@sapience/ui/lib/utils'; // Assuming shared utils
-import type { LineType } from '@sapience/ui/types/charts';
-import { TimeInterval } from '@sapience/ui/types/charts'; // Assuming shared types
 import dynamic from 'next/dynamic'; // Add dynamic import
 import { useRef, useEffect } from 'react';
 import type React from 'react';
+import { cn } from '@sapience/ui/lib/utils'; // Assuming shared utils
+import type { LineType } from '@sapience/ui/types/charts';
+import { TimeInterval } from '@sapience/ui/types/charts'; // Assuming shared types
 
 import { useLightweightChart } from '~/hooks/charts/useLightweightChart';
 import { usePriceChartData } from '~/hooks/charts/usePriceChartData';

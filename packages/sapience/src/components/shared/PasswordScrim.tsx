@@ -209,7 +209,6 @@ const PasswordScrim = () => {
             transition={{ duration: 0.5 }}
             className="absolute inset-0 w-full h-full pointer-events-none z-1"
           >
-            {/* eslint-disable-next-line jsx-a11y/iframe-has-title */}
             <iframe
               ref={iframeRef}
               src="https://my.spline.design/particlesfutarchy-SDhuN0OYiCRHRPt2fFec4bCm/"

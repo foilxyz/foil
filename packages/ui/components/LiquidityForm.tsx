@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import type {
+  LiquidityFormValues} from '../hooks/useLiquidityForm';
 import {
-  LiquidityFormValues,
   useLiquidityForm,
 } from '../hooks/useLiquidityForm';
 import { NumberDisplay } from './NumberDisplay';
@@ -32,13 +33,13 @@ export function LiquidityForm({
   onConnectWallet,
 }: LiquidityFormProps) {
   const form = useLiquidityForm();
-  const { handleSubmit, control, watch, setValue } = form;
+  const { handleSubmit, control, watch, setValue: _setValue } = form;
 
   // Mock state values
-  const [walletBalance, setWalletBalance] = useState('100.0');
+  const [walletBalance, _setWalletBalance] = useState('100.0');
   const [virtualBaseTokens, setVirtualBaseTokens] = useState('0');
   const [virtualQuoteTokens, setVirtualQuoteTokens] = useState('0');
-  const [estimatedResultingBalance, setEstimatedResultingBalance] =
+  const [_estimatedResultingBalance, setEstimatedResultingBalance] =
     useState(walletBalance);
 
   const depositAmount = watch('depositAmount');

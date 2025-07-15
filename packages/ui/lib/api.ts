@@ -56,7 +56,7 @@ export const foilApi = {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return response.json();
+    return await response.json();
   },
   post: async (url: string, data: any) => {
     const response = await fetch(url, {
@@ -69,6 +69,6 @@ export const foilApi = {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return response.json();
+    return await response.json();
   },
 };

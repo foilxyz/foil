@@ -1,4 +1,3 @@
-import { LineType } from '@sapience/ui/types/charts'; // Import LineType
 import type {
   UTCTimestamp,
   IChartApi,
@@ -16,6 +15,7 @@ import {
 import { useTheme } from 'next-themes';
 import { useEffect, useRef, useState } from 'react';
 
+import { LineType } from '@sapience/ui/types/charts'; // Import LineType
 import type { PriceChartDataPoint } from './usePriceChartData'; // Import the shared type
 
 // Reusable colors (consider moving to a shared constants file)

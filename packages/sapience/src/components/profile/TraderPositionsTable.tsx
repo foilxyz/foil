@@ -8,11 +8,11 @@ import {
   TableHeader,
   TableRow,
 } from '@sapience/ui/components/ui/table';
-import type { PositionType } from '@sapience/ui/types';
 import Link from 'next/link';
 import { formatEther } from 'viem';
 import { useAccount } from 'wagmi';
 
+import type { PositionType } from '@sapience/ui/types';
 import SettlePositionButton from '../forecasting/SettlePositionButton';
 import NumberDisplay from '~/components/shared/NumberDisplay';
 import { useMarketPrice } from '~/hooks/graphql/useMarketPrice';
