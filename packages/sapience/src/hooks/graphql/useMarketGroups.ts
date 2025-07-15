@@ -13,8 +13,8 @@ import type { MarketGroupClassification } from '~/lib/types';
 import { getMarketGroupClassification } from '~/lib/utils/marketUtils';
 
 // GraphQL query to fetch categories
-const GET_CATEGORIES = `
-  query GetCategories {
+const GET_CATEGORIES = /* GraphQL */ `
+  query Categories {
     categories {
       id
       name
@@ -76,8 +76,8 @@ export interface Candle {
   close: string;
 }
 
-const LATEST_INDEX_PRICE_QUERY = `
-  query GetLatestIndexPrice($address: String!, $chainId: Int!, $marketId: String!, $from: Int!, $to: Int!, $interval: Int!) {
+const LATEST_INDEX_PRICE_QUERY = /* GraphQL */ `
+  query LatestIndexPrice($address: String!, $chainId: Int!, $marketId: String!, $from: Int!, $to: Int!, $interval: Int!) {
     indexCandlesFromCache(
       address: $address
       chainId: $chainId
@@ -95,8 +95,8 @@ const LATEST_INDEX_PRICE_QUERY = `
   }
 `;
 
-const MARKETS_QUERY = `
-  query GetMarkets {
+const MARKETS_QUERY = /* GraphQL */ `
+  query Markets {
     marketGroups {
       id
       address
@@ -164,8 +164,8 @@ const MARKETS_QUERY = `
   }
 `;
 
-const MARKET_CANDLES_QUERY = `
-  query GetMarketCandlesFromCache(
+const MARKET_CANDLES_QUERY = /* GraphQL */ `
+  query MarketCandlesFromCache(
     $address: String!
     $chainId: Int!
     $marketId: String!
@@ -193,8 +193,8 @@ const MARKET_CANDLES_QUERY = `
   }
 `;
 
-const TOTAL_VOLUME_QUERY = `
-  query GetTotalVolume(
+const TOTAL_VOLUME_QUERY = /* GraphQL */ `
+  query TotalVolume(
     $marketAddress: String!
     $chainId: Int!
     $marketId: Int!
@@ -207,8 +207,8 @@ const TOTAL_VOLUME_QUERY = `
   }
 `;
 
-const OPEN_INTEREST_QUERY = `
-  query GetOpenInterest($marketAddress: String!, $chainId: Int!, $marketId: Int!) {
+const OPEN_INTEREST_QUERY = /* GraphQL */ `
+  query OpenInterest($marketAddress: String!, $chainId: Int!, $marketId: Int!) {
     positions(
       where: {
         market: {

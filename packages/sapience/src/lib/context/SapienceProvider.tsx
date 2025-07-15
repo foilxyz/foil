@@ -54,8 +54,8 @@ const SapienceContext = createContext<SapienceContextType | undefined>(
 );
 
 // Define GraphQL query for market groups
-const MARKET_GROUPS_QUERY = `
-  query GetMarketGroups {
+const MARKET_GROUPS_QUERY = /* GraphQL */ `
+  query MarketGroups {
     marketGroups {
       id
       chainId

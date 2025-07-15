@@ -13,8 +13,8 @@ import {
 } from '../../lib/utils/util';
 
 // GraphQL query to fetch market data
-const MARKET_GROUP_QUERY = `
-  query GetMarketGroup($where: MarketGroupWhereUniqueInput!) {
+const MARKET_GROUP_QUERY = /* GraphQL */ `
+  query MarketGroup($where: MarketGroupWhereUniqueInput!) {
     marketGroup(where: $where) {
       id
       address

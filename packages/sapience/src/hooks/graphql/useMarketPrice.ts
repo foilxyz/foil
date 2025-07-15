@@ -6,8 +6,8 @@ import { useQuery } from '@tanstack/react-query';
 const WEI_PER_ETHER = 1e18;
 
 // --- GraphQL Query for Market Candles ---
-const MARKET_CANDLES_QUERY = `
-  query GetMarketCandlesFromCache(
+const MARKET_CANDLES_QUERY = /* GraphQL */ `
+  query MarketCandlesFromCache(
     $address: String!
     $chainId: Int!
     $marketId: String!

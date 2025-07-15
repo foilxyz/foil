@@ -3,8 +3,8 @@ import type { Market as MarketType } from '@sapience/ui/types/graphql';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
-const MARKET_QUERY = `
-  query GetMarketData($address: String!, $marketId: Int!) {
+const MARKET_QUERY = /* GraphQL */ `
+  query MarketData($address: String!, $marketId: Int!) {
     markets(where: {
       marketGroup: { is: { address: { equals: $address } } },
       marketId: { equals: $marketId }

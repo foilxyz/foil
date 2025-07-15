@@ -9,7 +9,7 @@ import type {
   GetIndexCandlesQuery
 } from '../types/graphql';
 
-const LATEST_RESOURCE_PRICE_QUERY = `
+const LATEST_RESOURCE_PRICE_QUERY = /* GraphQL */ `
   query GetLatestResourcePrice($slug: String!, $from: Int!, $to: Int!, $interval: Int!) {
     resourceCandlesFromCache(
       slug: $slug
@@ -26,7 +26,7 @@ const LATEST_RESOURCE_PRICE_QUERY = `
   }
 `;
 
-const LATEST_INDEX_PRICE_QUERY = `
+const LATEST_INDEX_PRICE_QUERY = /* GraphQL */ `
   query GetLatestIndexPrice($address: String!, $chainId: Int!, $marketId: String!, $from: Int!, $to: Int!, $interval: Int!) {
     indexCandlesFromCache(
       address: $address
@@ -45,7 +45,7 @@ const LATEST_INDEX_PRICE_QUERY = `
   }
 `;
 
-const RESOURCES_QUERY = `
+const RESOURCES_QUERY = /* GraphQL */ `
   query GetResources {
     resources {
       id

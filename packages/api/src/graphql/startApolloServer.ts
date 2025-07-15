@@ -7,8 +7,6 @@ import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import responseCachePlugin from '@apollo/server-plugin-response-cache';
 import depthLimit from 'graphql-depth-limit';
-import { copyFileSync, existsSync } from 'fs';
-import { join } from 'path';
 
 // Import only the query (read-only) resolvers from generated TypeGraphQL
 import {
@@ -197,25 +195,6 @@ export const initializeApolloServer = async () => {
     validate: false,
     emitSchemaFile: true,
   });
-
-  // Copy the generated schema to the sapience folder (only in non-production environments)
-  if (process.env.NODE_ENV !== 'production') {
-    try {
-      const sourceSchemaPath = join(process.cwd(), 'schema.graphql');
-      const targetSchemaPath = join(process.cwd(), '../sapience/src/schema.graphql');
-      
-      if (existsSync(sourceSchemaPath)) {
-        copyFileSync(sourceSchemaPath, targetSchemaPath);
-        console.log('✅ GraphQL schema copied to sapience folder');
-      } else {
-        console.warn('⚠️  Schema file not found at expected location:', sourceSchemaPath);
-      }
-    } catch (error) {
-      console.error('❌ Failed to copy schema to sapience folder:', error);
-    }
-  } else {
-    console.log('ℹ️  Skipping schema copy in production environment');
-  }
 
   // Create Apollo Server with the combined schema and depth limit
   const apolloServer = new ApolloServer({

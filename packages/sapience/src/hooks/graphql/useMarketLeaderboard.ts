@@ -18,8 +18,8 @@ interface RawMarketLeaderboardEntry {
   positionCount: number;
 }
 
-const GET_MARKET_LEADERBOARD = `
-  query GetMarketLeaderboard($chainId: Int!, $address: String!, $marketId: String!) {
+const GET_MARKET_LEADERBOARD = /* GraphQL */ `
+  query MarketLeaderboard($chainId: Int!, $address: String!, $marketId: String!) {
     getMarketLeaderboard(chainId: $chainId, address: $address, marketId: $marketId) {
       marketId
       owner

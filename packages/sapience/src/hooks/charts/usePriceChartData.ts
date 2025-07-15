@@ -6,7 +6,7 @@ import { formatEther } from 'viem';
 import { useSapience } from '../../lib/context/SapienceProvider'; // Corrected path
 
 // GraphQL Queries
-const GET_MARKET_CANDLES = `
+const GET_MARKET_CANDLES = /* GraphQL */ `
   query MarketCandlesFromCache(
     $address: String!
     $chainId: Int!
@@ -35,7 +35,7 @@ const GET_MARKET_CANDLES = `
   }
 `;
 
-const GET_INDEX_CANDLES = `
+const GET_INDEX_CANDLES = /* GraphQL */ `
   query IndexCandlesFromCache(
     $address: String!
     $chainId: Int!
@@ -62,7 +62,7 @@ const GET_INDEX_CANDLES = `
 `;
 
 // Add Resource Candles Query
-const GET_RESOURCE_CANDLES = `
+const GET_RESOURCE_CANDLES = /* GraphQL */ `
   query ResourceCandlesFromCache(
     $slug: String!
     $from: Int!
@@ -87,7 +87,7 @@ const GET_RESOURCE_CANDLES = `
 const TRAILING_AVG_TIME_SECONDS_7_DAYS = 604800; // 7 day trailing average
 const TRAILING_AVG_TIME_SECONDS_28_DAYS = 2419200; // 28 day trailing average
 
-const GET_RESOURCE_TRAILING_AVG_CANDLES = `
+const GET_RESOURCE_TRAILING_AVG_CANDLES =  /* GraphQL */ `
   query ResourceTrailingAverageCandlesFromCache(
     $slug: String!
     $from: Int!

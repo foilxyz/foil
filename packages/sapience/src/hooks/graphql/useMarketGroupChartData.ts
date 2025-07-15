@@ -12,7 +12,7 @@ import { getChainIdFromShortName } from '../../lib/utils/util'; // Import getCha
 import { useSapience } from '~/lib/context/SapienceProvider'; // Import useSapience
 
 // Adjust marketId type if needed (String! vs Int!) based on schema
-const GET_MARKET_CANDLES = `
+const GET_MARKET_CANDLES = /* GraphQL */ `
   query MarketCandlesFromCache(
     $address: String!
     $chainId: Int!
@@ -42,7 +42,7 @@ const GET_MARKET_CANDLES = `
 `;
 
 // Added query for index candles
-const GET_INDEX_CANDLES = `
+const GET_INDEX_CANDLES = /* GraphQL */ `
   query IndexCandlesFromCache(
     $address: String!
     $chainId: Int!

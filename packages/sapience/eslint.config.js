@@ -32,6 +32,7 @@ export default typescriptPlugin.config(
       'import': importPlugin,
       '@typescript-eslint': typescriptPlugin.plugin,
     },
+    processor: graphqlPlugin.processor,
     rules: {
       // Base rules
       'consistent-return': 'off',
@@ -121,8 +122,6 @@ export default typescriptPlugin.config(
       '@graphql-eslint': graphqlPlugin,
     },
     rules: {
-      '@graphql-eslint/no-anonymous-operations': 'error',
-      '@graphql-eslint/fields-on-correct-type': 'error',
       '@typescript-eslint/await-thenable': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
       'no-array-constructor': 'off',
@@ -173,6 +172,14 @@ export default typescriptPlugin.config(
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/triple-slash-reference': 'off',
       '@typescript-eslint/unbound-method': 'off',
+
+
+      '@graphql-eslint/no-anonymous-operations': 'error',
+      '@graphql-eslint/fields-on-correct-type': 'error',
+      '@graphql-eslint/known-argument-names': 'error',
+      '@graphql-eslint/known-type-names': 'error',
+      '@graphql-eslint/no-unused-variables': 'error',
+      '@graphql-eslint/no-undefined-variables': 'error',
       '@graphql-eslint/naming-convention': [
         'error',
         {
@@ -185,92 +192,5 @@ export default typescriptPlugin.config(
       ],
     },
   },
-    
-    // // GraphQL queries in template literals (for TypeScript/JavaScript files)
-    // {
-    //   files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
-    //   processor: graphqlPlugin.processor,
-    //   languageOptions: {
-    //     parserOptions: {
-    //       schema: './src/lib/schema.graphql'
-    //     }
-    //   },
-    //   plugins: {
-    //     '@graphql-eslint': graphqlPlugin,
-    //   },
-    //   rules: {
-    //     '@graphql-eslint/no-anonymous-operations': 'error',
-    //     '@graphql-eslint/fields-on-correct-type': 'error',
-    //     '@graphql-eslint/naming-convention': [
-    //       'error',
-    //       {
-    //         OperationDefinition: {
-    //           forbiddenPrefixes: ['Query', 'Mutation', 'Subscription', 'Get'],
-    //           forbiddenSuffixes: ['Query', 'Mutation', 'Subscription'],
-    //         },
-    //       },
-    //     ],
-    //   },
-    // },
-  
-  // // JavaScript files
-  // {
-  //   files: ['**/*.js', '**/*.jsx'],
-  //   languageOptions: {
-  //     parserOptions: {
-  //       ecmaVersion: 'latest',
-  //       sourceType: 'module',
-  //       ecmaFeatures: {
-  //         jsx: true
-  //       }
-  //     }
-  //   },
-  //   plugins: {
-  //     'react': reactPlugin,
-  //     'react-hooks': reactHooksPlugin,
-  //     'import': importPlugin
-  //   },
-  //   rules: {
-  //     'consistent-return': 'off',
-  //     'no-console': 'off',
-  //     'semi': ['warn', 'always'],
-  //     'complexity': 'off',
-  //     'no-restricted-syntax': 'off',
-  //     'no-empty-pattern': 'warn',
-  //     'no-plusplus': 'off',
-  //     'no-restricted-globals': 'warn',
-  //     'no-underscore-dangle': 'off',
-  //     'react/prop-types': 'off',
-  //     'react/jsx-key': 'warn',
-  //     'react/jsx-no-duplicate-props': 'warn',
-  //     'react/jsx-no-constructed-context-values': 'off',
-  //     'react/destructuring-assignment': 'warn',
-  //     'react/no-array-index-key': 'off',
-  //     'react-hooks/exhaustive-deps': 'warn',
-  //     'import/extensions': [
-  //       'error',
-  //       'ignorePackages',
-  //       {
-  //         'js': 'never',
-  //         'jsx': 'never',
-  //         'ts': 'never',
-  //         'tsx': 'never'
-  //       }
-  //     ],
-  //     'import/order': 'warn'
-  //   },
-  //   settings: {
-  //     react: {
-  //       version: 'detect'
-  //     },
-  //     'import/resolver': {
-  //       typescript: {
-  //         project: 'packages/app/tsconfig.json'
-  //       }
-  //     }
-  //   }
-  // },
-
-  
 );
 

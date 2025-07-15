@@ -74,7 +74,7 @@ const getMarketGroup = {
     address: string;
     chainId: string;
   }): Promise<CallToolResult> => {
-    const query = `
+    const query = /* GraphQL */ `
       query GetMarketGroup($address: String!, $chainId: Int!) {
         marketGroup(address: $address, chainId: $chainId) {
           address
@@ -224,7 +224,7 @@ const getMarketGroups = {
     chainId?: string;
     collateralAsset?: string;
   }): Promise<CallToolResult> => {
-    const query = `
+    const query = /* GraphQL */ `
       query GetMarketGroups($chainId: Int, $collateralAsset: String) {
         marketGroups(chainId: $chainId, collateralAsset: $collateralAsset) {
           id
@@ -370,7 +370,7 @@ const getMarkets = {
           'chainId is required when marketGroupAddress is provided.'
         );
       }
-      query = `
+      query = /* GraphQL */ `
         query GetMarketsFromGroup($address: String!, $chainId: Int!, $marketFilter: MarketFilterInput) {
           marketGroup(address: $address, chainId: $chainId) {
             markets(filter: $marketFilter) {
@@ -408,7 +408,7 @@ const getMarkets = {
       }
     } else {
       // Query across multiple market groups, optionally filtered by chainId
-      query = `
+      query = /* GraphQL */ `
         query GetFilteredMarkets($chainId: Int, $marketFilter: MarketFilterInput) {
           marketGroups(chainId: $chainId) { # Filter market groups by chainId if provided
             markets(filter: $marketFilter) { # Apply market filter here
@@ -494,7 +494,7 @@ const getPositions = {
     marketAddress?: string;
     owner?: string;
   }): Promise<CallToolResult> => {
-    const query = `
+    const query = /* GraphQL */ `
       query GetPositions($chainId: Int, $marketAddress: String, $owner: String) {
         positions(chainId: $chainId, marketAddress: $marketAddress, owner: $owner) {
           id
@@ -565,7 +565,7 @@ const getResource = {
     },
   },
   function: async ({ slug }: { slug: string }): Promise<CallToolResult> => {
-    const query = `
+    const query = /* GraphQL */ `
       query GetResource($slug: String!) {
         resource(slug: $slug) {
           id
@@ -614,7 +614,7 @@ const getResources = {
     properties: {},
   },
   function: async (): Promise<CallToolResult> => {
-    const query = `
+    const query = /* GraphQL */ `
       query ListResources {
         resources {
           id
@@ -679,7 +679,7 @@ const getTransactions = {
   }: {
     positionId?: string;
   }): Promise<CallToolResult> => {
-    const query = `
+    const query = /* GraphQL */ `
       query GetTransactions($positionId: Int) {
         transactions(positionId: $positionId) {
           id
@@ -789,7 +789,7 @@ const getMarketCandles = {
   }): Promise<CallToolResult> => {
     const intervalSeconds = intervalToSeconds(interval);
 
-    const query = `
+    const query = /* GraphQL */ `
       query GetMarketCandles($address: String!, $chainId: Int!, $marketId: String!, $from: Int!, $to: Int!, $interval: Int!) {
         marketCandlesFromCache(address: $address, chainId: $chainId, marketId: $marketId, from: $from, to: $to, interval: $interval) {
           data {
@@ -848,7 +848,7 @@ const getResourceCandles = {
   }): Promise<CallToolResult> => {
     const intervalSeconds = intervalToSeconds(interval);
 
-    const query = `
+    const query = /* GraphQL */ `
       query GetResourceCandles($slug: String!, $from: Int!, $to: Int!, $interval: Int!) {
         resourceCandlesFromCache(slug: $slug, from: $from, to: $to, interval: $interval) {
           data {
@@ -911,7 +911,7 @@ const getResourceTrailingAverageCandles = {
     const intervalSeconds = intervalToSeconds(interval);
     const trailingAvgSeconds = intervalToSeconds(trailingAvgTime);
 
-    const query = `
+    const query = /* GraphQL */ `
       query GetResourceTrailingAverageCandles($slug: String!, $from: Int!, $to: Int!, $interval: Int!, $trailingAvgTime: Int!) {
         resourceTrailingAverageCandlesFromCache(slug: $slug, from: $from, to: $to, interval: $interval, trailingAvgTime: $trailingAvgTime) {
           data {
@@ -981,7 +981,7 @@ const getIndexCandles = {
   }): Promise<CallToolResult> => {
     const intervalSeconds = intervalToSeconds(interval);
 
-    const query = `
+    const query = /* GraphQL */ `
       query GetIndexCandles($address: String!, $chainId: Int!, $marketId: String!, $from: Int!, $to: Int!, $interval: Int!) {
         indexCandlesFromCache(address: $address, chainId: $chainId, marketId: $marketId, from: $from, to: $to, interval: $interval) {
           data {

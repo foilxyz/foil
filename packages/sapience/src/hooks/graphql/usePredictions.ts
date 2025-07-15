@@ -14,7 +14,7 @@ interface RawAttestation {
 }
 
 // Parameterized version of the query
-const GET_ATTESTATIONS_QUERY = `
+const GET_ATTESTATIONS_QUERY = /* GraphQL */  `
   query FindAttestations(
     $schemaId: String!
     $take: Int!
