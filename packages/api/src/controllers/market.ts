@@ -664,7 +664,7 @@ export const upsertEntitiesFromEvent = async (
   chainId: number
 ) => {
   // First check if this event has already been processed by looking for an existing transaction
-  let existingTransaction = await prisma.transaction.findFirst({
+  const existingTransaction = await prisma.transaction.findFirst({
     where: { eventId: event.id },
   });
 
