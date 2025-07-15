@@ -23,7 +23,7 @@ services:
     type: worker
     env: node
     plan: standard
-    buildCommand: chmod +x render-build.sh && ./render-build.sh && pnpm --filter @sapience/api install
+    buildCommand: chmod +x render-build.sh && ./render-build.sh && pnpm --filter @sapience/api install && pnpm --filter @sapience/api prisma:generate
     startCommand: pnpm --filter @sapience/api start:worker
     autoDeploy: true
     branch: main
