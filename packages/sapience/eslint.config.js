@@ -76,7 +76,7 @@ export default typescriptPlugin.config(
       '@typescript-eslint/consistent-type-imports': 'warn',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
 
-      // DANGER ZONE: Turn on when looking for bugs! (MOM TOLD ME TO TURN IT OFF)
+      // DANGER ZONE: Turn on when looking for bugs! (MOM TOLD ME TO TURN IT OFF I SWEAR)
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
