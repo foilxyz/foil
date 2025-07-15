@@ -128,12 +128,12 @@ model Market {
   minPriceD18                        Decimal?      @db.Decimal(78, 0)
   maxPriceD18                        Decimal?      @db.Decimal(78, 0)
   marketGroupId                      Int?
+  claimStatementYesOrNumeric         String?       @db.VarChar
+  claimStatementNo                   String?       @db.VarChar
   marketParamsFeerate                Int?
   marketParamsAssertionliveness      Decimal?      @db.Decimal(78, 0)
   marketParamsBondcurrency           String?       @db.VarChar
   marketParamsBondamount             Decimal?      @db.Decimal(78, 0)
-  marketParamsClaimstatementYesOrNumeric         String?       @db.VarChar
-  marketParamsClaimstatementNo       String?       @db.VarChar
   marketParamsUniswappositionmanager String?       @db.VarChar
   marketParamsUniswapswaprouter      String?       @db.VarChar
   marketParamsUniswapquoter          String?       @db.VarChar
@@ -171,8 +171,6 @@ model MarketGroup {
   marketParamsAssertionliveness      Decimal?  @db.Decimal(78, 0)
   marketParamsBondcurrency           String?   @db.VarChar
   marketParamsBondamount             Decimal?  @db.Decimal(78, 0)
-  marketParamsClaimstatementYesOrNumeric         String?   @db.VarChar
-  marketParamsClaimstatementNo       String?   @db.VarChar
   marketParamsUniswappositionmanager String?   @db.VarChar
   marketParamsUniswapswaprouter      String?   @db.VarChar
   marketParamsUniswapquoter          String?   @db.VarChar
