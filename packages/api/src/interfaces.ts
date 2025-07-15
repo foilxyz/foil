@@ -96,11 +96,10 @@ export interface MarketData {
 
 export interface MarketGroupCreatedUpdatedEventLog {
   initialOwner?: string;
-  uniswapPositionManager: string;
   collateralAsset?: string;
-  uniswapSwapRouter: string;
-  optimisticOracleV3: string;
-  isBridged: boolean;
+  feeCollectorNFT?: string;
+  minTradeSize?: string;
+  isBridged?: boolean;
   marketParams: MarketParams;
 }
 

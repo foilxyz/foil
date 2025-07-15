@@ -549,11 +549,13 @@ export const createOrUpdateMarketGroupFromEvent = async (
         marketParamsBondamount:
           eventArgs?.marketParams?.bondAmount?.toString() || null,
         marketParamsUniswappositionmanager:
-          eventArgs?.uniswapPositionManager || null,
-        marketParamsUniswapswaprouter: eventArgs?.uniswapSwapRouter || null,
+          eventArgs?.marketParams?.uniswapPositionManager || null,
+        marketParamsUniswapswaprouter:
+          eventArgs?.marketParams?.uniswapSwapRouter || null,
         marketParamsUniswapquoter:
           eventArgs?.marketParams?.uniswapQuoter || null,
-        marketParamsOptimisticoraclev3: eventArgs?.optimisticOracleV3 || null,
+        marketParamsOptimisticoraclev3:
+          eventArgs?.marketParams?.optimisticOracleV3 || null,
       },
     });
   }

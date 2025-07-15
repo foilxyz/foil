@@ -735,11 +735,12 @@ export const upsertEntitiesFromEvent = async (
       console.log('initializing market group. event: ', event);
       // TODO: Check if this is correct. Looks like events params are missing here
       const marketGroupCreatedArgs = {
-        uniswapPositionManager: event.logData.args.uniswapPositionManager,
-        uniswapSwapRouter: event.logData.args.uniswapSwapRouter,
-        optimisticOracleV3: event.logData.args.optimisticOracleV3,
-        marketParams: event.logData.args.marketParams,
+        initialOwner: event.logData.args.initialOwner,
+        collateralAsset: event.logData.args.collateralAsset,
+        feeCollectorNFT: event.logData.args.feeCollectorNFT,
+        minTradeSize: event.logData.args.minTradeSize,
         isBridged: event.logData.args.bridgedSettlement,
+        marketParams: event.logData.args.marketParams,
       } as MarketGroupCreatedUpdatedEventLog;
 
       await createOrUpdateMarketGroupFromEvent(
@@ -754,9 +755,6 @@ export const upsertEntitiesFromEvent = async (
     case EventType.MarketGroupUpdated: {
       console.log('updating market. event: ', event);
       const marketUpdatedArgs = {
-        uniswapPositionManager: event.logData.args.uniswapPositionManager,
-        uniswapSwapRouter: event.logData.args.uniswapSwapRouter,
-        optimisticOracleV3: event.logData.args.optimisticOracleV3,
         marketParams: event.logData.args.marketParams,
       } as MarketGroupCreatedUpdatedEventLog;
 
