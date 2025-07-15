@@ -733,7 +733,6 @@ export const upsertEntitiesFromEvent = async (
     // Market Group events
     case EventType.MarketGroupInitialized: {
       console.log('initializing market group. event: ', event);
-      // TODO: Check if this is correct. Looks like events params are missing here
       const marketGroupCreatedArgs = {
         initialOwner: event.logData.args.initialOwner,
         collateralAsset: event.logData.args.collateralAsset,
