@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import type {
   MarketGroup as MarketGroupType,
   Market as MarketType,
-} from '@sapience/ui/src/types/graphql';
+} from '@sapience/ui/types/graphql';
 import { getMarketGroupClassification } from '../../lib/utils/marketUtils';
 import {
   findActiveMarkets,

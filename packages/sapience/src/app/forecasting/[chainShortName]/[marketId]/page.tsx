@@ -12,12 +12,8 @@ import dynamic from 'next/dynamic';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import { useAccount } from 'wagmi';
-import type { Market as GqlMarketType } from '@sapience/ui/src/types/graphql';
-import {
-  ChartType,
-  LineType,
-  TimeInterval,
-} from '@sapience/ui/src/types/charts';
+import type { Market as GqlMarketType } from '@sapience/ui/types/graphql';
+import { ChartType, LineType, TimeInterval } from '@sapience/ui/types/charts';
 
 import OrderBookChart from '~/components/charts/OrderBookChart';
 import PriceChart from '~/components/charts/PriceChart';

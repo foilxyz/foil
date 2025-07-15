@@ -22,7 +22,7 @@ import dynamic from 'next/dynamic'; // Import dynamic
 import { useSearchParams, useRouter } from 'next/navigation';
 import * as React from 'react';
 
-import { type Market as GraphQLMarketType } from '@sapience/ui/src/types/graphql';
+import { type Market as GraphQLMarketType } from '@sapience/ui/types/graphql';
 import MarketGroupsRow from './MarketGroupsRow';
 import {
   useEnrichedMarketGroups,

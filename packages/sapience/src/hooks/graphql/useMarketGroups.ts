@@ -6,7 +6,7 @@ import type {
   MarketGroup as MarketGroupType,
   Category as CategoryType,
   Position as PositionType,
-} from '@sapience/ui/src/types/graphql';
+} from '@sapience/ui/types/graphql';
 
 import { FOCUS_AREAS, DEFAULT_FOCUS_AREA } from '~/lib/constants/focusAreas';
 import type { MarketGroupClassification } from '~/lib/types';

@@ -16,7 +16,7 @@ import { useAccount } from 'wagmi';
 import type {
   MarketGroup as MarketGroupType,
   Market as MarketType,
-} from '@sapience/ui/src/types/graphql';
+} from '@sapience/ui/types/graphql';
 import { useSapience } from '../../../lib/context/SapienceProvider';
 import MarketGroupChart from '~/components/forecasting/MarketGroupChart';
 import MarketGroupHeader from '~/components/forecasting/MarketGroupHeader';

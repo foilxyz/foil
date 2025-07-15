@@ -18,7 +18,7 @@ import { useState } from 'react';
 import type { Address } from 'viem';
 import { formatEther } from 'viem';
 
-import type { MarketType } from '@sapience/ui/src/types';
+import type { MarketType } from '@sapience/ui/types';
 import AddMarketDialog from './AddMarketDialog';
 import EnableBridgedMarketGroupButton from './EnableBridgedMarketGroupButton';
 import MarketDeployButton from './MarketDeployButton';

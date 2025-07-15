@@ -1,6 +1,6 @@
 import type { Abi } from 'abitype';
-import sapience from '../../../protocol/deployments/Sapience.json';
-import sapienceFactory from '../../../protocol/deployments/SapienceFactory.json';
+import sapience from '../../protocol/deployments/Sapience.json';
+import sapienceFactory from '../../protocol/deployments/SapienceFactory.json';
 
 export const sapienceAbi = () => {
   const abi: Abi = sapience.abi as Abi;

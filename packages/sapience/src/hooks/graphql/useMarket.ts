@@ -1,7 +1,7 @@
 import { graphqlRequest } from '@sapience/ui/lib';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import type { Market as MarketType } from '@sapience/ui/src/types/graphql';
+import type { Market as MarketType } from '@sapience/ui/types/graphql';
 
 const MARKET_QUERY = /* GraphQL */ `
   query MarketData($address: String!, $marketId: Int!) {

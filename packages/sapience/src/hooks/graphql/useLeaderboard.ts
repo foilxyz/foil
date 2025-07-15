@@ -1,7 +1,7 @@
 import { graphqlRequest } from '@sapience/ui/lib';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import type { MarketGroup as MarketGroupType } from '@sapience/ui/src/types/graphql';
+import type { MarketGroup as MarketGroupType } from '@sapience/ui/types/graphql';
 
 import { foilApi } from '~/lib/utils/util';
 

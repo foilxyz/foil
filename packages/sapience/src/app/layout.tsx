@@ -10,7 +10,7 @@ import Layout from '~/components/layout';
 import GlobalLoader from '~/components/shared/GlobalLoader';
 import PasswordScrim from '~/components/shared/PasswordScrim';
 import { LoadingProvider } from '~/lib/context/LoadingContext';
-import '../styles/globals.css';
+import '~/styles/globals.css';
 
 type RootLayoutProps = {
   children: React.ReactNode;

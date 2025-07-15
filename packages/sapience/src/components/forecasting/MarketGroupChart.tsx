@@ -11,7 +11,7 @@ import {
   YAxis,
 } from 'recharts';
 
-import type { MarketGroup as MarketGroupType } from '@sapience/ui/src/types/graphql';
+import type { MarketGroup as MarketGroupType } from '@sapience/ui/types/graphql';
 import LottieLoader from '../shared/LottieLoader';
 import ChartLegend from './ChartLegend';
 import { useMarketGroupChartData } from '~/hooks/graphql/useMarketGroupChartData';

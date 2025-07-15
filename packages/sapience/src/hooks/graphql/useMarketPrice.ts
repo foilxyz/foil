@@ -1,6 +1,6 @@
 import { graphqlRequest } from '@sapience/ui/lib';
 import { useQuery } from '@tanstack/react-query';
-import type { CandleType } from '@sapience/ui/src/types/graphql';
+import type { CandleType } from '@sapience/ui/types/graphql';
 
 // --- Constants ---
 const WEI_PER_ETHER = 1e18;

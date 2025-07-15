@@ -20,7 +20,7 @@ import { useEffect, useState } from 'react';
 import type { Address } from 'viem';
 import { bytesToHex, toBytes } from 'viem';
 import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
-import type { MarketType } from '@sapience/ui/src/types';
+import type { MarketType } from '@sapience/ui/types';
 
 interface MarketDeployButtonProps {
   market: MarketType; // Use the adjusted market type

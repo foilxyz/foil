@@ -7,7 +7,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import type { MarketGroupType } from '@sapience/ui/src/types';
+import type { MarketGroupType } from '@sapience/ui/types';
 import MultipleChoicePredict from '../inputs/MultipleChoicePredict';
 import { WagerInput, wagerAmountSchema } from '../inputs/WagerInput';
 import PermittedAlert from './PermittedAlert';

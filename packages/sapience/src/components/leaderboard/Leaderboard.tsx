@@ -17,7 +17,7 @@ import {
 import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
 
-import { cn } from '@sapience/ui/src/lib/utils';
+import { cn } from '@sapience/ui/lib/utils';
 import ProfitCell from './ProfitCell';
 import { AddressDisplay } from '~/components/shared/AddressDisplay';
 import type { AggregatedLeaderboardEntry } from '~/hooks/graphql/useLeaderboard';

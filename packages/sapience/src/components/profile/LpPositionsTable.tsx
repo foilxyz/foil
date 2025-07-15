@@ -18,7 +18,7 @@ import Link from 'next/link';
 import { formatEther } from 'viem';
 import { useAccount } from 'wagmi';
 
-import type { PositionType } from '@sapience/ui/src/types';
+import type { PositionType } from '@sapience/ui/types';
 import SettlePositionButton from '../forecasting/SettlePositionButton';
 import NumberDisplay from '~/components/shared/NumberDisplay';
 import { getChainShortName, tickToPrice } from '~/lib/utils/util';

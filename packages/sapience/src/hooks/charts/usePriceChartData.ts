@@ -2,7 +2,7 @@ import { graphqlRequest } from '@sapience/ui/lib';
 import { useQuery } from '@tanstack/react-query';
 import { formatEther } from 'viem';
 
-import type { CandleType } from '@sapience/ui/src/types/graphql';
+import type { CandleType } from '@sapience/ui/types/graphql';
 import { useSapience } from '../../lib/context/SapienceProvider'; // Corrected path
 
 // GraphQL Queries

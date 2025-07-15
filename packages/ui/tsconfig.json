@@ -34,7 +34,12 @@
     "**/*.tsx",
     "src",
     "commitlint.config.js",
-    ".next/types/**/*.ts"
-, "src/componentssrc/hooksooks", "src/lib", "src/providers"  ],
+    ".next/types/**/*.ts", 
+    "components", 
+    "hooks", 
+    "lib", 
+    "providers",
+    "types"
+  ],
   "exclude": ["node_modules"]
 }

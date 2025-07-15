@@ -114,23 +114,19 @@ export default typescriptPlugin.config(
       }
     }
   },
+  // Ignorelist
   {
-    files: ['src/types/graphql.ts', 'src/lib/api.ts'],
+    files: [
+      'types/graphql.ts', 
+      'lib/api.ts', 
+      'eslint.config.js', 
+      'graphql.config.js', 
+      'tailwind.config.js', 
+      'tailwind-preset.js',
+      '**/*.graphql'
+    ],
     rules: {
-      "@typescript-eslint/no-explicit-any": "off",
-      '@typescript-eslint/no-unsafe-return': 'off',
-    }
-  },
-  // GraphQL files
-  {
-    files: ['**/*.graphql'],
-    languageOptions: {
-      parser: graphqlPlugin.parser,
-    },
-    plugins: {
-      '@graphql-eslint': graphqlPlugin,
-    },
-    rules: {
+      'no-undef': 'off',
       '@typescript-eslint/await-thenable': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
       'no-array-constructor': 'off',
@@ -181,8 +177,18 @@ export default typescriptPlugin.config(
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/triple-slash-reference': 'off',
       '@typescript-eslint/unbound-method': 'off',
-
-
+    }
+  },
+  // GraphQL files
+  {
+    files: ['**/*.graphql'],
+    languageOptions: {
+      parser: graphqlPlugin.parser,
+    },
+    plugins: {
+      '@graphql-eslint': graphqlPlugin,
+    },
+    rules: {
       '@graphql-eslint/no-anonymous-operations': 'error',
       '@graphql-eslint/fields-on-correct-type': 'error',
       '@graphql-eslint/known-argument-names': 'error',

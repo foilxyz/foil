@@ -10,7 +10,7 @@ import {
 } from '@sapience/ui/components/ui/popover';
 import { CalendarIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { cn } from '@sapience/ui/src/lib/utils';
+import { cn } from '@sapience/ui/lib/utils';
 
 interface DateTimePickerProps {
   value: number; // Unix timestamp

@@ -18,7 +18,7 @@
     "postbuild": "next-sitemap --config next-sitemap.config.js",
     "start": "next start",
     "lint": "eslint .",
-    "lint:fix": "eslint src --fix && pnpm format",
+    "lint:fix": "eslint . --fix && pnpm format",
     "type-check": "tsc --noEmit",
     "check:turbo": "npx turbo lint type-check",
     "test:e2e": "playwright test",

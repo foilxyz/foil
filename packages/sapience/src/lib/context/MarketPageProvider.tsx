@@ -2,7 +2,7 @@ import { useSapienceAbi } from '@sapience/ui/hooks/useSapienceAbi';
 import type { ReactNode } from 'react';
 import { createContext, useContext, useMemo } from 'react';
 import type { Abi, Address } from 'viem';
-import type { MarketType } from '@sapience/ui/src/types';
+import type { MarketType } from '@sapience/ui/types';
 
 import type { UsePositionsResult } from '~/hooks/contract';
 import {

@@ -9,7 +9,7 @@ import { Loader2 } from 'lucide-react'; // Import Loader2
 import { useState } from 'react'; // Import useState and useMemo
 import { erc20Abi, fromHex, zeroAddress } from 'viem'; // Import Abi type and fromHex
 import { useReadContract, useWriteContract } from 'wagmi'; // Import wagmi hooks
-import type { MarketType as Market } from '@sapience/ui/src/types'; // Import types
+import type { MarketType as Market } from '@sapience/ui/types'; // Import types
 
 import { NO_SQRT_RATIO, YES_SQRT_RATIO } from '~/lib/constants/numbers';
 
