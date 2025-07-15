@@ -64,7 +64,7 @@ const RESOURCES_QUERY = `
         address
         isBridged
         chainId
-        market {
+        markets {
           id
           marketId
           startTimestamp
