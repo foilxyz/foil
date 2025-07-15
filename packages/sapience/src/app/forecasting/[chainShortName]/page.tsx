@@ -289,13 +289,14 @@ const MarketGroupPageContent = () => {
             <div>{/* placeholder */}</div>
             {/* Advanced View button (Right Aligned) */}
             <div>
-              <Link
-                href={`${pathname}/${activeMarkets[0]?.marketId}`}
+              <button
+                type="button"
+                onClick={() => setShowMarketSelector(true)}
                 className="text-muted-foreground/70 hover:text-muted-foreground flex items-center gap-1 text-xs tracking-widest transition-all duration-300 font-semibold"
               >
                 ADVANCED VIEW
                 <ChevronRight className="h-3.5 w-3.5" />
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -338,19 +339,116 @@ const MarketGroupPageContent = () => {
               Prediction Markets
             </DialogTitle>
           </DialogHeader>
-          <div className="grid gap-5 pb-2">
-            {activeMarkets.map((market: MarketType) => (
-              <Link
-                key={market.id}
-                href={`${pathname}/${market.marketId}`}
-                onClick={() => setShowMarketSelector(false)}
-                className="block w-full p-4 bg-secondary hover:bg-secondary/80 rounded text-secondary-foreground transition-colors duration-300 text-left text-lg font-medium"
-              >
-                {market.question
-                  ? formatQuestion(market.question)
-                  : `Market ${market.marketId}`}
-              </Link>
-            ))}
+          <div className="space-y-6 pb-2">
+            {(() => {
+              // Categorize markets into active and past
+              const allMarkets = marketGroupData.markets || [];
+              const currentTime = Date.now();
+
+              const activeMarketsList = allMarkets.filter(
+                (market: MarketType) => {
+                  const isExpired =
+                    market.endTimestamp &&
+                    currentTime > Number(market.endTimestamp) * 1000;
+                  return !isExpired;
+                }
+              );
+
+              const pastMarketsList = allMarkets.filter(
+                (market: MarketType) => {
+                  return (
+                    market.endTimestamp &&
+                    currentTime > Number(market.endTimestamp) * 1000
+                  );
+                }
+              );
+
+              return (
+                <>
+                  {/* Active Markets Section */}
+                  {activeMarketsList.length > 0 && (
+                    <div>
+                      <h3 className="font-medium text-sm text-muted-foreground mb-2">
+                        Active Markets
+                      </h3>
+                      <div className="border border-muted rounded shadow-sm bg-background/50 overflow-hidden">
+                        {activeMarketsList.map((market: MarketType) => (
+                          <Link
+                            key={market.id}
+                            href={`${pathname}/${market.marketId}`}
+                            onClick={() => setShowMarketSelector(false)}
+                          >
+                            <div className="bg-background border-muted dark:bg-muted/50 flex flex-row hover:bg-secondary/20 transition-colors items-stretch min-h-[72px] border-b last:border-b-0 border-border">
+                              {/* Colored Bar (Full Height) */}
+                              <div
+                                className="w-1 min-w-[4px] max-w-[4px]"
+                                style={{
+                                  backgroundColor: '#3B82F6',
+                                  margin: '-1px 0',
+                                }}
+                              />
+
+                              {/* Content Container */}
+                              <div className="flex-grow flex flex-col lg:flex-row lg:items-center px-5 py-3">
+                                {/* Question Section */}
+                                <div className="pb-3 lg:pb-0 lg:pr-5">
+                                  <h3 className="text-xl font-heading font-normal">
+                                    {market.question
+                                      ? formatQuestion(market.question)
+                                      : `Market ${market.marketId}`}
+                                  </h3>
+                                </div>
+                              </div>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Past Markets Section */}
+                  {pastMarketsList.length > 0 && (
+                    <div>
+                      <h3 className="font-medium text-sm text-muted-foreground mb-2">
+                        Past Markets
+                      </h3>
+                      <div className="border border-muted rounded shadow-sm bg-background/50 overflow-hidden">
+                        {pastMarketsList.map((market: MarketType) => (
+                          <Link
+                            key={market.id}
+                            href={`${pathname}/${market.marketId}`}
+                            onClick={() => setShowMarketSelector(false)}
+                          >
+                            <div className="bg-background border-muted dark:bg-muted/50 flex flex-row hover:bg-secondary/20 transition-colors items-stretch min-h-[72px] border-b last:border-b-0 border-border opacity-75">
+                              {/* Colored Bar (Full Height) */}
+                              <div
+                                className="w-1 min-w-[4px] max-w-[4px]"
+                                style={{
+                                  backgroundColor: '#71717a',
+                                  margin: '-1px 0',
+                                }}
+                              />
+
+                              {/* Content Container */}
+                              <div className="flex-grow flex flex-col lg:flex-row lg:items-center px-5 py-3">
+                                {/* Question Section */}
+                                <div className="pb-3 lg:pb-0 lg:pr-5">
+                                  <h3 className="text-xl font-heading font-normal">
+                                    {market.question
+                                      ? formatQuestion(market.question)
+                                      : `Market ${market.marketId}`}
+                                  </h3>
+                                </div>
+                              </div>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
           </div>
         </DialogContent>
       </Dialog>
