@@ -651,8 +651,6 @@ const upsertEvent = async (
         include: { market_group: true },
       });
 
-      console.log('LLL updatedEvent: ', updatedEvent);
-      return;
       await upsertEntitiesFromEvent(
         updatedEvent,
         market_groupAddress,
