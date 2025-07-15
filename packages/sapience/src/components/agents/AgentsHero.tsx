@@ -40,7 +40,6 @@ export default function AgentsHeroClientContent() {
         Use Agents with Forecasting Tools
       </h1>
       <div className="absolute inset-0 pointer-events-none top-0 left-0 w-full h-100dvh -scale-y-100 -translate-y-1/4 opacity-50 dark:opacity-75">
-        {/* eslint-disable-next-line jsx-a11y/iframe-has-title */}
         <iframe
           ref={iframeRef}
           src="https://my.spline.design/particlesfutarchy-SDhuN0OYiCRHRPt2fFec4bCm/"

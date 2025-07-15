@@ -1,7 +1,6 @@
 // This file is referenced by jest.config.js in setupFilesAfterEnv, but its contents are currently not needed.
 // Keeping it empty satisfies the config without running unnecessary setup code.
 
-/* eslint-disable max-classes-per-file, import/no-extraneous-dependencies */
 import '@testing-library/jest-dom';
 
 // Polyfill for TextEncoder/TextDecoder which is needed by viem

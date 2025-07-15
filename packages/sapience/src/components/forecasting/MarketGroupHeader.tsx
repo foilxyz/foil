@@ -1,6 +1,6 @@
 import { Badge } from '@sapience/ui/components/ui/badge';
-import type { MarketGroupType, MarketType } from '@sapience/ui/types';
 import { formatDistanceToNow, fromUnixTime } from 'date-fns';
+import type { MarketGroupType, MarketType } from '@sapience/ui/src/types';
 
 import type { MarketGroupClassification } from '~/lib/types';
 

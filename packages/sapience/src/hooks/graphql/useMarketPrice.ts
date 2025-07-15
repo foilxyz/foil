@@ -1,13 +1,13 @@
 import { graphqlRequest } from '@sapience/ui/lib';
-import type { CandleType } from '@sapience/ui/types/graphql';
 import { useQuery } from '@tanstack/react-query';
+import type { CandleType } from '@sapience/ui/src/types/graphql';
 
 // --- Constants ---
 const WEI_PER_ETHER = 1e18;
 
 // --- GraphQL Query for Market Candles ---
-const MARKET_CANDLES_QUERY = `
-  query GetMarketCandles(
+const MARKET_CANDLES_QUERY = /* GraphQL */ `
+  query MarketCandles(
     $address: String!
     $chainId: Int!
     $marketId: String!

@@ -1,5 +1,5 @@
 // Assuming CandleType is defined elsewhere, e.g., in interfaces or generated types
-import type { CandleType } from '@sapience/ui/types/graphql'; // Adjust path if needed
+import type { CandleType } from '@sapience/ui/src/types/graphql'; // Adjust path if needed
 
 // Define the type for index candle data (partial CandleType)
 // Used because the index query only fetches timestamp and close
@@ -97,7 +97,7 @@ export const processCandleData = (
         // Check for valid number
         if (!Number.isNaN(closeValue)) {
           // Multiply raw close value by multiplier to get Wei value (consistent with usePriceChartData)
-          combinedData[ts]!.indexClose = closeValue * indexMultiplier;
+          combinedData[ts].indexClose = closeValue * indexMultiplier;
         } else {
           console.warn(
             `Invalid index close value encountered: ${candle.close} at timestamp ${ts}`

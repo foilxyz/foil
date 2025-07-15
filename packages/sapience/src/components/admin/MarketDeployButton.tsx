@@ -15,12 +15,12 @@ import {
   DialogTrigger,
 } from '@sapience/ui/components/ui/dialog';
 import { sapienceAbi } from '@sapience/ui/lib/abi';
-import type { MarketType } from '@sapience/ui/types';
 import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { Address } from 'viem';
 import { bytesToHex, toBytes } from 'viem';
 import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
+import type { MarketType } from '@sapience/ui/src/types';
 
 interface MarketDeployButtonProps {
   market: MarketType; // Use the adjusted market type
@@ -156,13 +156,12 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
       const args = {
         startTime: BigInt(startTimeNum),
         endTime: BigInt(endTimeNum),
-        startingSqrtPriceX96: BigInt(market.startingSqrtPriceX96!),
+        startingSqrtPriceX96: BigInt(market.startingSqrtPriceX96 ?? '0'),
         baseAssetMinPriceTick: minPriceTickNum,
         baseAssetMaxPriceTick: maxPriceTickNum,
         salt,
-        claimStatementYesOrNumeric:
-          claimStatementHexYesOrNumeric as `0x${string}`,
-        claimStatementNo: claimStatementHexNo as `0x${string}`,
+        claimStatementYesOrNumeric: claimStatementHexYesOrNumeric,
+        claimStatementNo: claimStatementHexNo,
       };
 
       console.log('Calling writeContract (createMarket) with args:', args);

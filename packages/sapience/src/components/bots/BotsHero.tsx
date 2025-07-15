@@ -35,7 +35,6 @@ export default function BotsHero() {
               filter: 'none',
             }}
           >
-            {/* eslint-disable-next-line jsx-a11y/iframe-has-title */}
             <iframe
               ref={iframeRef}
               src="https://my.spline.design/particlesbots-7HFsdWxSwiyuWxwi8RkBNbtE/"

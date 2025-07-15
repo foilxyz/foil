@@ -89,7 +89,7 @@ const renderConditionalPrediction = (value: string) => {
   }
   try {
     return <NumberDisplay value={BigInt(value)} />;
-  } catch (e) {
+  } catch (_e) {
     return value; // Fallback if not a BigInt string
   }
 };
@@ -146,7 +146,7 @@ const renderPredictionCell = ({
         {baseTokenName && ` ${baseTokenName}`}
       </>
     );
-  } catch (e) {
+  } catch (_e) {
     // Fallback: if value is not a string parsable to BigInt (e.g., "CAT", "DOG" for a categorical market)
     return `${value} ${baseTokenName || ''}`.trim();
   }
@@ -179,7 +179,7 @@ const renderQuestionCell = ({
 
     if (marketGroup) {
       const market = marketGroup.markets?.find(
-        (m: any) => m.marketId === marketId
+        (m: { marketId: number }) => m.marketId === marketId
       );
 
       if (market && typeof market.question === 'string') {
