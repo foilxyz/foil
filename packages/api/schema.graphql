@@ -779,6 +779,8 @@ type Market {
   _count: MarketCount
   baseAssetMaxPriceTick: Int
   baseAssetMinPriceTick: Int
+  claimStatementNo: String
+  claimStatementYesOrNumeric: String
   createdAt: DateTimeISO!
   endTimestamp: Int
   id: Int!
@@ -788,8 +790,6 @@ type Market {
   marketParamsAssertionliveness: Decimal
   marketParamsBondamount: Decimal
   marketParamsBondcurrency: String
-  marketParamsClaimstatementNo: String
-  marketParamsClaimstatementYesOrNumeric: String
   marketParamsFeerate: Int
   marketParamsOptimisticoraclev3: String
   marketParamsUniswappositionmanager: String
@@ -849,6 +849,8 @@ type MarketCountAggregate {
   _all: Int!
   baseAssetMaxPriceTick: Int!
   baseAssetMinPriceTick: Int!
+  claimStatementNo: Int!
+  claimStatementYesOrNumeric: Int!
   createdAt: Int!
   endTimestamp: Int!
   id: Int!
@@ -857,8 +859,6 @@ type MarketCountAggregate {
   marketParamsAssertionliveness: Int!
   marketParamsBondamount: Int!
   marketParamsBondcurrency: Int!
-  marketParamsClaimstatementNo: Int!
-  marketParamsClaimstatementYesOrNumeric: Int!
   marketParamsFeerate: Int!
   marketParamsOptimisticoraclev3: Int!
   marketParamsUniswappositionmanager: Int!
@@ -880,6 +880,8 @@ type MarketCountAggregate {
 input MarketCountOrderByAggregateInput {
   baseAssetMaxPriceTick: SortOrder
   baseAssetMinPriceTick: SortOrder
+  claimStatementNo: SortOrder
+  claimStatementYesOrNumeric: SortOrder
   createdAt: SortOrder
   endTimestamp: SortOrder
   id: SortOrder
@@ -888,8 +890,6 @@ input MarketCountOrderByAggregateInput {
   marketParamsAssertionliveness: SortOrder
   marketParamsBondamount: SortOrder
   marketParamsBondcurrency: SortOrder
-  marketParamsClaimstatementNo: SortOrder
-  marketParamsClaimstatementYesOrNumeric: SortOrder
   marketParamsFeerate: SortOrder
   marketParamsOptimisticoraclev3: SortOrder
   marketParamsUniswappositionmanager: SortOrder
@@ -930,8 +930,6 @@ type MarketGroup {
   marketParamsAssertionliveness: Decimal
   marketParamsBondamount: Decimal
   marketParamsBondcurrency: String
-  marketParamsClaimstatementNo: String
-  marketParamsClaimstatementYesOrNumeric: String
   marketParamsFeerate: Int
   marketParamsOptimisticoraclev3: String
   marketParamsUniswappositionmanager: String
@@ -987,6 +985,8 @@ type MarketGroupBy {
   _sum: MarketSumAggregate
   baseAssetMaxPriceTick: Int
   baseAssetMinPriceTick: Int
+  claimStatementNo: String
+  claimStatementYesOrNumeric: String
   createdAt: DateTimeISO!
   endTimestamp: Int
   id: Int!
@@ -995,8 +995,6 @@ type MarketGroupBy {
   marketParamsAssertionliveness: Decimal
   marketParamsBondamount: Decimal
   marketParamsBondcurrency: String
-  marketParamsClaimstatementNo: String
-  marketParamsClaimstatementYesOrNumeric: String
   marketParamsFeerate: Int
   marketParamsOptimisticoraclev3: String
   marketParamsUniswappositionmanager: String
@@ -1040,8 +1038,6 @@ type MarketGroupCountAggregate {
   marketParamsAssertionliveness: Int!
   marketParamsBondamount: Int!
   marketParamsBondcurrency: Int!
-  marketParamsClaimstatementNo: Int!
-  marketParamsClaimstatementYesOrNumeric: Int!
   marketParamsFeerate: Int!
   marketParamsOptimisticoraclev3: Int!
   marketParamsUniswappositionmanager: Int!
@@ -1073,8 +1069,6 @@ input MarketGroupCountOrderByAggregateInput {
   marketParamsAssertionliveness: SortOrder
   marketParamsBondamount: SortOrder
   marketParamsBondcurrency: SortOrder
-  marketParamsClaimstatementNo: SortOrder
-  marketParamsClaimstatementYesOrNumeric: SortOrder
   marketParamsFeerate: SortOrder
   marketParamsOptimisticoraclev3: SortOrder
   marketParamsUniswappositionmanager: SortOrder
@@ -1111,8 +1105,6 @@ type MarketGroupGroupBy {
   marketParamsAssertionliveness: Decimal
   marketParamsBondamount: Decimal
   marketParamsBondcurrency: String
-  marketParamsClaimstatementNo: String
-  marketParamsClaimstatementYesOrNumeric: String
   marketParamsFeerate: Int
   marketParamsOptimisticoraclev3: String
   marketParamsUniswappositionmanager: String
@@ -1150,8 +1142,6 @@ type MarketGroupMaxAggregate {
   marketParamsAssertionliveness: Decimal
   marketParamsBondamount: Decimal
   marketParamsBondcurrency: String
-  marketParamsClaimstatementNo: String
-  marketParamsClaimstatementYesOrNumeric: String
   marketParamsFeerate: Int
   marketParamsOptimisticoraclev3: String
   marketParamsUniswappositionmanager: String
@@ -1183,8 +1173,6 @@ input MarketGroupMaxOrderByAggregateInput {
   marketParamsAssertionliveness: SortOrder
   marketParamsBondamount: SortOrder
   marketParamsBondcurrency: SortOrder
-  marketParamsClaimstatementNo: SortOrder
-  marketParamsClaimstatementYesOrNumeric: SortOrder
   marketParamsFeerate: SortOrder
   marketParamsOptimisticoraclev3: SortOrder
   marketParamsUniswappositionmanager: SortOrder
@@ -1216,8 +1204,6 @@ type MarketGroupMinAggregate {
   marketParamsAssertionliveness: Decimal
   marketParamsBondamount: Decimal
   marketParamsBondcurrency: String
-  marketParamsClaimstatementNo: String
-  marketParamsClaimstatementYesOrNumeric: String
   marketParamsFeerate: Int
   marketParamsOptimisticoraclev3: String
   marketParamsUniswappositionmanager: String
@@ -1249,8 +1235,6 @@ input MarketGroupMinOrderByAggregateInput {
   marketParamsAssertionliveness: SortOrder
   marketParamsBondamount: SortOrder
   marketParamsBondcurrency: SortOrder
-  marketParamsClaimstatementNo: SortOrder
-  marketParamsClaimstatementYesOrNumeric: SortOrder
   marketParamsFeerate: SortOrder
   marketParamsOptimisticoraclev3: SortOrder
   marketParamsUniswappositionmanager: SortOrder
@@ -1296,8 +1280,6 @@ input MarketGroupOrderByWithAggregationInput {
   marketParamsAssertionliveness: SortOrderInput
   marketParamsBondamount: SortOrderInput
   marketParamsBondcurrency: SortOrderInput
-  marketParamsClaimstatementNo: SortOrderInput
-  marketParamsClaimstatementYesOrNumeric: SortOrderInput
   marketParamsFeerate: SortOrderInput
   marketParamsOptimisticoraclev3: SortOrderInput
   marketParamsUniswappositionmanager: SortOrderInput
@@ -1331,8 +1313,6 @@ input MarketGroupOrderByWithRelationInput {
   marketParamsAssertionliveness: SortOrderInput
   marketParamsBondamount: SortOrderInput
   marketParamsBondcurrency: SortOrderInput
-  marketParamsClaimstatementNo: SortOrderInput
-  marketParamsClaimstatementYesOrNumeric: SortOrderInput
   marketParamsFeerate: SortOrderInput
   marketParamsOptimisticoraclev3: SortOrderInput
   marketParamsUniswappositionmanager: SortOrderInput
@@ -1366,8 +1346,6 @@ enum MarketGroupScalarFieldEnum {
   marketParamsAssertionliveness
   marketParamsBondamount
   marketParamsBondcurrency
-  marketParamsClaimstatementNo
-  marketParamsClaimstatementYesOrNumeric
   marketParamsFeerate
   marketParamsOptimisticoraclev3
   marketParamsUniswappositionmanager
@@ -1402,8 +1380,6 @@ input MarketGroupScalarWhereWithAggregatesInput {
   marketParamsAssertionliveness: DecimalNullableWithAggregatesFilter
   marketParamsBondamount: DecimalNullableWithAggregatesFilter
   marketParamsBondcurrency: StringNullableWithAggregatesFilter
-  marketParamsClaimstatementNo: StringNullableWithAggregatesFilter
-  marketParamsClaimstatementYesOrNumeric: StringNullableWithAggregatesFilter
   marketParamsFeerate: IntNullableWithAggregatesFilter
   marketParamsOptimisticoraclev3: StringNullableWithAggregatesFilter
   marketParamsUniswappositionmanager: StringNullableWithAggregatesFilter
@@ -1468,8 +1444,6 @@ input MarketGroupWhereInput {
   marketParamsAssertionliveness: DecimalNullableFilter
   marketParamsBondamount: DecimalNullableFilter
   marketParamsBondcurrency: StringNullableFilter
-  marketParamsClaimstatementNo: StringNullableFilter
-  marketParamsClaimstatementYesOrNumeric: StringNullableFilter
   marketParamsFeerate: IntNullableFilter
   marketParamsOptimisticoraclev3: StringNullableFilter
   marketParamsUniswappositionmanager: StringNullableFilter
@@ -1509,8 +1483,6 @@ input MarketGroupWhereUniqueInput {
   marketParamsAssertionliveness: DecimalNullableFilter
   marketParamsBondamount: DecimalNullableFilter
   marketParamsBondcurrency: StringNullableFilter
-  marketParamsClaimstatementNo: StringNullableFilter
-  marketParamsClaimstatementYesOrNumeric: StringNullableFilter
   marketParamsFeerate: IntNullableFilter
   marketParamsOptimisticoraclev3: StringNullableFilter
   marketParamsUniswappositionmanager: StringNullableFilter
@@ -1539,6 +1511,8 @@ input MarketMarketGroupIdMarketIdCompoundUniqueInput {
 type MarketMaxAggregate {
   baseAssetMaxPriceTick: Int
   baseAssetMinPriceTick: Int
+  claimStatementNo: String
+  claimStatementYesOrNumeric: String
   createdAt: DateTimeISO
   endTimestamp: Int
   id: Int
@@ -1547,8 +1521,6 @@ type MarketMaxAggregate {
   marketParamsAssertionliveness: Decimal
   marketParamsBondamount: Decimal
   marketParamsBondcurrency: String
-  marketParamsClaimstatementNo: String
-  marketParamsClaimstatementYesOrNumeric: String
   marketParamsFeerate: Int
   marketParamsOptimisticoraclev3: String
   marketParamsUniswappositionmanager: String
@@ -1570,6 +1542,8 @@ type MarketMaxAggregate {
 input MarketMaxOrderByAggregateInput {
   baseAssetMaxPriceTick: SortOrder
   baseAssetMinPriceTick: SortOrder
+  claimStatementNo: SortOrder
+  claimStatementYesOrNumeric: SortOrder
   createdAt: SortOrder
   endTimestamp: SortOrder
   id: SortOrder
@@ -1578,8 +1552,6 @@ input MarketMaxOrderByAggregateInput {
   marketParamsAssertionliveness: SortOrder
   marketParamsBondamount: SortOrder
   marketParamsBondcurrency: SortOrder
-  marketParamsClaimstatementNo: SortOrder
-  marketParamsClaimstatementYesOrNumeric: SortOrder
   marketParamsFeerate: SortOrder
   marketParamsOptimisticoraclev3: SortOrder
   marketParamsUniswappositionmanager: SortOrder
@@ -1601,6 +1573,8 @@ input MarketMaxOrderByAggregateInput {
 type MarketMinAggregate {
   baseAssetMaxPriceTick: Int
   baseAssetMinPriceTick: Int
+  claimStatementNo: String
+  claimStatementYesOrNumeric: String
   createdAt: DateTimeISO
   endTimestamp: Int
   id: Int
@@ -1609,8 +1583,6 @@ type MarketMinAggregate {
   marketParamsAssertionliveness: Decimal
   marketParamsBondamount: Decimal
   marketParamsBondcurrency: String
-  marketParamsClaimstatementNo: String
-  marketParamsClaimstatementYesOrNumeric: String
   marketParamsFeerate: Int
   marketParamsOptimisticoraclev3: String
   marketParamsUniswappositionmanager: String
@@ -1632,6 +1604,8 @@ type MarketMinAggregate {
 input MarketMinOrderByAggregateInput {
   baseAssetMaxPriceTick: SortOrder
   baseAssetMinPriceTick: SortOrder
+  claimStatementNo: SortOrder
+  claimStatementYesOrNumeric: SortOrder
   createdAt: SortOrder
   endTimestamp: SortOrder
   id: SortOrder
@@ -1640,8 +1614,6 @@ input MarketMinOrderByAggregateInput {
   marketParamsAssertionliveness: SortOrder
   marketParamsBondamount: SortOrder
   marketParamsBondcurrency: SortOrder
-  marketParamsClaimstatementNo: SortOrder
-  marketParamsClaimstatementYesOrNumeric: SortOrder
   marketParamsFeerate: SortOrder
   marketParamsOptimisticoraclev3: SortOrder
   marketParamsUniswappositionmanager: SortOrder
@@ -1677,6 +1649,8 @@ input MarketOrderByWithAggregationInput {
   _sum: MarketSumOrderByAggregateInput
   baseAssetMaxPriceTick: SortOrderInput
   baseAssetMinPriceTick: SortOrderInput
+  claimStatementNo: SortOrderInput
+  claimStatementYesOrNumeric: SortOrderInput
   createdAt: SortOrder
   endTimestamp: SortOrderInput
   id: SortOrder
@@ -1685,8 +1659,6 @@ input MarketOrderByWithAggregationInput {
   marketParamsAssertionliveness: SortOrderInput
   marketParamsBondamount: SortOrderInput
   marketParamsBondcurrency: SortOrderInput
-  marketParamsClaimstatementNo: SortOrderInput
-  marketParamsClaimstatementYesOrNumeric: SortOrderInput
   marketParamsFeerate: SortOrderInput
   marketParamsOptimisticoraclev3: SortOrderInput
   marketParamsUniswappositionmanager: SortOrderInput
@@ -1708,6 +1680,8 @@ input MarketOrderByWithAggregationInput {
 input MarketOrderByWithRelationInput {
   baseAssetMaxPriceTick: SortOrderInput
   baseAssetMinPriceTick: SortOrderInput
+  claimStatementNo: SortOrderInput
+  claimStatementYesOrNumeric: SortOrderInput
   createdAt: SortOrder
   endTimestamp: SortOrderInput
   id: SortOrder
@@ -1717,8 +1691,6 @@ input MarketOrderByWithRelationInput {
   marketParamsAssertionliveness: SortOrderInput
   marketParamsBondamount: SortOrderInput
   marketParamsBondcurrency: SortOrderInput
-  marketParamsClaimstatementNo: SortOrderInput
-  marketParamsClaimstatementYesOrNumeric: SortOrderInput
   marketParamsFeerate: SortOrderInput
   marketParamsOptimisticoraclev3: SortOrderInput
   marketParamsUniswappositionmanager: SortOrderInput
@@ -1892,6 +1864,8 @@ input MarketPriceWhereUniqueInput {
 enum MarketScalarFieldEnum {
   baseAssetMaxPriceTick
   baseAssetMinPriceTick
+  claimStatementNo
+  claimStatementYesOrNumeric
   createdAt
   endTimestamp
   id
@@ -1900,8 +1874,6 @@ enum MarketScalarFieldEnum {
   marketParamsAssertionliveness
   marketParamsBondamount
   marketParamsBondcurrency
-  marketParamsClaimstatementNo
-  marketParamsClaimstatementYesOrNumeric
   marketParamsFeerate
   marketParamsOptimisticoraclev3
   marketParamsUniswappositionmanager
@@ -1926,6 +1898,8 @@ input MarketScalarWhereWithAggregatesInput {
   OR: [MarketScalarWhereWithAggregatesInput!]
   baseAssetMaxPriceTick: IntNullableWithAggregatesFilter
   baseAssetMinPriceTick: IntNullableWithAggregatesFilter
+  claimStatementNo: StringNullableWithAggregatesFilter
+  claimStatementYesOrNumeric: StringNullableWithAggregatesFilter
   createdAt: DateTimeWithAggregatesFilter
   endTimestamp: IntNullableWithAggregatesFilter
   id: IntWithAggregatesFilter
@@ -1934,8 +1908,6 @@ input MarketScalarWhereWithAggregatesInput {
   marketParamsAssertionliveness: DecimalNullableWithAggregatesFilter
   marketParamsBondamount: DecimalNullableWithAggregatesFilter
   marketParamsBondcurrency: StringNullableWithAggregatesFilter
-  marketParamsClaimstatementNo: StringNullableWithAggregatesFilter
-  marketParamsClaimstatementYesOrNumeric: StringNullableWithAggregatesFilter
   marketParamsFeerate: IntNullableWithAggregatesFilter
   marketParamsOptimisticoraclev3: StringNullableWithAggregatesFilter
   marketParamsUniswappositionmanager: StringNullableWithAggregatesFilter
@@ -1992,6 +1964,8 @@ input MarketWhereInput {
   OR: [MarketWhereInput!]
   baseAssetMaxPriceTick: IntNullableFilter
   baseAssetMinPriceTick: IntNullableFilter
+  claimStatementNo: StringNullableFilter
+  claimStatementYesOrNumeric: StringNullableFilter
   createdAt: DateTimeFilter
   endTimestamp: IntNullableFilter
   id: IntFilter
@@ -2001,8 +1975,6 @@ input MarketWhereInput {
   marketParamsAssertionliveness: DecimalNullableFilter
   marketParamsBondamount: DecimalNullableFilter
   marketParamsBondcurrency: StringNullableFilter
-  marketParamsClaimstatementNo: StringNullableFilter
-  marketParamsClaimstatementYesOrNumeric: StringNullableFilter
   marketParamsFeerate: IntNullableFilter
   marketParamsOptimisticoraclev3: StringNullableFilter
   marketParamsUniswappositionmanager: StringNullableFilter
@@ -2028,6 +2000,8 @@ input MarketWhereUniqueInput {
   OR: [MarketWhereInput!]
   baseAssetMaxPriceTick: IntNullableFilter
   baseAssetMinPriceTick: IntNullableFilter
+  claimStatementNo: StringNullableFilter
+  claimStatementYesOrNumeric: StringNullableFilter
   createdAt: DateTimeFilter
   endTimestamp: IntNullableFilter
   id: Int
@@ -2038,8 +2012,6 @@ input MarketWhereUniqueInput {
   marketParamsAssertionliveness: DecimalNullableFilter
   marketParamsBondamount: DecimalNullableFilter
   marketParamsBondcurrency: StringNullableFilter
-  marketParamsClaimstatementNo: StringNullableFilter
-  marketParamsClaimstatementYesOrNumeric: StringNullableFilter
   marketParamsFeerate: IntNullableFilter
   marketParamsOptimisticoraclev3: StringNullableFilter
   marketParamsUniswappositionmanager: StringNullableFilter
