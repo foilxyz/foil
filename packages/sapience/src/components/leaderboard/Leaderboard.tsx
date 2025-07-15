@@ -8,7 +8,6 @@ import {
   TableHeader,
   TableRow,
 } from '@sapience/ui/components/ui/table';
-import { cn } from '@sapience/ui/lib/utils';
 import {
   useReactTable,
   flexRender,
@@ -18,11 +17,11 @@ import {
 import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
 
+import { cn } from '@sapience/ui/lib/utils';
+import ProfitCell from './ProfitCell';
 import { AddressDisplay } from '~/components/shared/AddressDisplay';
 import type { AggregatedLeaderboardEntry } from '~/hooks/graphql/useLeaderboard';
 import { useLeaderboard } from '~/hooks/graphql/useLeaderboard';
-
-import ProfitCell from './ProfitCell';
 
 const LottieLoader = dynamic(() => import('~/components/shared/LottieLoader'), {
   ssr: false,

@@ -97,7 +97,7 @@ export const processCandleData = (
         // Check for valid number
         if (!Number.isNaN(closeValue)) {
           // Multiply raw close value by multiplier to get Wei value (consistent with usePriceChartData)
-          combinedData[ts]!.indexClose = closeValue * indexMultiplier;
+          combinedData[ts].indexClose = closeValue * indexMultiplier;
         } else {
           console.warn(
             `Invalid index close value encountered: ${candle.close} at timestamp ${ts}`

@@ -1,4 +1,4 @@
-import { Pool } from '@uniswap/v3-sdk';
+import type { Pool } from '@uniswap/v3-sdk';
 
 export type Market = {
   marketId: string;

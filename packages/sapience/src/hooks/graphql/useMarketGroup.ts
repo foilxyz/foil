@@ -1,11 +1,11 @@
 import { graphqlRequest } from '@sapience/ui/lib';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+
 import type {
   MarketGroup as MarketGroupType,
   Market as MarketType,
 } from '@sapience/ui/types/graphql';
-import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
-
 import { getMarketGroupClassification } from '../../lib/utils/marketUtils';
 import {
   findActiveMarkets,
@@ -13,8 +13,8 @@ import {
 } from '../../lib/utils/util';
 
 // GraphQL query to fetch market data
-const MARKET_GROUP_QUERY = `
-  query GetMarketGroup($where: MarketGroupWhereUniqueInput!) {
+const MARKET_GROUP_QUERY = /* GraphQL */ `
+  query MarketGroup($where: MarketGroupWhereUniqueInput!) {
     marketGroup(where: $where) {
       id
       address

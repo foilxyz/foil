@@ -8,9 +8,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@sapience/ui/components/ui/popover';
-import { cn } from '@sapience/ui/lib/utils';
 import { CalendarIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { cn } from '@sapience/ui/lib/utils';
 
 interface DateTimePickerProps {
   value: number; // Unix timestamp
@@ -123,7 +123,7 @@ const DateTimePicker = ({
 
   // Helper function to determine time values based on date selection
   const getTimeValuesForDate = (
-    newDate: Date,
+    _newDate: Date,
     isToday: boolean
   ): { hours: number; minutes: number } => {
     if (isToday) {

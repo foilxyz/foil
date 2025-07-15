@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { graphqlRequest } from '../lib';
 import { RESOURCE_ORDER, type ResourceSlug } from '../types/resources';
-import { CandleType, Resource, CandleAndTimestampType } from '../types/graphql';
+import type { CandleType, Resource, CandleAndTimestampType } from '../types/graphql';
 
 // Query response types
 interface GetResourcesQuery {
@@ -17,8 +17,8 @@ interface GetIndexCandlesQuery {
   indexCandles: CandleAndTimestampType;
 }
 
-const LATEST_RESOURCE_PRICE_QUERY = `
-  query GetLatestResourcePrice($slug: String!, $from: Int!, $to: Int!, $interval: Int!) {
+const LATEST_RESOURCE_PRICE_QUERY = /* GraphQL */ `
+  query LatestResourcePrice($slug: String!, $from: Int!, $to: Int!, $interval: Int!) {
     resourceCandles(
       slug: $slug
       from: $from
@@ -34,8 +34,8 @@ const LATEST_RESOURCE_PRICE_QUERY = `
   }
 `;
 
-const LATEST_INDEX_PRICE_QUERY = `
-  query GetLatestIndexPrice($address: String!, $chainId: Int!, $marketId: String!, $from: Int!, $to: Int!, $interval: Int!) {
+const LATEST_INDEX_PRICE_QUERY = /* GraphQL */ `
+  query LatestIndexPrice($address: String!, $chainId: Int!, $marketId: String!, $from: Int!, $to: Int!, $interval: Int!) {
     indexCandles(
       address: $address
       chainId: $chainId
@@ -53,8 +53,8 @@ const LATEST_INDEX_PRICE_QUERY = `
   }
 `;
 
-const RESOURCES_QUERY = `
-  query GetResources {
+const RESOURCES_QUERY = /* GraphQL */ `
+  query Resources {
     resources {
       id
       name
@@ -83,13 +83,13 @@ export const useResources = () => {
     queryFn: async () => {
       const data = await graphqlRequest<GetResourcesQuery>(RESOURCES_QUERY);
       
-      const resources = data.resources.sort((a: any, b: any) => {
+      const resources = data.resources.sort((a, b) => {
         const indexA = RESOURCE_ORDER.indexOf(a.slug as ResourceSlug);
         const indexB = RESOURCE_ORDER.indexOf(b.slug as ResourceSlug);
         return indexA - indexB;
       });
 
-      return resources.map((resource: any) => ({
+      return resources.map((resource) => ({
         ...resource,
         iconPath: `/resources/${resource.slug}.svg`,
       }));
@@ -110,7 +110,7 @@ export const useLatestResourcePrice = (slug: string) => {
         { slug, from, to, interval }
       );
 
-      const candles = data.resourceCandles.data as CandleType[];
+      const candles = data.resourceCandles.data;
       if (!candles || candles.length === 0) {
         throw new Error('No price data found');
       }
@@ -168,7 +168,7 @@ export const useLatestIndexPrice = (market: {
         }
       );
 
-      const candles = data.indexCandles.data as CandleType[];
+      const candles = data.indexCandles.data;
       if (!candles || candles.length === 0) {
         throw new Error('No index price data found');
       }

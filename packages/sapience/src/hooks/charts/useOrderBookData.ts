@@ -221,7 +221,7 @@ export function useOrderBookData({
             if (tickData.status === 'failure') {
               console.warn(
                 `Failed to fetch tick ${ticks[index]}:`,
-                tickData.error as Error // Cast error to Error
+                tickData.error // Cast error to Error
               );
               return null; // Skip failed ticks
             }

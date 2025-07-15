@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Abi, Address } from 'viem';
+import type { Abi, Address } from 'viem';
 import { useReadContract } from 'wagmi';
 import { useToast } from './use-toast';
 

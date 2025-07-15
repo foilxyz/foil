@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { TradeFormValues, useTradeForm } from '../hooks/useTradeForm';
+import { useState, useEffect } from 'react';
+import type { TradeFormValues} from '../hooks/useTradeForm';
+import { useTradeForm } from '../hooks/useTradeForm';
+import { useToast } from '../hooks/use-toast';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form';
 import { Tabs, TabsList, TabsTrigger } from './ui/tabs';
 import { SlippageTolerance } from './SlippageTolerance';
 import { NumberDisplay } from './NumberDisplay';
-import { useToast } from '../hooks/use-toast';
 
 const COLLATERAL_DECIMALS = 18;
 

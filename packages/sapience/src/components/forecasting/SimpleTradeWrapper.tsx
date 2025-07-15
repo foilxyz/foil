@@ -2,11 +2,11 @@ import { useConnectOrCreateWallet } from '@privy-io/react-auth';
 import type React from 'react';
 import { useAccount } from 'wagmi';
 
-import { useMarketPage } from '~/lib/context/MarketPageProvider';
-import { useSapience } from '~/lib/context/SapienceProvider';
-
 import { CreateTradeForm, ModifyTradeForm } from './forms';
 import type { TradeFormMarketDetails } from './forms/CreateTradeForm';
+import { useMarketPage } from '~/lib/context/MarketPageProvider';
+import { useSapience } from '~/lib/context/SapienceProvider';
+import { PositionKind } from '~/hooks/contract/usePositions';
 
 interface SimpleTradeWrapperProps {
   positionId?: string;
@@ -34,9 +34,10 @@ const SimpleTradeWrapper: React.FC<SimpleTradeWrapperProps> = ({
   const { permitData, isPermitLoading: isPermitLoadingPermit } = useSapience();
 
   const position = positionId ? getPositionById(positionId) : null;
-  const hasPosition = !!position && position.kind === 2;
+  const hasPosition = !!position && position.kind === PositionKind.Trade;
 
   const handleConnectWallet = async () => {
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     await connectOrCreateWallet();
   };
 

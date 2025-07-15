@@ -1,10 +1,8 @@
 import type { MarketGroupType } from '@sapience/ui/types';
-
-import { MarketGroupClassification } from '~/lib/types';
-
 import MultipleChoiceWagerForm from './wager/MultipleChoiceWagerForm';
 import NumericWagerForm from './wager/NumericWagerForm';
 import YesNoWagerForm from './wager/YesNoWagerForm';
+import { MarketGroupClassification } from '~/lib/types';
 
 interface WagerFormFactoryProps {
   marketClassification: MarketGroupClassification;

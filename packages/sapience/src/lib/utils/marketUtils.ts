@@ -1,5 +1,4 @@
 import type { MarketGroupType, MarketType } from '@sapience/ui/types';
-
 import { MarketGroupClassification } from '../types';
 
 // Helper function to count occurrences of each endTime

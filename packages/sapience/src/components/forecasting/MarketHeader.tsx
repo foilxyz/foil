@@ -5,7 +5,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@sapience/ui/components/ui/tooltip';
-import type { MarketType } from '@sapience/ui/types';
 import { format, formatDistanceToNow, fromUnixTime } from 'date-fns';
 import {
   MoveHorizontal,
@@ -18,6 +17,7 @@ import { IoDocumentTextOutline } from 'react-icons/io5';
 import { LiaRulerVerticalSolid } from 'react-icons/lia';
 import * as chains from 'viem/chains';
 
+import type { MarketType } from '@sapience/ui/types';
 import NumberDisplay from '../shared/NumberDisplay';
 import {
   useTotalVolume,

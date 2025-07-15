@@ -1,7 +1,7 @@
 import { graphqlRequest } from '@sapience/ui/lib';
-import type { MarketGroup as MarketGroupType } from '@sapience/ui/types/graphql';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import type { MarketGroup as MarketGroupType } from '@sapience/ui/types/graphql';
 
 import { foilApi } from '~/lib/utils/util';
 
@@ -12,8 +12,8 @@ interface AggregatedLeaderboardEntry {
 }
 
 // Query to fetch all market groups and their markets
-const GET_MARKET_GROUPS = `
-  query GetMarketGroups {
+const GET_MARKET_GROUPS = /* GraphQL */ `
+  query MarketGroups {
     marketGroups {
       address
       chainId
@@ -26,9 +26,17 @@ const GET_MARKET_GROUPS = `
 `;
 
 // Query to fetch leaderboard for a specific market
-const GET_MARKET_LEADERBOARD = `
-  query GetMarketLeaderboard($chainId: Int!, $address: String!, $marketId: String!) {
-    getMarketLeaderboard(chainId: $chainId, address: $address, marketId: $marketId) {
+const GET_MARKET_LEADERBOARD = /* GraphQL */ `
+  query MarketLeaderboard(
+    $chainId: Int!
+    $address: String!
+    $marketId: String!
+  ) {
+    getMarketLeaderboard(
+      chainId: $chainId
+      address: $address
+      marketId: $marketId
+    ) {
       owner
       totalPnL # This is a string representing BigInt
     }

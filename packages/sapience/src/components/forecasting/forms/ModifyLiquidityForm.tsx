@@ -1,5 +1,3 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-
 import { NumberDisplay } from '@sapience/ui/components/NumberDisplay';
 import { SlippageTolerance } from '@sapience/ui/components/SlippageTolerance';
 import {
@@ -27,6 +25,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { formatUnits } from 'viem';
 
+import type { LiquidityFormMarketDetails } from './CreateLiquidityForm';
 import LottieLoader from '~/components/shared/LottieLoader';
 import {
   useModifyLiquidityQuoter,
@@ -35,8 +34,6 @@ import {
 import { useModifyLP } from '~/hooks/contract/useModifyLP';
 import { useMarketPage } from '~/lib/context/MarketPageProvider';
 import { tickToPrice } from '~/lib/utils/tickUtils';
-
-import type { LiquidityFormMarketDetails } from './CreateLiquidityForm';
 
 interface ModifyLiquidityFormValues {
   percentage: string;
@@ -59,7 +56,6 @@ type ModifyLiquidityFormProps = {
   isPermitLoadingPermit?: boolean;
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export const ModifyLiquidityForm: React.FC<ModifyLiquidityFormProps> = ({
   marketDetails,
   walletData,
