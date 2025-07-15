@@ -137,8 +137,23 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Install wait-on globally
+        run: npm install -g wait-on
+
+      - name: Build the application
+        run: pnpm build
+        working-directory: packages/sapience
+
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
+        working-directory: packages/sapience
+
+      - name: Start server in background
+        run: pnpm start &
+        working-directory: packages/sapience
+
+      - name: Wait for server to be ready
+        run: npx wait-on http://localhost:3000 --timeout 30000
         working-directory: packages/sapience
 
       - name: Run E2E tests
