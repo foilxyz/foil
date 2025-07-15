@@ -7,7 +7,7 @@ setup('authenticate', async ({ page }) => {
   await page.goto('/?password=nostradamus');
   
   // Wait for authentication to complete
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('domcontentloaded');
   
   // Verify that we're authenticated by checking that the password scrim is gone
   // and the main content is visible

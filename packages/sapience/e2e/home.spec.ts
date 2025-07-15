@@ -25,7 +25,7 @@ test.describe('Home Page', () => {
     await page.goto('/');
     
     // Wait for the page to load completely
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // Check that the page loaded without errors
     await expect(page).toHaveTitle(/Sapience/i);
@@ -39,7 +39,7 @@ test.describe('Home Page', () => {
     await page.goto('/');
     
     // Wait for the main content to load
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // The Hero section should be visible
     const heroSection = page.locator('div').first();
@@ -52,7 +52,7 @@ test.describe('Home Page', () => {
 
   test('should display Focus Areas section', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // Look for focus area elements - these should contain the areas like "Economy & Finance"
     // The focus areas are displayed in a scrolling carousel
@@ -67,7 +67,7 @@ test.describe('Home Page', () => {
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // The page should still be functional on mobile
     await expect(page.locator('body')).toBeVisible();
@@ -79,7 +79,7 @@ test.describe('Home Page', () => {
 
   test('should scroll through different sections', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // Get initial viewport height for scrolling
     const viewportHeight = await page.evaluate(() => window.innerHeight);
@@ -102,7 +102,7 @@ test.describe('Home Page', () => {
 
   test('should handle authentication correctly', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // Verify that we're authenticated by checking localStorage
     const isAuthenticated = await page.evaluate(() => {
@@ -124,7 +124,7 @@ test.describe('Home Page', () => {
     
     // This test intentionally skips authentication to test the password form
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // Should see the password form
     const passwordInput = page.locator('input[type="password"]');
