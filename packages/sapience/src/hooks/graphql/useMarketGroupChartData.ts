@@ -1,8 +1,8 @@
 import { graphqlRequest } from '@sapience/ui/lib';
-import type { CandleType } from '@sapience/ui/types/graphql';
 import { useEffect, useState } from 'react';
 
 // Import the new structures and the processing function
+import type { CandleType } from '@sapience/ui/src/types/graphql';
 import {
   processCandleData, // Use new data point type
   type MarketCandleDataWithId,
@@ -12,7 +12,7 @@ import { getChainIdFromShortName } from '../../lib/utils/util'; // Import getCha
 import { useSapience } from '~/lib/context/SapienceProvider'; // Import useSapience
 
 // Adjust marketId type if needed (String! vs Int!) based on schema
-const GET_MARKET_CANDLES = `
+const GET_MARKET_CANDLES = /* GraphQL */ `
   query MarketCandles(
     $address: String!
     $chainId: Int!
@@ -42,7 +42,7 @@ const GET_MARKET_CANDLES = `
 `;
 
 // Added query for index candles
-const GET_INDEX_CANDLES = `
+const GET_INDEX_CANDLES = /* GraphQL */ `
   query IndexCandles(
     $address: String!
     $chainId: Int!
@@ -234,7 +234,7 @@ export const useMarketGroupChartData = ({
             .filter((r) => r.candles !== null) // Filter out errors/null data
             .map((r) => ({
               marketId: r.marketId,
-              candles: r.candles as CandleType[], // Safe due to filter
+              candles: r.candles, // Safe due to filter
             }));
 
         // Calculate index multiplier (unchanged)

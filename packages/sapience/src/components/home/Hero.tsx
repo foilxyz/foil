@@ -62,7 +62,6 @@ export default function Hero() {
           filter: 'none',
         }}
       >
-        {/* eslint-disable-next-line jsx-a11y/iframe-has-title */}
         <iframe
           ref={iframeRef}
           src="https://my.spline.design/particles-672e935f9191bddedd3ff0105af8f117/"

@@ -6,10 +6,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@sapience/ui/components/ui/dialog';
-import type {
-  MarketGroup as MarketGroupType,
-  Market as MarketType,
-} from '@sapience/ui/types/graphql';
 import { ChevronRight } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -17,6 +13,10 @@ import { useParams, usePathname } from 'next/navigation';
 import { useMemo, useState, useCallback } from 'react';
 import { useAccount } from 'wagmi';
 
+import type {
+  MarketGroup as MarketGroupType,
+  Market as MarketType,
+} from '@sapience/ui/src/types/graphql';
 import { useSapience } from '../../../lib/context/SapienceProvider';
 import MarketGroupChart from '~/components/forecasting/MarketGroupChart';
 import MarketGroupHeader from '~/components/forecasting/MarketGroupHeader';
@@ -251,7 +251,7 @@ const MarketGroupPageContent = () => {
               <div className="border border-border rounded flex flex-col flex-1 shadow-sm">
                 <div className="flex-1 min-h-[400px]">
                   <MarketGroupChart
-                    chainShortName={chainShortName as string}
+                    chainShortName={chainShortName}
                     marketAddress={marketAddress}
                     marketIds={activeMarkets.map((market) =>
                       Number(market.marketId)
@@ -275,7 +275,7 @@ const MarketGroupPageContent = () => {
             {/* Form (Right Column) */}
             <div className="w-full lg:w-[340px]">
               <ForecastingForm
-                marketGroupData={marketGroupData!}
+                marketGroupData={marketGroupData}
                 marketClassification={marketClassification!}
                 permitData={permitData!}
                 onWagerSuccess={handleUserPositionsRefetch}

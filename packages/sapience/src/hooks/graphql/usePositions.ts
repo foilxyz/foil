@@ -1,22 +1,18 @@
 import { graphqlRequest } from '@sapience/ui/lib';
-import type { Position as PositionType } from '@sapience/ui/types/graphql';
 import { useQuery } from '@tanstack/react-query';
+import type { Position as PositionType } from '@sapience/ui/src/types/graphql';
 
 // GraphQL query to fetch positions by owner address and optional market address
-export const POSITIONS_QUERY = `
-  query GetPositions($owner: String, $marketAddress: String) {
-    positions(where: {
-      market: {
-        is: {
-          marketGroup: {
-            is: {
-              address: { equals: $marketAddress }
-            }
-          }
+export const POSITIONS_QUERY = /* GraphQL */ `
+  query Positions($owner: String, $marketAddress: String) {
+    positions(
+      where: {
+        market: {
+          is: { marketGroup: { is: { address: { equals: $marketAddress } } } }
         }
+        owner: { equals: $owner }
       }
-      owner: { equals: $owner }
-    }) {
+    ) {
       id
       positionId
       owner
