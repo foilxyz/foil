@@ -39,7 +39,7 @@ export const handleTransferEvent = async (
 
   const existingPosition = await prisma.position.findFirst({
     where: {
-      positionId: Number(tokenId),
+      positionId: Number(tokenId), // TODO: Check if this is correct, looks wrong. How tokenId from transfer event is related to positionId ? 
       market: {
         market_group: {
           address: event.market_group.address?.toLowerCase(),

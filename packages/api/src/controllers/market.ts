@@ -674,17 +674,6 @@ export const upsertEntitiesFromEvent = async (
     }
   }
 
-  if (!existingTransaction) {
-    // Create an empty transaction
-    existingTransaction = await prisma.transaction.create({
-      data: {
-        eventId: event.id,
-        type: 'addLiquidity' as any,
-        collateral: new Decimal('0'),
-      },
-    });
-  }
-
   let skipTransaction = false;
   const newTransaction: Transaction & {
     event: any;
@@ -876,9 +865,6 @@ export const upsertEntitiesFromEvent = async (
 
   if (!skipTransaction) {
     try {
-      await insertCollateralTransfer(newTransaction);
-      await insertMarketPrice(newTransaction);
-
       // Ensure collateral is set to a default value if not present
       if (!newTransaction.collateral) {
         newTransaction.collateral = new Decimal('0');
@@ -908,6 +894,11 @@ export const upsertEntitiesFromEvent = async (
           tradeRatioD18: newTransaction.tradeRatioD18,
         },
       });
+
+      newTransaction.id = savedTransaction.id;
+
+      await insertCollateralTransfer(newTransaction);
+      await insertMarketPrice(newTransaction);
 
       // Then create or modify the position with the saved transaction
       try {
