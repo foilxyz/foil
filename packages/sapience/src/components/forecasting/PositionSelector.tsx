@@ -13,12 +13,12 @@ import { Label } from '@sapience/ui/components/ui/label';
 import { ChevronDown } from 'lucide-react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import type React from 'react';
-import { PositionKind } from '~/hooks/contract/usePositions';
 
 import { useMarketPage } from '~/lib/context/MarketPageProvider';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-const PositionSelector: React.FC<{}> = () => {
+interface PositionSelectorProps {}
+
+const PositionSelector: React.FC<PositionSelectorProps> = () => {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
@@ -54,7 +54,7 @@ const PositionSelector: React.FC<{}> = () => {
   // Determine trigger button text
   let triggerText = 'New Position';
   if (selectedPosition) {
-    triggerText = `${selectedPosition.kind === PositionKind.Liquidity ? 'LP' : 'Trade'} #${
+    triggerText = `${selectedPosition.kind === 1 ? 'LP' : 'Trade'} #${
       selectedPosition.id
     }`;
   } else if (hasPositions) {
@@ -73,9 +73,7 @@ const PositionSelector: React.FC<{}> = () => {
                 <>
                   <span>#{selectedPosition.id.toString()}</span>
                   <Badge variant="outline">
-                    {selectedPosition.kind === PositionKind.Liquidity
-                      ? 'Liquidity'
-                      : 'Trader'}
+                    {selectedPosition.kind === 1 ? 'Liquidity' : 'Trader'}
                   </Badge>
                 </>
               ) : (

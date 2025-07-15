@@ -4,8 +4,9 @@ import type { Abi } from 'viem';
 import { parseUnits } from 'viem';
 import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 
-import { useTokenApproval } from './useTokenApproval';
 import { CREATE_LIQUIDITY_REDUCTION_PERCENT } from '~/lib/constants/numbers';
+
+import { useTokenApproval } from './useTokenApproval';
 
 /**
  * Parameters for creating a liquidity position

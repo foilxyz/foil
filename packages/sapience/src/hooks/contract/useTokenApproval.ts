@@ -52,7 +52,7 @@ export function useTokenApproval({
     address: tokenAddress,
     functionName: 'allowance',
     args: [address as `0x${string}`, spenderAddress as `0x${string}`],
-    account: address || zeroAddress,
+    account: (address || zeroAddress) as `0x${string}`,
     chainId,
     query: {
       enabled:
@@ -104,7 +104,6 @@ export function useTokenApproval({
     setIsApproving(true);
 
     try {
-      // eslint-disable-next-line @typescript-eslint/await-thenable
       await approveWrite({
         abi: erc20ABI,
         address: tokenAddress,

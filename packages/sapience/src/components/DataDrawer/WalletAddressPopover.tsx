@@ -56,7 +56,7 @@ const WalletAddressPopover = ({
           }
 
           resolvedAddress = ensAddress;
-        } catch (_error) {
+        } catch (error) {
           setAddressError('Error resolving ENS address');
           return;
         } finally {

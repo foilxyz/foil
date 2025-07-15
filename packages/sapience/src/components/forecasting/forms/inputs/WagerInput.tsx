@@ -10,8 +10,9 @@ import { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { z } from 'zod';
 
-import CollateralBalance from './CollateralBalance';
 import { getChainShortName } from '~/lib/utils/util';
+
+import CollateralBalance from './CollateralBalance';
 
 interface WagerInputProps {
   name?: string;
@@ -46,6 +47,7 @@ function SUsdsHelp() {
       </PopoverTrigger>
       <PopoverContent side="left" className="w-[370px] p-4 text-sm">
         <div className="flex items-center gap-4">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/sky.svg" alt="Sky Protocol Logo" className="h-14 w-auto" />
           <div className="flex flex-col text-left">
             <p className="mb-1.5">
@@ -87,7 +89,7 @@ export function WagerInput({
 
   // Validate the wager amount independently using the schema
   useEffect(() => {
-    const validateWagerAmount = () => {
+    const validateWagerAmount = async () => {
       const currentValue = getValues(name);
       if (!currentValue) return; // Don't validate empty values
 

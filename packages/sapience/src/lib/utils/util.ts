@@ -1,9 +1,9 @@
+import type { MarketType, TransactionType } from '@sapience/ui/types';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { createPublicClient, formatEther, http } from 'viem';
 import * as chains from 'viem/chains';
 import { mainnet } from 'viem/chains';
-import type { MarketType, TransactionType } from '@sapience/ui/src/types';
 
 export const foilApi = {
   baseUrl: process.env.NEXT_PUBLIC_FOIL_API_URL || '',

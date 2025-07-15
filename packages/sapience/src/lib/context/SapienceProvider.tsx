@@ -54,8 +54,8 @@ const SapienceContext = createContext<SapienceContextType | undefined>(
 );
 
 // Define GraphQL query for market groups
-const MARKET_GROUPS_QUERY = /* GraphQL */ `
-  query MarketGroups {
+const MARKET_GROUPS_QUERY = `
+  query GetMarketGroups {
     marketGroups {
       id
       chainId
@@ -176,7 +176,7 @@ export const SapienceProvider: React.FC<{ children: React.ReactNode }> = ({
           ],
           functionName: 'stEthPerToken',
         });
-        setStEthPerToken(Number(gweiToEther(data)));
+        setStEthPerToken(Number(gweiToEther(data as bigint)));
       } catch (error) {
         toast({
           variant: 'destructive',

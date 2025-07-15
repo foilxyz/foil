@@ -10,6 +10,7 @@ import {
   DialogTrigger,
 } from '@sapience/ui/components/ui/dialog';
 import { graphqlRequest } from '@sapience/ui/lib';
+import type { MarketType } from '@sapience/ui/types';
 import { useQuery } from '@tanstack/react-query';
 import type { ColumnDef } from '@tanstack/react-table';
 import { formatDistanceToNow } from 'date-fns';
@@ -18,7 +19,11 @@ import { useState } from 'react';
 import type { Address } from 'viem';
 import { formatEther } from 'viem';
 
-import type { MarketType } from '@sapience/ui/src/types';
+import { useMarketGroupBridgeStatus } from '~/hooks/contract/useMarketGroupBridgeStatus';
+import { useMarketGroupLatestMarket } from '~/hooks/contract/useMarketGroupLatestMarket';
+import type { EnrichedMarketGroup } from '~/hooks/graphql/useMarketGroups';
+import { shortenAddress } from '~/lib/utils/util';
+
 import AddMarketDialog from './AddMarketDialog';
 import EnableBridgedMarketGroupButton from './EnableBridgedMarketGroupButton';
 import MarketDeployButton from './MarketDeployButton';
@@ -26,13 +31,9 @@ import MarketGroupDeployButton from './MarketGroupDeployButton';
 import OwnershipDialog from './OwnershipDialog';
 import ReindexMarketButton from './ReindexMarketButton';
 import SettleMarketDialog from './SettleMarketDialog';
-import { shortenAddress } from '~/lib/utils/util';
-import type { EnrichedMarketGroup } from '~/hooks/graphql/useMarketGroups';
-import { useMarketGroupLatestMarket } from '~/hooks/contract/useMarketGroupLatestMarket';
-import { useMarketGroupBridgeStatus } from '~/hooks/contract/useMarketGroupBridgeStatus';
 
 // GraphQL query for index price at time
-const INDEX_PRICE_AT_TIME_QUERY = /* GraphQL */ `
+const INDEX_PRICE_AT_TIME_QUERY = `
   query IndexPriceAtTime(
     $address: String!
     $chainId: Int!
@@ -103,7 +104,7 @@ function useMarketPriceData(
         return null;
       }
 
-      const responseData = await graphqlRequest<IndexPriceAtTimeResponse>(
+      const data = await graphqlRequest<IndexPriceAtTimeResponse>(
         INDEX_PRICE_AT_TIME_QUERY,
         {
           address: marketAddress,
@@ -113,7 +114,7 @@ function useMarketPriceData(
         }
       );
 
-      const priceData = responseData?.indexPriceAtTime;
+      const priceData = data?.indexPriceAtTime;
       if (!priceData) {
         return null;
       }

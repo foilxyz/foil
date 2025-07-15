@@ -19,6 +19,7 @@ export const LoadingProvider: React.FC<{ children: ReactNode }> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   return (
+    // eslint-disable-next-line react/jsx-no-constructed-context-values
     <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
       {children}
     </LoadingContext.Provider>

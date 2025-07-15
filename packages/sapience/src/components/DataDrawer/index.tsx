@@ -29,14 +29,15 @@ import { useState } from 'react';
 import { formatEther } from 'viem';
 import { useAccount } from 'wagmi';
 
-import DataDrawerFilter from './DataDrawerFilter';
-import MarketLeaderboard from './MarketLeaderboard';
 import LpPositionsTable from '~/components/profile/LpPositionsTable';
 import TraderPositionsTable from '~/components/profile/TraderPositionsTable';
 import { AddressDisplay } from '~/components/shared/AddressDisplay';
 import NumberDisplay from '~/components/shared/NumberDisplay';
 import { usePositions } from '~/hooks/graphql/usePositions';
 import { useMarketPage } from '~/lib/context/MarketPageProvider';
+
+import DataDrawerFilter from './DataDrawerFilter';
+import MarketLeaderboard from './MarketLeaderboard';
 
 interface DataDrawerProps {
   trigger?: React.ReactNode;
@@ -210,7 +211,7 @@ const DataDrawer = ({ trigger }: DataDrawerProps) => {
   };
 
   const renderPositionsContent = (
-    positions: typeof lpPositions,
+    positions: typeof lpPositions | typeof traderPositions,
     positionType: 'trader' | 'liquidity'
   ) => {
     if (isLoadingPositions) {

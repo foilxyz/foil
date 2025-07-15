@@ -4,10 +4,11 @@ import type React from 'react';
 import { useState } from 'react';
 import { useAccount } from 'wagmi';
 
-import { CreateLiquidityForm, ModifyLiquidityForm } from './forms';
 import { useTokenBalance } from '~/hooks/contract';
 import { useMarketPage } from '~/lib/context/MarketPageProvider';
 import { useSapience } from '~/lib/context/SapienceProvider';
+
+import { CreateLiquidityForm, ModifyLiquidityForm } from './forms';
 
 interface SimpleLiquidityWrapperProps {
   positionId?: string;
@@ -66,7 +67,6 @@ const SimpleLiquidityWrapper: React.FC<SimpleLiquidityWrapperProps> = ({
   const hasPosition = !!position;
 
   const handleConnectWallet = async () => {
-    // eslint-disable-next-line @typescript-eslint/await-thenable
     await connectOrCreateWallet();
   };
 
@@ -76,12 +76,12 @@ const SimpleLiquidityWrapper: React.FC<SimpleLiquidityWrapperProps> = ({
   };
 
   const marketDetails = {
-    marketAddress: marketAddress,
-    chainId: chainId,
+    marketAddress: marketAddress as `0x${string}`,
+    chainId: chainId as number,
     marketId: marketContractData.marketId,
     marketAbi: abi,
     collateralAssetTicker,
-    collateralAssetAddress: collateralAssetAddress,
+    collateralAssetAddress: collateralAssetAddress as `0x${string}`,
     uniswapPositionManager: marketGroupParams.uniswapPositionManager,
     virtualBaseTokensName: baseTokenName,
     virtualQuoteTokensName: quoteTokenName,

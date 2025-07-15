@@ -1,12 +1,12 @@
 import { graphqlRequest } from '@sapience/ui/lib';
+import type { CandleType } from '@sapience/ui/types/graphql';
 import { useQuery } from '@tanstack/react-query';
 import { formatEther } from 'viem';
 
-import type { CandleType } from '@sapience/ui/src/types/graphql';
 import { useSapience } from '../../lib/context/SapienceProvider'; // Corrected path
 
 // GraphQL Queries
-const GET_MARKET_CANDLES = /* GraphQL */ `
+const GET_MARKET_CANDLES = `
   query MarketCandles(
     $address: String!
     $chainId: Int!
@@ -35,7 +35,7 @@ const GET_MARKET_CANDLES = /* GraphQL */ `
   }
 `;
 
-const GET_INDEX_CANDLES = /* GraphQL */ `
+const GET_INDEX_CANDLES = `
   query IndexCandles(
     $address: String!
     $chainId: Int!
@@ -62,14 +62,19 @@ const GET_INDEX_CANDLES = /* GraphQL */ `
 `;
 
 // Add Resource Candles Query
-const GET_RESOURCE_CANDLES = /* GraphQL */ `
+const GET_RESOURCE_CANDLES = `
   query ResourceCandles(
     $slug: String!
     $from: Int!
     $to: Int!
     $interval: Int!
   ) {
-    resourceCandles(slug: $slug, from: $from, to: $to, interval: $interval) {
+    resourceCandles(
+      slug: $slug
+      from: $from
+      to: $to
+      interval: $interval
+    ) {
       data {
         timestamp
         close # Assuming we only need close for the line
@@ -82,7 +87,7 @@ const GET_RESOURCE_CANDLES = /* GraphQL */ `
 const TRAILING_AVG_TIME_SECONDS_7_DAYS = 604800; // 7 day trailing average
 const TRAILING_AVG_TIME_SECONDS_28_DAYS = 2419200; // 28 day trailing average
 
-const GET_RESOURCE_TRAILING_AVG_CANDLES = /* GraphQL */ `
+const GET_RESOURCE_TRAILING_AVG_CANDLES = `
   query ResourceTrailingAverageCandles(
     $slug: String!
     $from: Int!

@@ -1,6 +1,8 @@
+/* eslint-disable sonarjs/cognitive-complexity */
+
+import type { MarketGroupType, MarketType } from '@sapience/ui/types';
 import dynamic from 'next/dynamic';
 import type React from 'react';
-import type { MarketGroupType } from '@sapience/ui/src/types';
 
 import { MarketGroupClassification } from '~/lib/types';
 import { formatNumber } from '~/lib/utils/util';
@@ -21,7 +23,7 @@ const MarketStatusDisplay: React.FC<MarketStatusDisplayProps> = ({
   marketGroupData,
   marketClassification,
 }) => {
-  const firstMarket = marketGroupData.markets?.[0];
+  const firstMarket = marketGroupData.markets?.[0] as MarketType | undefined;
 
   if (!firstMarket) {
     return null;

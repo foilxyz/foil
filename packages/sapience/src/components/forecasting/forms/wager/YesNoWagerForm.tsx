@@ -3,16 +3,17 @@ import { NumberDisplay } from '@sapience/ui/components/NumberDisplay';
 import { Button } from '@sapience/ui/components/ui/button';
 import { useToast } from '@sapience/ui/hooks/use-toast';
 import { sapienceAbi } from '@sapience/ui/lib/abi';
+import type { MarketGroupType } from '@sapience/ui/types';
 import { useEffect, useMemo, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import type { MarketGroupType } from '@sapience/ui/src/types';
 import { WagerInput, wagerAmountSchema } from '../inputs/WagerInput';
 import YesNoPredict from '../inputs/YesNoPredict';
-import PermittedAlert from './PermittedAlert';
 import { useCreateTrade } from '~/hooks/contract/useCreateTrade';
 import { useQuoter } from '~/hooks/forms/useQuoter';
+
+import PermittedAlert from './PermittedAlert';
 
 interface YesNoWagerFormProps {
   marketGroupData: MarketGroupType;

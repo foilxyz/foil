@@ -1,16 +1,14 @@
 import { graphqlRequest } from '@sapience/ui/lib';
+import type { Market as MarketType } from '@sapience/ui/types/graphql';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import type { Market as MarketType } from '@sapience/ui/src/types/graphql';
 
-const MARKET_QUERY = /* GraphQL */ `
-  query MarketData($address: String!, $marketId: Int!) {
-    markets(
-      where: {
-        marketGroup: { is: { address: { equals: $address } } }
-        marketId: { equals: $marketId }
-      }
-    ) {
+const MARKET_QUERY = `
+  query GetMarketData($address: String!, $marketId: Int!) {
+    markets(where: {
+      marketGroup: { is: { address: { equals: $address } } },
+      marketId: { equals: $marketId }
+    }) {
       id
       marketId
       question
@@ -130,7 +128,7 @@ export const useMarket = ({
             return null;
           }
 
-          return targetMarket;
+          return targetMarket as MarketType;
         } catch (error) {
           console.error('Error fetching market:', error);
           return null;

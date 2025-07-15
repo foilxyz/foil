@@ -6,18 +6,14 @@ import {
 } from '@sapience/ui/components/charts';
 import { Button } from '@sapience/ui/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@sapience/ui/components/ui/tabs';
+import { ChartType, LineType, TimeInterval } from '@sapience/ui/types/charts';
+import type { Market as GqlMarketType } from '@sapience/ui/types/graphql';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, LineChart, BarChart2, DatabaseIcon } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import { useAccount } from 'wagmi';
-import type { Market as GqlMarketType } from '@sapience/ui/src/types/graphql';
-import {
-  ChartType,
-  LineType,
-  TimeInterval,
-} from '@sapience/ui/src/types/charts';
 
 import OrderBookChart from '~/components/charts/OrderBookChart';
 import PriceChart from '~/components/charts/PriceChart';
@@ -27,7 +23,6 @@ import PositionSelector from '~/components/forecasting/PositionSelector';
 import UserPositionsTable from '~/components/forecasting/UserPositionsTable';
 import { useOrderBookData } from '~/hooks/charts/useOrderBookData';
 import { useUniswapPool } from '~/hooks/charts/useUniswapPool';
-import { PositionKind } from '~/hooks/contract/usePositions';
 import { usePositions } from '~/hooks/graphql/usePositions';
 import {
   MarketPageProvider,
@@ -209,9 +204,7 @@ const ForecastContent = () => {
   useEffect(() => {
     if (selectedPosition) {
       // Set tab based on position kind (1 = Liquidity, 2 = Trade)
-      setActiveFormTab(
-        selectedPosition.kind === PositionKind.Liquidity ? 'liquidity' : 'trade'
-      );
+      setActiveFormTab(selectedPosition.kind === 1 ? 'liquidity' : 'trade');
     }
   }, [selectedPosition]);
 
@@ -455,20 +448,18 @@ const ForecastContent = () => {
                       </div>
                     )}
                     <div className="mt-4 relative">
-                      {selectedPosition &&
-                        selectedPosition.kind === PositionKind.Trade && (
-                          <SimpleTradeWrapper
-                            positionId={positionId || undefined}
-                            onActionComplete={handleUserPositionsRefetch}
-                          />
-                        )}
-                      {selectedPosition &&
-                        selectedPosition.kind === PositionKind.Liquidity && (
-                          <SimpleLiquidityWrapper
-                            positionId={positionId || undefined}
-                            onActionComplete={handleUserPositionsRefetch}
-                          />
-                        )}
+                      {selectedPosition && selectedPosition.kind === 2 && (
+                        <SimpleTradeWrapper
+                          positionId={positionId || undefined}
+                          onActionComplete={handleUserPositionsRefetch}
+                        />
+                      )}
+                      {selectedPosition && selectedPosition.kind === 1 && (
+                        <SimpleLiquidityWrapper
+                          positionId={positionId || undefined}
+                          onActionComplete={handleUserPositionsRefetch}
+                        />
+                      )}
                       {!selectedPosition && activeFormTab === 'trade' && (
                         <SimpleTradeWrapper
                           positionId={positionId || undefined}

@@ -23,12 +23,13 @@ import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { useSignMessage } from 'wagmi';
 
-import CategoryFilter from './CategoryFilter';
-import columns from './columns';
-import DataTable from './data-table';
 import { useEnrichedMarketGroups } from '~/hooks/graphql/useMarketGroups';
 import { ADMIN_AUTHENTICATE_MSG } from '~/lib/constants';
 import { foilApi } from '~/lib/utils/util';
+
+import CategoryFilter from './CategoryFilter';
+import columns from './columns';
+import DataTable from './data-table';
 
 // Dynamically import LottieLoader
 const LottieLoader = dynamic(() => import('~/components/shared/LottieLoader'), {
@@ -115,6 +116,7 @@ const ReindexFactoryForm = () => {
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <div className="space-y-2">
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor="factoryAddress" className="text-sm font-medium">
           Factory Address
         </label>
@@ -130,6 +132,7 @@ const ReindexFactoryForm = () => {
       </div>
 
       <div className="space-y-2">
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor="chainSelect" className="text-sm font-medium">
           Chain
         </label>
@@ -205,7 +208,7 @@ const IndexResourceForm = () => {
           variant: 'destructive',
         });
       }
-    } catch (e: unknown) {
+    } catch (e: Error | unknown) {
       console.error('Error in handleIndexResource:', e);
       toast({
         title: 'Indexing failed',
@@ -336,7 +339,7 @@ const RefreshCacheForm = () => {
           variant: 'destructive',
         });
       }
-    } catch (e: unknown) {
+    } catch (e: Error | unknown) {
       console.error('Error in handleRefreshCache:', e);
       toast({
         title: 'Cache refresh failed',

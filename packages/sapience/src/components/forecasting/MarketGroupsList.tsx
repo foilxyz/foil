@@ -9,6 +9,7 @@ import {
 } from '@sapience/ui/components/ui/sheet';
 import { Skeleton } from '@sapience/ui/components/ui/skeleton';
 import { useIsMobile } from '@sapience/ui/hooks/use-mobile';
+import { type Market as GraphQLMarketType } from '@sapience/ui/types/graphql';
 import { format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -22,8 +23,6 @@ import dynamic from 'next/dynamic'; // Import dynamic
 import { useSearchParams, useRouter } from 'next/navigation';
 import * as React from 'react';
 
-import { type Market as GraphQLMarketType } from '@sapience/ui/src/types/graphql';
-import MarketGroupsRow from './MarketGroupsRow';
 import {
   useEnrichedMarketGroups,
   useCategories,
@@ -31,6 +30,8 @@ import {
 import { FOCUS_AREAS, type FocusArea } from '~/lib/constants/focusAreas';
 import type { MarketGroupClassification } from '~/lib/types'; // Added import
 import { formatQuestion, getYAxisConfig } from '~/lib/utils/util';
+
+import MarketGroupsRow from './MarketGroupsRow';
 
 // Define Category type based on assumed hook return
 interface Category {
@@ -162,6 +163,7 @@ const FocusAreaFilter = ({
                     <div style={{ transform: 'scale(0.65)' }}>
                       <div
                         style={{ color: categoryColor }}
+                        // eslint-disable-next-line react/no-danger
                         dangerouslySetInnerHTML={{
                           __html: styleInfo.iconSvg,
                         }}
@@ -300,8 +302,8 @@ const ForecastingTable = () => {
               marketAddress: marketGroup.address!,
               chainId: marketGroup.chainId,
               collateralAsset: marketGroup.collateralAsset!,
-              categorySlug: marketGroup.category.slug,
-              categoryId: marketGroup.category.id.toString(),
+              categorySlug: marketGroup.category!.slug!,
+              categoryId: marketGroup.category!.id!.toString(),
             };
           });
       }
@@ -492,7 +494,7 @@ const ForecastingTable = () => {
           )[0].endTimestamp!;
         }
 
-        const dayKey = getDayKey(timestamp);
+        const dayKey = getDayKey(timestamp!);
         if (!acc[dayKey]) {
           acc[dayKey] = [];
         }

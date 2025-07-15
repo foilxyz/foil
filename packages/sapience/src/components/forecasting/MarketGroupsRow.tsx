@@ -3,12 +3,12 @@
 import Link from 'next/link';
 import * as React from 'react';
 
-import type { MarketWithContext } from './MarketGroupsList';
 import type { MarketGroupClassification } from '~/lib/types';
 import { MarketGroupClassification as MarketGroupClassificationEnum } from '~/lib/types';
 import { getChainShortName } from '~/lib/utils/util';
 
 // Import the shared type
+import type { MarketWithContext } from './MarketGroupsList';
 
 export interface MarketGroupsRowProps {
   chainId: number;
