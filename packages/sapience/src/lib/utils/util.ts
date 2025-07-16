@@ -100,14 +100,15 @@ export const formatQuestion = (
 
 /**
  * Determines which question to display based on active markets and market group data
+ * This implements the comprehensive logic used across market group lists and headers
  */
 export const getDisplayQuestion = (
   marketGroupData:
     | { question?: string | null; markets?: MarketType[] }
     | null
     | undefined,
-  activeMarkets: MarketType[], // Use MarketType[]
-  isLoading: boolean,
+  activeMarkets?: MarketType[], // Make activeMarkets optional
+  isLoading: boolean = false,
   defaultLoadingMessage: string = '', // Default loading message
   defaultErrorMessage: string = 'This market question is not available' // Default error message
 ): string => {
@@ -123,35 +124,77 @@ export const getDisplayQuestion = (
   }
 
   // Handle null, undefined, or placeholder data
-  // Note: Assuming MarketGroupType doesn't have a 'placeholder' property like the deprecated interface.
-  // Adjust this check if the GraphQL type structure differs significantly or if placeholder logic is still needed.
   if (!marketGroupData) {
     return defaultErrorMessage;
   }
 
-  // Primary Logic:
-  // 1. If exactly one market is active and has a question, use its question.
-  if (activeMarkets.length === 1 && activeMarkets[0]?.question) {
-    return formatOrDefault(activeMarkets[0].question);
+  // If activeMarkets is not provided, calculate it
+  const markets = activeMarkets || findActiveMarkets(marketGroupData);
+
+  // Comprehensive Logic matching MarketGroupsList:
+  // 1. If we have multiple active markets, use market group question
+  if (markets.length > 1 && marketGroupData.question) {
+    return formatOrDefault(marketGroupData.question);
   }
 
-  // 2. Otherwise (multiple active markets OR zero active markets OR the single active market has no question),
-  //    use the market group's question if available.
+  // 2. If we have exactly one active market with a question, use that
+  if (markets.length === 1 && markets[0]?.question) {
+    return formatOrDefault(markets[0].question);
+  }
+
+  // 3. Fallback to market group question
   if (marketGroupData.question) {
     return formatOrDefault(marketGroupData.question);
   }
 
-  // 3. Fallback: If group question isn't available, find the first market (active or not) with a question.
-  //    (Consider if this fallback is truly desired, might be better to show defaultErrorMessage)
-  const firstMarketWithQuestion = marketGroupData.markets?.find(
-    (market: MarketType) => market.question // Explicitly type 'market'
-  );
-  if (firstMarketWithQuestion?.question) {
-    return formatOrDefault(firstMarketWithQuestion.question);
+  // 4. Fallback to first market with a question (sorted by start time)
+  if (marketGroupData.markets && marketGroupData.markets.length > 0) {
+    const firstMarketWithQuestion = [...marketGroupData.markets]
+      .sort((a, b) => {
+        const aStart =
+          typeof a.startTimestamp === 'number' ? a.startTimestamp : 0;
+        const bStart =
+          typeof b.startTimestamp === 'number' ? b.startTimestamp : 0;
+        return aStart - bStart;
+      })
+      .find((market: MarketType) => market.question);
+
+    if (firstMarketWithQuestion?.question) {
+      return formatOrDefault(firstMarketWithQuestion.question);
+    }
   }
 
   // Final Fallback: If no question found anywhere, return the default error message.
   return defaultErrorMessage;
+};
+
+/**
+ * Determines which question to display for market headers specifically
+ * Handles the simpler logic used in individual market pages
+ */
+export const getMarketHeaderQuestion = (
+  marketGroupData:
+    | {
+        question?: string | null;
+        markets?: MarketType[];
+        resource?: { name: string } | null;
+      }
+    | null
+    | undefined,
+  activeMarket?: MarketType | null
+): string => {
+  const markets = marketGroupData?.markets;
+  const hasOnlyOneMarket = markets && markets.length === 1;
+
+  if (hasOnlyOneMarket && activeMarket?.question) {
+    return formatQuestion(activeMarket.question) || activeMarket.question;
+  }
+
+  return (
+    formatQuestion(marketGroupData?.question) ||
+    marketGroupData?.question ||
+    `${marketGroupData?.resource?.name} Market`
+  );
 };
 
 /**

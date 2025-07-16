@@ -30,7 +30,7 @@ import {
 } from '~/hooks/graphql/useMarketGroups';
 import { FOCUS_AREAS, type FocusArea } from '~/lib/constants/focusAreas';
 import type { MarketGroupClassification } from '~/lib/types'; // Added import
-import { formatQuestion, getYAxisConfig } from '~/lib/utils/util';
+import { getYAxisConfig, getMarketHeaderQuestion } from '~/lib/utils/util';
 
 // Define Category type based on assumed hook return
 interface Category {
@@ -403,34 +403,17 @@ const ForecastingTable = () => {
           displayUnit = yAxisConfig.unit;
         }
 
-        // Determine the raw question (will be formatted by MarketGroupsRow)
-        let rawQuestion: string | null = null;
+        // Use the same question logic as the header
+        // Determine the "active market" for header logic:
+        // If there's only one market total, use that market; otherwise use null
+        const allMarketsInGroup = sourceMarketGroup?.markets || [];
+        const singleMarket =
+          allMarketsInGroup.length === 1 ? allMarketsInGroup[0] : null;
 
-        // If we have multiple active markets, use market question
-        if (activeMarkets.length > 1 && sourceMarketGroup?.question) {
-          rawQuestion = sourceMarketGroup.question;
-        }
-        // If we have exactly one active market with a question, use that
-        else if (activeMarkets.length === 1 && activeMarkets[0]?.question) {
-          rawQuestion = activeMarkets[0].question;
-        }
-        // Fallback to market question
-        else if (sourceMarketGroup?.question) {
-          rawQuestion = sourceMarketGroup.question;
-        }
-        // Fallback to first market with a question
-        else if (groupedMarketGroup.markets.length > 0) {
-          const firstMarketWithQuestion = [...groupedMarketGroup.markets]
-            .sort((a, b) => a.startTimestamp! - b.startTimestamp!)
-            .find((market) => market.question);
-
-          rawQuestion = firstMarketWithQuestion?.question || null;
-        }
-
-        // Format the question if we have one, otherwise use market name
-        const displayQuestion =
-          (rawQuestion ? formatQuestion(rawQuestion) : null) ||
-          groupedMarketGroup.marketName;
+        const displayQuestion = getMarketHeaderQuestion(
+          sourceMarketGroup,
+          singleMarket
+        );
 
         return {
           ...groupedMarketGroup,

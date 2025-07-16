@@ -3,6 +3,7 @@ import { formatDistanceToNow, fromUnixTime } from 'date-fns';
 import type { MarketGroupType, MarketType } from '@sapience/ui/types';
 
 import type { MarketGroupClassification } from '~/lib/types';
+import { getMarketHeaderQuestion } from '~/lib/utils/util';
 
 interface MarketGroupHeaderProps {
   marketGroupData: MarketGroupType;
@@ -33,19 +34,11 @@ const MarketGroupHeader: React.FC<MarketGroupHeaderProps> = ({
     }
   })();
 
-  // Determine which question to display
-  const displayQuestion = (() => {
-    const markets = marketGroupData?.markets;
-    const hasOnlyOneMarket = markets && markets.length === 1;
-
-    if (hasOnlyOneMarket && activeMarket?.question) {
-      return activeMarket.question;
-    }
-
-    return (
-      marketGroupData?.question ?? `${marketGroupData?.resource?.name} Market`
-    );
-  })();
+  // Determine which question to display using the utility function
+  const displayQuestion = getMarketHeaderQuestion(
+    marketGroupData,
+    activeMarket
+  );
 
   return (
     <div className="w-full p-3 pt-6 pb-4 md:py-6">
