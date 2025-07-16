@@ -1,6 +1,5 @@
 'use client';
 
-import type { MarketGroup as MarketGroupType } from '@sapience/ui/types/graphql';
 import { useMemo, useState } from 'react'; // <-- Import useMemo and useState
 import {
   CartesianGrid,
@@ -12,12 +11,12 @@ import {
   YAxis,
 } from 'recharts';
 
+import type { MarketGroup as MarketGroupType } from '@sapience/ui/types/graphql';
 import LottieLoader from '../shared/LottieLoader';
+import ChartLegend from './ChartLegend';
 import { useMarketGroupChartData } from '~/hooks/graphql/useMarketGroupChartData';
 import type { MultiMarketChartDataPoint } from '~/lib/utils/chartUtils'; // Added for type safety
 import { formatTimestamp, getYAxisConfig } from '~/lib/utils/util'; // Import moved functions
-
-import ChartLegend from './ChartLegend';
 
 // Define a simple color palette for the lines
 const lineColors = ['#3B82F6', '#F87171', '#4ADE80'];

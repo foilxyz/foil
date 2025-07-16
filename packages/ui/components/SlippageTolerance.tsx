@@ -1,4 +1,6 @@
-import React from 'react';
+import type React from 'react';
+import { InfoIcon } from 'lucide-react';
+import { useFormContext } from 'react-hook-form';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -8,8 +10,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from './ui/tooltip';
-import { InfoIcon } from 'lucide-react';
-import { useFormContext } from 'react-hook-form';
 
 export const SlippageTolerance: React.FC = () => {
   const { setValue, watch } = useFormContext();

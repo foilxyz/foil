@@ -17,7 +17,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
-      "@/components/*": ["./components/*"],
+      "@/components/*": ["src/components/*"],
       "@/protocol/*": ["../../protocol/*"]
     },
     "incremental": true,
@@ -34,7 +34,12 @@
     "**/*.tsx",
     "src",
     "commitlint.config.js",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts", 
+    "components", 
+    "hooks", 
+    "lib", 
+    "providers",
+    "types"
   ],
   "exclude": ["node_modules"]
 }

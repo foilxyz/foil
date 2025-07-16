@@ -20,7 +20,6 @@ const FocusAreaIcon = ({
     <div
       className="w-5 h-5 flex items-center justify-center"
       style={{ color }}
-      // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: iconSvg }}
     />
   </div>

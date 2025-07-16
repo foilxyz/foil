@@ -315,7 +315,7 @@ async function calculateLockedLiqudity(
         : undefined;
 
     // outputRes0 should contain the amount of token1 received [amountOut, poolAfter]
-    const token1Amount = outputRes0?.[0] as CurrencyAmount<Token> | undefined;
+    const token1Amount = outputRes0?.[0] as CurrencyAmount<Token>;
 
     // Calculate locked amounts based on the simulated swap
     // Amount of token0 locked is derived from token1 amount and the price at this tick
@@ -324,7 +324,7 @@ async function calculateLockedLiqudity(
       : 0;
     // Amount of token1 locked is the direct result of the simulated swap
     amount1 = token1Amount ? parseFloat(token1Amount.toExact()) : 0;
-  } catch (error) {
+  } catch (_error) {
     // console.warn(`Could not calculate locked liquidity for tick ${tick.tickIdx}:`, error);
     // This can happen in very low liquidity scenarios or at extreme price ranges.
     // Set amounts to 0 in this case.

@@ -1,3 +1,4 @@
+import { ChevronDown } from 'lucide-react';
 import { TimeInterval } from '../../types/charts';
 import { Button } from '../ui/button';
 import {
@@ -6,7 +7,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { ChevronDown } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 interface IntervalSelectorProps {
@@ -45,7 +45,7 @@ export const IntervalSelector = ({
             onClick={() => setSelectedInterval(intervalKey as TimeInterval)}
             className={cn(
               'text-sm px-2 py-1.5',
-              selectedInterval === intervalKey
+              selectedInterval === (intervalKey as TimeInterval)
                 ? 'bg-accent text-accent-foreground'
                 : ''
             )}

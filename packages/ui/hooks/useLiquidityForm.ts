@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 
 // Define the form schema structure without zod
-const liquidityFormValidation = {
+const _liquidityFormValidation = {
   depositAmount: {
     required: 'Deposit amount is required',
   },

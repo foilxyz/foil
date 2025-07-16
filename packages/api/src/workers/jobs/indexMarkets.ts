@@ -48,7 +48,7 @@ export async function handleMarketGroupInitialized(
   factoryAddress: string,
   client: PublicClient
 ) {
-  console.log('MarketGroupInitialized event caught:', eventArgs);
+  console.log('MarketGroupInitialized/Deployed event caught:', eventArgs);
 
   const nonce = eventArgs.nonce.toString();
   const sender = eventArgs.sender.toLowerCase();

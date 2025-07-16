@@ -27,6 +27,7 @@ import {
   useSwitchChain,
 } from 'wagmi';
 
+import TradeOrderQuote from './TradeOrderQuote';
 import LottieLoader from '~/components/shared/LottieLoader';
 import { useUniswapPool } from '~/hooks/charts/useUniswapPool';
 import { useCreateTrade } from '~/hooks/contract/useCreateTrade';
@@ -35,8 +36,6 @@ import { useTradeForm } from '~/hooks/forms/useTradeForm';
 import { HIGH_PRICE_IMPACT, TOKEN_DECIMALS } from '~/lib/constants/numbers';
 import { useMarketPage } from '~/lib/context/MarketPageProvider';
 import { MarketGroupClassification } from '~/lib/types';
-
-import TradeOrderQuote from './TradeOrderQuote';
 
 const COLLATERAL_DECIMALS = TOKEN_DECIMALS;
 
@@ -110,7 +109,7 @@ export function CreateTradeForm({
   const sizeBigInt = React.useMemo(() => {
     try {
       return parseUnits(sizeInput || '0', TOKEN_DECIMALS);
-    } catch (e) {
+    } catch (_e) {
       return BigInt(0);
     }
   }, [sizeInput]);
@@ -162,7 +161,7 @@ export function CreateTradeForm({
     return formatUnits(quotedFillPriceBI, TOKEN_DECIMALS);
   }, [quotedFillPriceBI]);
 
-  const poolAddress = marketContractData?.pool as `0x${string}` | undefined;
+  const poolAddress = marketContractData?.pool;
 
   const { pool } = useUniswapPool(
     chainId ?? undefined,

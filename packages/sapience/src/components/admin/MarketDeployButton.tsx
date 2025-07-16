@@ -15,12 +15,12 @@ import {
   DialogTrigger,
 } from '@sapience/ui/components/ui/dialog';
 import { sapienceAbi } from '@sapience/ui/lib/abi';
-import type { MarketType } from '@sapience/ui/types';
 import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { Address } from 'viem';
 import { bytesToHex, toBytes } from 'viem';
 import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
+import type { MarketType } from '@sapience/ui/types';
 
 interface MarketDeployButtonProps {
   market: MarketType; // Use the adjusted market type
@@ -98,12 +98,10 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
     ) {
       return 'Missing base asset maximum price tick.';
     }
-    if (!market.marketParamsClaimstatementYesOrNumeric) {
+    if (!market.claimStatementYesOrNumeric) {
       return 'Missing or invalid claim statement Yes or Numeric.';
     }
-    if (!market.marketParamsClaimstatementNo) {
-      return 'Missing or invalid claim statement No.';
-    }
+    // claimStatementNo is optional, so no validation needed
     return null;
   };
 
@@ -121,9 +119,8 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
     }
 
     try {
-      const claimStatementYesOrNumeric =
-        market.marketParamsClaimstatementYesOrNumeric;
-      const claimStatementNo = market.marketParamsClaimstatementNo;
+      const claimStatementYesOrNumeric = market.claimStatementYesOrNumeric;
+      const claimStatementNo = market.claimStatementNo || ''; // Default to empty string if undefined
       const claimStatementBytesYesOrNumeric = toBytes(
         claimStatementYesOrNumeric as string
       );
@@ -156,13 +153,12 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
       const args = {
         startTime: BigInt(startTimeNum),
         endTime: BigInt(endTimeNum),
-        startingSqrtPriceX96: BigInt(market.startingSqrtPriceX96!),
+        startingSqrtPriceX96: BigInt(market.startingSqrtPriceX96 ?? '0'),
         baseAssetMinPriceTick: minPriceTickNum,
         baseAssetMaxPriceTick: maxPriceTickNum,
         salt,
-        claimStatementYesOrNumeric:
-          claimStatementHexYesOrNumeric as `0x${string}`,
-        claimStatementNo: claimStatementHexNo as `0x${string}`,
+        claimStatementYesOrNumeric: claimStatementHexYesOrNumeric,
+        claimStatementNo: claimStatementHexNo,
       };
 
       console.log('Calling writeContract (createMarket) with args:', args);
@@ -251,11 +247,11 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
               </p>
               <p>
                 <strong>claimStatement Yes (bytes):</strong>{' '}
-                {market.marketParamsClaimstatementYesOrNumeric ?? 'N/A'}
+                {market.claimStatementYesOrNumeric ?? 'N/A'}
               </p>
               <p>
                 <strong>claimStatement No (bytes):</strong>{' '}
-                {market.marketParamsClaimstatementNo ?? 'N/A'}
+                {market.claimStatementNo ?? 'N/A'}
               </p>
               <p>
                 <strong>salt (uint256):</strong> {'<generated on deploy>'}
