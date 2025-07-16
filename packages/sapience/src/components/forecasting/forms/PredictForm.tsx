@@ -33,6 +33,7 @@ export default function PredictForm({
   // Create a unified schema that works for all market types
   const formSchema = useMemo(() => {
     const baseValidation = z.string().min(1, 'Please enter a prediction');
+    const commentValidation = z.string().optional();
 
     switch (marketClassification) {
       case MarketGroupClassification.MULTIPLE_CHOICE:
@@ -40,6 +41,7 @@ export default function PredictForm({
           predictionValue: baseValidation.refine((val) => val !== '', {
             message: 'Please select an option',
           }),
+          comment: commentValidation,
         });
       case MarketGroupClassification.YES_NO:
         return z.object({
@@ -47,6 +49,7 @@ export default function PredictForm({
             (val) => val === NO_SQRT_PRICE_X96 || val === YES_SQRT_PRICE_X96,
             { message: 'Please select Yes or No' }
           ),
+          comment: commentValidation,
         });
       case MarketGroupClassification.NUMERIC:
         return z.object({
@@ -60,10 +63,12 @@ export default function PredictForm({
             .refine((val) => Number(val) <= upperBound, {
               message: `Must be at most ${upperBound}`,
             }),
+          comment: commentValidation,
         });
       default:
         return z.object({
           predictionValue: baseValidation,
+          comment: commentValidation,
         });
     }
   }, [marketClassification, lowerBound, upperBound]);
@@ -86,6 +91,7 @@ export default function PredictForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       predictionValue: defaultPredictionValue,
+      comment: '',
     },
     mode: 'onChange', // Validate on change for immediate feedback
   });
@@ -94,8 +100,9 @@ export default function PredictForm({
     methods.setValue('predictionValue', defaultPredictionValue);
   }, [marketClassification, defaultPredictionValue, methods]);
 
-  // Get the current prediction value
+  // Get the current prediction value and comment
   const predictionValue = methods.watch('predictionValue');
+  const comment = methods.watch('comment');
 
   const marketId = useMemo(() => {
     if (marketClassification === MarketGroupClassification.MULTIPLE_CHOICE) {
@@ -123,6 +130,7 @@ export default function PredictForm({
     marketId,
     submissionValue,
     targetChainId: chainId,
+    comment,
   });
 
   const handleSubmit = async () => {
@@ -164,6 +172,20 @@ export default function PredictForm({
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(handleSubmit)} className="space-y-6">
         {renderCategoryInput()}
+
+        {/* Comment field */}
+        <div className="space-y-2">
+          <label htmlFor="comment" className="text-sm font-medium">
+            Comment
+          </label>
+          <textarea
+            id="comment"
+            {...methods.register('comment')}
+            placeholder="Optional"
+            className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            rows={3}
+          />
+        </div>
 
         <Button
           type="submit"
