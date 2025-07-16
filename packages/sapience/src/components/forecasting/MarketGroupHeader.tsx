@@ -33,13 +33,26 @@ const MarketGroupHeader: React.FC<MarketGroupHeaderProps> = ({
     }
   })();
 
+  // Determine which question to display
+  const displayQuestion = (() => {
+    const markets = marketGroupData?.markets;
+    const hasOnlyOneMarket = markets && markets.length === 1;
+
+    if (hasOnlyOneMarket && activeMarket?.question) {
+      return activeMarket.question;
+    }
+
+    return (
+      marketGroupData?.question ?? `${marketGroupData?.resource?.name} Market`
+    );
+  })();
+
   return (
     <div className="w-full p-3 pt-6 pb-4 md:py-6">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div className="flex flex-col gap-3">
           <h1 className="text-2xl md:text-4xl font-normal mb-2 leading-tight flex items-center gap-2.5">
-            {marketGroupData?.question ??
-              `${marketGroupData?.resource?.name} Market`}
+            {displayQuestion}
           </h1>
           <div className="flex flex-wrap gap-y-1.5 lg:gap-y-2 gap-x-3 lg:gap-x-6 text-xs sm:text-sm items-center">
             {endTimeBadge}

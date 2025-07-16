@@ -28,7 +28,66 @@ import {
   useMarketGroupPage,
 } from '~/lib/context/MarketGroupPageProvider';
 import type { MarketGroupClassification } from '~/lib/types';
-import { formatQuestion, parseUrlParameter } from '~/lib/utils/util';
+import {
+  formatQuestion,
+  parseUrlParameter,
+  findActiveMarkets,
+} from '~/lib/utils/util';
+
+// Helper function to group markets by end time and find the appropriate group to display
+const getMarketsGroupedByEndTime = (markets: MarketType[]) => {
+  const currentTimeSeconds = Date.now() / 1000;
+
+  // Group markets by end time
+  const marketsByEndTime = markets.reduce(
+    (acc, market) => {
+      const endTime = market.endTimestamp;
+      if (typeof endTime === 'number' && !Number.isNaN(endTime)) {
+        if (!acc[endTime]) {
+          acc[endTime] = [];
+        }
+        acc[endTime].push(market);
+      }
+      return acc;
+    },
+    {} as Record<number, MarketType[]>
+  );
+
+  // Get all unique end times and sort them
+  const endTimes = Object.keys(marketsByEndTime)
+    .map(Number)
+    .sort((a, b) => a - b);
+
+  // Find the next common end time in the future
+  const futureEndTimes = endTimes.filter(
+    (endTime) => endTime > currentTimeSeconds
+  );
+
+  if (futureEndTimes.length > 0) {
+    const nextEndTime = futureEndTimes[0];
+    return {
+      markets: marketsByEndTime[nextEndTime],
+      endTime: nextEndTime,
+      isFuture: true,
+    };
+  }
+
+  // If no future end times, find the most recent end time in the past
+  const pastEndTimes = endTimes.filter(
+    (endTime) => endTime <= currentTimeSeconds
+  );
+
+  if (pastEndTimes.length > 0) {
+    const mostRecentEndTime = pastEndTimes[pastEndTimes.length - 1];
+    return {
+      markets: marketsByEndTime[mostRecentEndTime],
+      endTime: mostRecentEndTime,
+      isFuture: false,
+    };
+  }
+
+  return null;
+};
 
 export type ActiveTab = 'predict' | 'wager';
 
@@ -94,11 +153,14 @@ const ForecastingForm = ({
       return false;
     }
 
-    const isExpired =
-      activeMarket.endTimestamp &&
-      Date.now() > Number(activeMarket.endTimestamp) * 1000;
-
-    return !isExpired;
+    // Check if the market's end time is in the future
+    const currentTimeSeconds = Date.now() / 1000;
+    const endTime = activeMarket.endTimestamp;
+    return (
+      typeof endTime === 'number' &&
+      !Number.isNaN(endTime) &&
+      endTime > currentTimeSeconds
+    );
   }, [activeMarket]);
 
   if (!isActive) {
@@ -188,12 +250,11 @@ const MarketGroupPageContent = () => {
     marketGroupData,
     isLoading,
     isSuccess,
-    activeMarkets,
     marketClassification,
     chainId,
   } = useMarketGroupPage();
 
-  const { isLoading: isUserPositionsLoading } = usePositions({
+  const { isLoading: _isUserPositionsLoading } = usePositions({
     address: address || '',
     marketAddress,
   });
@@ -225,10 +286,32 @@ const MarketGroupPageContent = () => {
     (market: MarketType) => market.optionName || ''
   );
 
-  // Find the active market once
-  const activeMarket =
-    activeMarkets.find((market) => market.poolAddress === marketAddress) ||
-    activeMarkets[0];
+  // Find markets grouped by common end time
+  const marketGroupByEndTime = marketGroupData?.markets
+    ? getMarketsGroupedByEndTime(marketGroupData.markets)
+    : null;
+
+  // Find the active market from the group with the next common end time
+  const activeMarket = (() => {
+    if (!marketGroupByEndTime) {
+      return undefined;
+    }
+
+    const { markets } = marketGroupByEndTime;
+
+    // Try to find the specific market by marketAddress if provided
+    if (marketAddress) {
+      const foundMarket = markets.find(
+        (market) => market.poolAddress === marketAddress
+      );
+      if (foundMarket) {
+        return foundMarket;
+      }
+    }
+
+    // Otherwise return the first market from the group
+    return markets[0];
+  })();
 
   // Otherwise show the main content
   return (
@@ -253,14 +336,19 @@ const MarketGroupPageContent = () => {
                   <MarketGroupChart
                     chainShortName={chainShortName}
                     marketAddress={marketAddress}
-                    marketIds={activeMarkets.map((market) =>
-                      Number(market.marketId)
-                    )}
+                    marketIds={
+                      marketGroupByEndTime
+                        ? marketGroupByEndTime.markets.map((market) =>
+                            Number(market.marketId)
+                          )
+                        : []
+                    }
                     market={marketGroupData}
                     minTimestamp={
-                      activeMarkets.length > 0
+                      marketGroupByEndTime &&
+                      marketGroupByEndTime.markets.length > 0
                         ? Math.min(
-                            ...activeMarkets.map((market) =>
+                            ...marketGroupByEndTime.markets.map((market) =>
                               Number(market.startTimestamp)
                             )
                           )
@@ -300,22 +388,9 @@ const MarketGroupPageContent = () => {
             </div>
           </div>
 
-          {/* Row 3: User Positions Table */}
           {(() => {
             if (!address) {
               return null;
-            }
-            if (isUserPositionsLoading) {
-              return (
-                <div className="mt-6 text-center p-6 border border-muted rounded bg-background/50">
-                  <div className="flex flex-col items-center justify-center py-2">
-                    <div className="h-6 w-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin mb-2" />
-                    <p className="text-sm text-muted-foreground">
-                      Loading your positions...
-                    </p>
-                  </div>
-                </div>
-              );
             }
             return (
               <div>
@@ -341,24 +416,32 @@ const MarketGroupPageContent = () => {
           </DialogHeader>
           <div className="space-y-6 pb-2">
             {(() => {
-              // Categorize markets into active and past
+              // Categorize markets into active, upcoming, and past
               const allMarkets = marketGroupData.markets || [];
-              const currentTime = Date.now();
+              const currentTimeSeconds = Date.now() / 1000;
 
-              const activeMarketsList = allMarkets.filter(
+              const activeMarketsList = findActiveMarkets({
+                markets: allMarkets,
+              });
+
+              const upcomingMarketsList = allMarkets.filter(
                 (market: MarketType) => {
-                  const isExpired =
-                    market.endTimestamp &&
-                    currentTime > Number(market.endTimestamp) * 1000;
-                  return !isExpired;
+                  const start = market.startTimestamp;
+                  return (
+                    typeof start === 'number' &&
+                    !Number.isNaN(start) &&
+                    currentTimeSeconds < start
+                  );
                 }
               );
 
               const pastMarketsList = allMarkets.filter(
                 (market: MarketType) => {
+                  const end = market.endTimestamp;
                   return (
-                    market.endTimestamp &&
-                    currentTime > Number(market.endTimestamp) * 1000
+                    typeof end === 'number' &&
+                    !Number.isNaN(end) &&
+                    currentTimeSeconds >= end
                   );
                 }
               );
@@ -384,6 +467,47 @@ const MarketGroupPageContent = () => {
                                 className="w-1 min-w-[4px] max-w-[4px]"
                                 style={{
                                   backgroundColor: '#3B82F6',
+                                  margin: '-1px 0',
+                                }}
+                              />
+
+                              {/* Content Container */}
+                              <div className="flex-grow flex flex-col lg:flex-row lg:items-center px-5 py-3">
+                                {/* Question Section */}
+                                <div className="pb-3 lg:pb-0 lg:pr-5">
+                                  <h3 className="text-xl font-heading font-normal">
+                                    {market.question
+                                      ? formatQuestion(market.question)
+                                      : `Market ${market.marketId}`}
+                                  </h3>
+                                </div>
+                              </div>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Upcoming Markets Section */}
+                  {upcomingMarketsList.length > 0 && (
+                    <div>
+                      <h3 className="font-medium text-sm text-muted-foreground mb-2">
+                        Upcoming Markets
+                      </h3>
+                      <div className="border border-muted rounded shadow-sm bg-background/50 overflow-hidden">
+                        {upcomingMarketsList.map((market: MarketType) => (
+                          <Link
+                            key={market.id}
+                            href={`${pathname}/${market.marketId}`}
+                            onClick={() => setShowMarketSelector(false)}
+                          >
+                            <div className="bg-background border-muted dark:bg-muted/50 flex flex-row hover:bg-secondary/20 transition-colors items-stretch min-h-[72px] border-b last:border-b-0 border-border">
+                              {/* Colored Bar (Full Height) */}
+                              <div
+                                className="w-1 min-w-[4px] max-w-[4px]"
+                                style={{
+                                  backgroundColor: '#F59E0B',
                                   margin: '-1px 0',
                                 }}
                               />
