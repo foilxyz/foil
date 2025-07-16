@@ -75,8 +75,8 @@ const MARKET_GROUPS_QUERY = /* GraphQL */ `
         baseAssetMinPriceTick
         baseAssetMaxPriceTick
         poolAddress
-        marketParamsClaimstatementYesOrNumeric
-        marketParamsClaimstatementNo
+        claimStatementYesOrNumeric
+        claimStatementNo
       }
     }
   }

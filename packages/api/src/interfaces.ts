@@ -72,8 +72,6 @@ export interface MarketParams {
   bondCurrency: string;
   feeRate: number;
   optimisticOracleV3: string;
-  claimStatementYesOrNumeric: string;
-  claimStatementNo: string;
   uniswapPositionManager: string;
   uniswapQuoter: string;
   uniswapSwapRouter: string;
@@ -92,15 +90,16 @@ export interface MarketData {
   baseAssetMaxPriceTick: number;
   settled: boolean;
   settlementPriceD18: bigint;
+  claimStatementYesOrNumeric: string;
+  claimStatementNo: string;
 }
 
 export interface MarketGroupCreatedUpdatedEventLog {
   initialOwner?: string;
-  uniswapPositionManager: string;
   collateralAsset?: string;
-  uniswapSwapRouter: string;
-  optimisticOracleV3: string;
-  isBridged: boolean;
+  feeCollectorNFT?: string;
+  minTradeSize?: string;
+  isBridged?: boolean;
   marketParams: MarketParams;
 }
 

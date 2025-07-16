@@ -44,11 +44,40 @@ const settledPositions: any[] = [];
 export const initializeMarket = async (marketInfo: marketInfo) => {
   const client = getProviderForChain(marketInfo.marketChainId);
 
-  const MarketReadResult = (await client.readContract({
+  const marketReadResult = (await client.readContract({
     address: marketInfo.deployment.address as `0x${string}`,
     abi: Sapience.abi,
     functionName: 'getMarketGroup',
-  })) as [string, string, string, string, any];
+  })) as [string, string, string, any];
+
+  /* 
+  marketReadResult[0] = owner
+  marketReadResult[1] = collateralAsset
+  marketReadResult[2] = feeCollectorNFT
+  marketReadResult[3] = marketParams
+
+  marketParams = {
+        uint24 feeRate;
+        uint64 assertionLiveness;
+        uint256 bondAmount;
+        address bondCurrency;
+        address uniswapPositionManager;
+        address uniswapSwapRouter;
+        address uniswapQuoter;
+        address optimisticOracleV3;
+  }
+  */
+
+  const marketParams = {
+    feeRate: marketReadResult[3].feeRate,
+    assertionLiveness: BigInt(marketReadResult[3].assertionLiveness).toString(),
+    bondAmount: BigInt(marketReadResult[3].bondAmount).toString(),
+    bondCurrency: marketReadResult[3].bondCurrency,
+    uniswapPositionManager: marketReadResult[3].uniswapPositionManager,
+    uniswapSwapRouter: marketReadResult[3].uniswapSwapRouter,
+    uniswapQuoter: marketReadResult[3].uniswapQuoter,
+    optimisticOracleV3: marketReadResult[3].optimisticOracleV3,
+  };
 
   const updatedMarketData = {
     address: marketInfo.deployment.address.toLowerCase(),
@@ -57,19 +86,25 @@ export const initializeMarket = async (marketInfo: marketInfo) => {
     deployTxnBlockNumber: Number(marketInfo.deployment.deployTxnBlockNumber),
     deployTimestamp: Number(marketInfo.deployment.deployTimestamp),
     chainId: marketInfo.marketChainId,
-    owner: MarketReadResult[0].toLowerCase(),
-    collateralAsset: MarketReadResult[1],
+    owner: marketReadResult[0].toLowerCase(),
+    collateralAsset: marketReadResult[1],
     collateralDecimals: null as number | null,
-    marketParamsFeerate: null as number | null,
-    marketParamsAssertionliveness: null,
-    marketParamsBondcurrency: null,
-    marketParamsBondamount: null,
-    marketParamsClaimstatementYesOrNumeric: null,
-    marketParamsClaimstatementNo: null,
-    marketParamsUniswappositionmanager: null,
-    marketParamsUniswapswaprouter: null,
-    marketParamsUniswapquoter: null,
-    marketParamsOptimisticoraclev3: null,
+    marketParamsFeerate: marketParams.feeRate as number | null,
+    marketParamsAssertionliveness: marketParams.assertionLiveness as
+      | string
+      | null,
+    marketParamsBondcurrency: marketParams.bondCurrency as string | null,
+    marketParamsBondamount: marketParams.bondAmount as string | null,
+    marketParamsUniswappositionmanager: marketParams.uniswapPositionManager as
+      | string
+      | null,
+    marketParamsUniswapswaprouter: marketParams.uniswapSwapRouter as
+      | string
+      | null,
+    marketParamsUniswapquoter: marketParams.uniswapQuoter as string | null,
+    marketParamsOptimisticoraclev3: marketParams.optimisticOracleV3 as
+      | string
+      | null,
   };
 
   if (updatedMarketData.collateralAsset) {
@@ -98,7 +133,7 @@ export const initializeMarket = async (marketInfo: marketInfo) => {
     }
   }
 
-  const marketParamsRaw = MarketReadResult[4];
+  const marketParamsRaw = marketReadResult[3];
   if (marketParamsRaw) {
     updatedMarketData.marketParamsFeerate = marketParamsRaw.feeRate || null;
     updatedMarketData.marketParamsAssertionliveness =
@@ -107,10 +142,6 @@ export const initializeMarket = async (marketInfo: marketInfo) => {
       marketParamsRaw.bondCurrency || null;
     updatedMarketData.marketParamsBondamount =
       marketParamsRaw.bondAmount?.toString() || null;
-    updatedMarketData.marketParamsClaimstatementYesOrNumeric =
-      marketParamsRaw.claimStatementYesOrNumeric || null;
-    updatedMarketData.marketParamsClaimstatementNo =
-      marketParamsRaw.claimStatementNo || null;
     updatedMarketData.marketParamsUniswappositionmanager =
       marketParamsRaw.uniswapPositionManager || null;
     updatedMarketData.marketParamsUniswapswaprouter =
@@ -154,9 +185,6 @@ const extractMarketGroupFields = (marketGroup: any) => {
     marketParamsAssertionliveness: marketGroup.marketParamsAssertionliveness,
     marketParamsBondcurrency: marketGroup.marketParamsBondcurrency,
     marketParamsBondamount: marketGroup.marketParamsBondamount,
-    marketParamsClaimstatementYesOrNumeric:
-      marketGroup.marketParamsClaimstatementYesOrNumeric,
-    marketParamsClaimstatementNo: marketGroup.marketParamsClaimstatementNo,
     marketParamsUniswappositionmanager:
       marketGroup.marketParamsUniswappositionmanager,
     marketParamsUniswapswaprouter: marketGroup.marketParamsUniswapswaprouter,
@@ -382,6 +410,8 @@ export const indexMarketGroupEvents = async (
 export const reindexMarketGroupEvents = async (marketGroup: any) => {
   const client = getProviderForChain(marketGroup.chainId);
   const chainId = await client.getChainId();
+
+  // TODO: Get market group data from contract
 
   // Update collateral data
 
@@ -703,13 +733,13 @@ export const upsertEntitiesFromEvent = async (
     // Market Group events
     case EventType.MarketGroupInitialized: {
       console.log('initializing market group. event: ', event);
-      // TODO: Check if this is correct. Looks like events params are missing here
       const marketGroupCreatedArgs = {
-        uniswapPositionManager: event.logData.args.uniswapPositionManager,
-        uniswapSwapRouter: event.logData.args.uniswapSwapRouter,
-        optimisticOracleV3: event.logData.args.optimisticOracleV3,
-        marketParams: event.logData.args.marketParams,
+        initialOwner: event.logData.args.initialOwner,
+        collateralAsset: event.logData.args.collateralAsset,
+        feeCollectorNFT: event.logData.args.feeCollectorNFT,
+        minTradeSize: event.logData.args.minTradeSize,
         isBridged: event.logData.args.bridgedSettlement,
+        marketParams: event.logData.args.marketParams,
       } as MarketGroupCreatedUpdatedEventLog;
 
       await createOrUpdateMarketGroupFromEvent(
@@ -724,9 +754,6 @@ export const upsertEntitiesFromEvent = async (
     case EventType.MarketGroupUpdated: {
       console.log('updating market. event: ', event);
       const marketUpdatedArgs = {
-        uniswapPositionManager: event.logData.args.uniswapPositionManager,
-        uniswapSwapRouter: event.logData.args.uniswapSwapRouter,
-        optimisticOracleV3: event.logData.args.optimisticOracleV3,
         marketParams: event.logData.args.marketParams,
       } as MarketGroupCreatedUpdatedEventLog;
 

@@ -11,7 +11,6 @@ import type {
 } from '../../generated/prisma';
 import { transaction_type_enum as TransactionType } from '../../generated/prisma';
 import {
-  Deployment,
   MarketCreatedEventLog,
   MarketGroupCreatedUpdatedEventLog,
   TradePositionEventLog,
@@ -422,90 +421,6 @@ export const updateCollateralData = async (
   }
 };
 
-export const createOrUpdateMarketGroupFromContract = async (
-  client: PublicClient,
-  contractDeployment: Deployment,
-  chainId: number,
-  initialMarketGroup?: MarketGroup
-) => {
-  const address = contractDeployment.address.toLowerCase();
-  // get market group and market from contract
-  const marketGroupReadResult = await client.readContract({
-    address: address as `0x${string}`,
-    abi: contractDeployment.abi,
-    functionName: 'getMarketGroup',
-  });
-  console.log('marketGroupReadResult', marketGroupReadResult);
-
-  let updatedMarketGroup: MarketGroup;
-
-  if (initialMarketGroup) {
-    updatedMarketGroup = initialMarketGroup;
-  } else {
-    // check if market already exists in db
-    const existingMarketGroup = await prisma.marketGroup.findFirst({
-      where: { address: address.toLowerCase(), chainId },
-      include: {
-        market: true,
-      },
-    });
-
-    if (existingMarketGroup) {
-      updatedMarketGroup = existingMarketGroup;
-    } else {
-      // Create new market
-      updatedMarketGroup = await prisma.marketGroup.create({
-        data: {
-          address: address.toLowerCase(),
-          deployTxnBlockNumber: Number(contractDeployment.deployTxnBlockNumber),
-          deployTimestamp: Number(contractDeployment.deployTimestamp),
-          chainId,
-          owner: (
-            (marketGroupReadResult as MarketGroupReadResult)[0] as string
-          ).toLowerCase(),
-          collateralAsset: (marketGroupReadResult as MarketGroupReadResult)[1],
-        },
-      });
-    }
-  }
-
-  // Update collateral data
-  await updateCollateralData(client, updatedMarketGroup);
-
-  const marketParamsRaw = (marketGroupReadResult as MarketGroupReadResult)[4];
-
-  // Update market with new data
-  updatedMarketGroup = await prisma.marketGroup.update({
-    where: { id: updatedMarketGroup.id },
-    data: {
-      address: address.toLowerCase(),
-      deployTxnBlockNumber: Number(contractDeployment.deployTxnBlockNumber),
-      deployTimestamp: Number(contractDeployment.deployTimestamp),
-      chainId,
-      owner: (
-        (marketGroupReadResult as MarketGroupReadResult)[0] as string
-      ).toLowerCase(),
-      collateralAsset: (marketGroupReadResult as MarketGroupReadResult)[1],
-      marketParamsFeerate: marketParamsRaw.feeRate || null,
-      marketParamsAssertionliveness:
-        marketParamsRaw.assertionLiveness?.toString() || null,
-      marketParamsBondcurrency: marketParamsRaw.bondCurrency || null,
-      marketParamsBondamount: marketParamsRaw.bondAmount?.toString() || null,
-      marketParamsClaimstatementYesOrNumeric:
-        marketParamsRaw.claimStatementYesOrNumeric || null,
-      marketParamsClaimstatementNo: marketParamsRaw.claimStatementNo || null,
-      marketParamsUniswappositionmanager:
-        marketParamsRaw.uniswapPositionManager || null,
-      marketParamsUniswapswaprouter: marketParamsRaw.uniswapSwapRouter || null,
-      marketParamsUniswapquoter: marketParamsRaw.uniswapQuoter || null,
-      marketParamsOptimisticoraclev3:
-        marketParamsRaw.optimisticOracleV3 || null,
-    },
-  });
-
-  return updatedMarketGroup;
-};
-
 export const createOrUpdateMarketFromContract = async (
   marketGroup: MarketGroup,
   marketId?: number
@@ -522,6 +437,7 @@ export const createOrUpdateMarketFromContract = async (
     args,
   });
   const marketData: MarketData = (marketReadResult as MarketReadResult)[0];
+  const marketGroupParams = (marketReadResult as MarketReadResult)[1];
 
   const _marketId = marketId || Number(marketData.marketId);
 
@@ -548,21 +464,21 @@ export const createOrUpdateMarketFromContract = async (
         maxPriceD18: toDecimal(marketData.maxPriceD18.toString()),
         minPriceD18: toDecimal(marketData.minPriceD18.toString()),
         poolAddress: marketData.pool,
-        marketParamsFeerate: marketGroup.marketParamsFeerate,
-        marketParamsAssertionliveness:
-          marketGroup.marketParamsAssertionliveness,
-        marketParamsBondcurrency: marketGroup.marketParamsBondcurrency,
-        marketParamsBondamount: marketGroup.marketParamsBondamount,
-        marketParamsClaimstatementYesOrNumeric:
-          marketGroup.marketParamsClaimstatementYesOrNumeric,
-        marketParamsClaimstatementNo: marketGroup.marketParamsClaimstatementNo,
+        claimStatementYesOrNumeric: marketData.claimStatementYesOrNumeric,
+        claimStatementNo: marketData.claimStatementNo,
+        marketParamsFeerate: marketGroupParams.feeRate,
+        marketParamsAssertionliveness: toDecimal(
+          marketGroupParams.assertionLiveness.toString()
+        ),
+        marketParamsBondcurrency: marketGroupParams.bondCurrency,
+        marketParamsBondamount: toDecimal(
+          marketGroupParams.bondAmount.toString()
+        ),
         marketParamsUniswappositionmanager:
-          marketGroup.marketParamsUniswappositionmanager,
-        marketParamsUniswapswaprouter:
-          marketGroup.marketParamsUniswapswaprouter,
-        marketParamsUniswapquoter: marketGroup.marketParamsUniswapquoter,
-        marketParamsOptimisticoraclev3:
-          marketGroup.marketParamsOptimisticoraclev3,
+          marketGroupParams.uniswapPositionManager,
+        marketParamsUniswapswaprouter: marketGroupParams.uniswapSwapRouter,
+        marketParamsUniswapquoter: marketGroupParams.uniswapQuoter,
+        marketParamsOptimisticoraclev3: marketGroupParams.optimisticOracleV3,
       },
     });
   } else {
@@ -580,21 +496,21 @@ export const createOrUpdateMarketFromContract = async (
         minPriceD18: toDecimal(marketData.minPriceD18.toString()),
         poolAddress: marketData.pool,
         marketGroupId: marketGroup.id,
-        marketParamsFeerate: marketGroup.marketParamsFeerate,
-        marketParamsAssertionliveness:
-          marketGroup.marketParamsAssertionliveness,
-        marketParamsBondcurrency: marketGroup.marketParamsBondcurrency,
-        marketParamsBondamount: marketGroup.marketParamsBondamount,
-        marketParamsClaimstatementYesOrNumeric:
-          marketGroup.marketParamsClaimstatementYesOrNumeric,
-        marketParamsClaimstatementNo: marketGroup.marketParamsClaimstatementNo,
+        claimStatementYesOrNumeric: marketData.claimStatementYesOrNumeric,
+        claimStatementNo: marketData.claimStatementNo,
+        marketParamsFeerate: marketGroupParams.feeRate,
+        marketParamsAssertionliveness: toDecimal(
+          marketGroupParams.assertionLiveness.toString()
+        ),
+        marketParamsBondcurrency: marketGroupParams.bondCurrency,
+        marketParamsBondamount: toDecimal(
+          marketGroupParams.bondAmount.toString()
+        ),
         marketParamsUniswappositionmanager:
-          marketGroup.marketParamsUniswappositionmanager,
-        marketParamsUniswapswaprouter:
-          marketGroup.marketParamsUniswapswaprouter,
-        marketParamsUniswapquoter: marketGroup.marketParamsUniswapquoter,
-        marketParamsOptimisticoraclev3:
-          marketGroup.marketParamsOptimisticoraclev3,
+          marketGroupParams.uniswapPositionManager,
+        marketParamsUniswapswaprouter: marketGroupParams.uniswapSwapRouter,
+        marketParamsUniswapquoter: marketGroupParams.uniswapQuoter,
+        marketParamsOptimisticoraclev3: marketGroupParams.optimisticOracleV3,
       },
     });
   }
@@ -632,16 +548,14 @@ export const createOrUpdateMarketGroupFromEvent = async (
         marketParamsBondcurrency: eventArgs?.marketParams?.bondCurrency || null,
         marketParamsBondamount:
           eventArgs?.marketParams?.bondAmount?.toString() || null,
-        marketParamsClaimstatementYesOrNumeric:
-          eventArgs?.marketParams?.claimStatementYesOrNumeric || null,
-        marketParamsClaimstatementNo:
-          eventArgs?.marketParams?.claimStatementNo || null,
         marketParamsUniswappositionmanager:
-          eventArgs?.uniswapPositionManager || null,
-        marketParamsUniswapswaprouter: eventArgs?.uniswapSwapRouter || null,
+          eventArgs?.marketParams?.uniswapPositionManager || null,
+        marketParamsUniswapswaprouter:
+          eventArgs?.marketParams?.uniswapSwapRouter || null,
         marketParamsUniswapquoter:
           eventArgs?.marketParams?.uniswapQuoter || null,
-        marketParamsOptimisticoraclev3: eventArgs?.optimisticOracleV3 || null,
+        marketParamsOptimisticoraclev3:
+          eventArgs?.marketParams?.optimisticOracleV3 || null,
       },
     });
   }
@@ -976,9 +890,8 @@ export const createMarketFromEvent = async (
           marketGroup.marketParamsAssertionliveness,
         marketParamsBondcurrency: marketGroup.marketParamsBondcurrency,
         marketParamsBondamount: marketGroup.marketParamsBondamount,
-        marketParamsClaimstatementYesOrNumeric:
-          marketGroup.marketParamsClaimstatementYesOrNumeric,
-        marketParamsClaimstatementNo: marketGroup.marketParamsClaimstatementNo,
+        claimStatementYesOrNumeric: eventArgs.claimStatementYesOrNumeric,
+        claimStatementNo: eventArgs.claimStatementNo,
         marketParamsUniswappositionmanager:
           marketGroup.marketParamsUniswappositionmanager,
         marketParamsUniswapswaprouter:
@@ -1003,9 +916,8 @@ export const createMarketFromEvent = async (
           marketGroup.marketParamsAssertionliveness,
         marketParamsBondcurrency: marketGroup.marketParamsBondcurrency,
         marketParamsBondamount: marketGroup.marketParamsBondamount,
-        marketParamsClaimstatementYesOrNumeric:
-          marketGroup.marketParamsClaimstatementYesOrNumeric,
-        marketParamsClaimstatementNo: marketGroup.marketParamsClaimstatementNo,
+        claimStatementYesOrNumeric: eventArgs.claimStatementYesOrNumeric,
+        claimStatementNo: eventArgs.claimStatementNo,
         marketParamsUniswappositionmanager:
           marketGroup.marketParamsUniswappositionmanager,
         marketParamsUniswapswaprouter:
@@ -1096,15 +1008,6 @@ const getLogDataArgs = (logData: unknown): Record<string, unknown> => {
   const logDataObj = logData as Record<string, unknown>;
   return (logDataObj.args as Record<string, unknown>) || {};
 };
-
-// Define contract return types as tuples with specific types
-type MarketGroupReadResult = readonly [
-  owner: string,
-  collateralAsset: string,
-  paused: boolean,
-  initialized: boolean,
-  marketParams: MarketParams,
-];
 
 type MarketReadResult = readonly [
   marketData: MarketData,
