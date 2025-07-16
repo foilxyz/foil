@@ -121,8 +121,7 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
     }
 
     try {
-      const claimStatementYesOrNumeric =
-        market.claimStatementYesOrNumeric;
+      const claimStatementYesOrNumeric = market.claimStatementYesOrNumeric;
       const claimStatementNo = market.claimStatementNo;
       const claimStatementBytesYesOrNumeric = toBytes(
         claimStatementYesOrNumeric as string
