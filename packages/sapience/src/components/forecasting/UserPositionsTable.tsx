@@ -7,7 +7,6 @@ import { useEffect } from 'react';
 import type { Address } from 'viem';
 
 import ErrorState from '../profile/ErrorState'; // Assuming similar loading/error components
-import LoadingState from '../profile/LoadingState'; // Assuming similar loading/error components
 import LpPositionsTable from '../profile/LpPositionsTable';
 import PredictionPositionsTable from '../profile/PredictionPositionsTable';
 import TraderPositionsTable from '../profile/TraderPositionsTable';
@@ -59,14 +58,14 @@ const UserPositionsTable: React.FC<UserPositionsTableProps> = ({
 
   const {
     data: positionsData,
-    isLoading: isLoadingPositions,
+    isLoading: _isLoadingPositions,
     error: positionsError,
     refetch: refetchPositions,
   } = usePositions(positionVars);
 
   const {
     data: attestationsData,
-    isLoading: isLoadingAttestations,
+    isLoading: _isLoadingAttestations,
     error: attestationsError,
     refetch: refetchAttestations,
   } = usePredictions({
@@ -77,7 +76,6 @@ const UserPositionsTable: React.FC<UserPositionsTableProps> = ({
     marketId,
   });
 
-  const isLoading = isLoadingPositions || isLoadingAttestations;
   const error = positionsError || attestationsError;
 
   useEffect(() => {
@@ -86,10 +84,6 @@ const UserPositionsTable: React.FC<UserPositionsTableProps> = ({
       refetchAttestations();
     }
   }, [refetchUserPositions, refetchPositions, refetchAttestations]);
-
-  if (isLoading) {
-    return <LoadingState />;
-  }
 
   if (error) {
     // It's good practice to log the error as well

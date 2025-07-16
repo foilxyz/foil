@@ -14,34 +14,32 @@ interface RawAttestation {
 }
 
 // Parameterized version of the query
-const GET_ATTESTATIONS_QUERY = "HA-HA! (in Nelson's voice)";
-
-// const GET_ATTESTATIONS_QUERY = /* GraphQL */ `
-//   query FindAttestations(
-//     $schemaId: String!
-//     $take: Int!
-//     $marketAddress: String
-//     $attesterAddress: String
-//   ) {
-//     attestations(
-//       where: {
-//         schemaId: { equals: $schemaId }
-//         AND: [
-//           { decodedDataJson: { contains: $marketAddress } }
-//           { attester: { equals: $attesterAddress } }
-//         ]
-//       }
-//       orderBy: { time: desc }
-//       take: $take
-//     ) {
-//       id
-//       decodedDataJson
-//       attester
-//       recipient
-//       time
-//     }
-//   }
-// `;
+const GET_ATTESTATIONS_QUERY = `
+  query FindAttestations(
+    $schemaId: String!
+    $take: Int!
+    $marketAddress: String
+    $attesterAddress: String
+  ) {
+    attestations(
+      where: {
+        schemaId: { equals: $schemaId }
+        AND: [
+          { decodedDataJson: { contains: $marketAddress } }
+          { attester: { equals: $attesterAddress } }
+        ]
+      }
+      orderBy: { time: desc }
+      take: $take
+    ) {
+      id
+      decodedDataJson
+      attester
+      recipient
+      time
+    }
+  }
+`;
 
 // Type definition for GraphQL response
 type AttestationsQueryResponse = {

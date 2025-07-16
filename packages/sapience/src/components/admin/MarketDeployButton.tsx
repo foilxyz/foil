@@ -128,7 +128,7 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
         claimStatementBytesYesOrNumeric
       );
 
-      const claimStatementBytesNo = toBytes(claimStatementNo as string);
+      const claimStatementBytesNo = toBytes(claimStatementNo);
       const claimStatementHexNo = bytesToHex(claimStatementBytesNo);
 
       // Ensure numeric values are correctly typed for BigInt/Number conversion
