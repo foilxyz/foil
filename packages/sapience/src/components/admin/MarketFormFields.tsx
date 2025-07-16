@@ -767,12 +767,8 @@ const MarketFormFields = ({
       // Copy claim statement - try multiple sources
       let claimStatementYesOrNumeric = '';
 
-      if (selectedMarketGroup.marketParamsClaimstatementYesOrNumeric) {
-        claimStatementYesOrNumeric =
-          selectedMarketGroup.marketParamsClaimstatementYesOrNumeric;
-      } else if (selectedMarket.marketParamsClaimstatementYesOrNumeric) {
-        claimStatementYesOrNumeric =
-          selectedMarket.marketParamsClaimstatementYesOrNumeric;
+      if (selectedMarket.claimStatementYesOrNumeric) {
+        claimStatementYesOrNumeric = selectedMarket.claimStatementYesOrNumeric;
       }
 
       if (claimStatementYesOrNumeric) {
@@ -785,10 +781,8 @@ const MarketFormFields = ({
       // Copy claim statement - try multiple sources
       let claimStatementNo = '';
 
-      if (selectedMarketGroup.marketParamsClaimstatementNo) {
-        claimStatementNo = selectedMarketGroup.marketParamsClaimstatementNo;
-      } else if (selectedMarket.marketParamsClaimstatementNo) {
-        claimStatementNo = selectedMarket.marketParamsClaimstatementNo;
+      if (selectedMarket.claimStatementNo) {
+        claimStatementNo = selectedMarket.claimStatementNo;
       }
 
       if (claimStatementNo) {

@@ -131,8 +131,8 @@ const MARKETS_QUERY = /* GraphQL */ `
       marketParamsAssertionliveness
       marketParamsBondcurrency
       marketParamsBondamount
-      marketParamsClaimstatementYesOrNumeric
-      marketParamsClaimstatementNo
+      claimStatementYesOrNumeric
+      claimStatementNo
       marketParamsUniswappositionmanager
       marketParamsUniswapswaprouter
       marketParamsUniswapquoter
@@ -160,8 +160,8 @@ const MARKETS_QUERY = /* GraphQL */ `
         marketParamsAssertionliveness
         marketParamsBondcurrency
         marketParamsBondamount
-        marketParamsClaimstatementYesOrNumeric
-        marketParamsClaimstatementNo
+        claimStatementYesOrNumeric
+        claimStatementNo
         marketParamsUniswappositionmanager
         marketParamsUniswapswaprouter
         marketParamsUniswapquoter

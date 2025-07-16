@@ -98,10 +98,10 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
     ) {
       return 'Missing base asset maximum price tick.';
     }
-    if (!market.marketParamsClaimstatementYesOrNumeric) {
+    if (!market.claimStatementYesOrNumeric) {
       return 'Missing or invalid claim statement Yes or Numeric.';
     }
-    if (!market.marketParamsClaimstatementNo) {
+    if (!market.claimStatementNo) {
       return 'Missing or invalid claim statement No.';
     }
     return null;
@@ -122,8 +122,8 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
 
     try {
       const claimStatementYesOrNumeric =
-        market.marketParamsClaimstatementYesOrNumeric;
-      const claimStatementNo = market.marketParamsClaimstatementNo;
+        market.claimStatementYesOrNumeric;
+      const claimStatementNo = market.claimStatementNo;
       const claimStatementBytesYesOrNumeric = toBytes(
         claimStatementYesOrNumeric as string
       );
@@ -250,11 +250,11 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
               </p>
               <p>
                 <strong>claimStatement Yes (bytes):</strong>{' '}
-                {market.marketParamsClaimstatementYesOrNumeric ?? 'N/A'}
+                {market.claimStatementYesOrNumeric ?? 'N/A'}
               </p>
               <p>
                 <strong>claimStatement No (bytes):</strong>{' '}
-                {market.marketParamsClaimstatementNo ?? 'N/A'}
+                {market.claimStatementNo ?? 'N/A'}
               </p>
               <p>
                 <strong>salt (uint256):</strong> {'<generated on deploy>'}
