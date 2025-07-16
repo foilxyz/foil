@@ -10,7 +10,7 @@ contract MarketGroupFactory {
 
     address public immutable implementation;
 
-    event MarketGroupInitialized(address indexed sender, address indexed marketGroup, uint256 nonce);
+    event MarketGroupDeployed(address indexed sender, address indexed marketGroup, uint256 nonce);
 
     constructor(address _implementation) {
         implementation = _implementation;
@@ -30,7 +30,7 @@ contract MarketGroupFactory {
             msg.sender, collateralAsset, feeCollectors, minTradeSize, bridgedSettlement, marketParams
         );
 
-        emit MarketGroupInitialized(msg.sender, marketGroup, nonce);
+        emit MarketGroupDeployed(msg.sender, marketGroup, nonce);
 
         return marketGroup;
     }
