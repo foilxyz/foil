@@ -15,6 +15,7 @@
     "check:turbo": "npx turbo lint type-check",
     "test": "jest",
     "test:e2e": "playwright test",
+    "test:e2e:market-groups": "playwright test market-group-navigation.spec.ts",
     "format": "prettier --write src",
     "up-interactive": "pnpm up -i",
     "up-latest": "pnpm up-interactive -L",
