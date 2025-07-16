@@ -101,9 +101,7 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
     if (!market.claimStatementYesOrNumeric) {
       return 'Missing or invalid claim statement Yes or Numeric.';
     }
-    if (!market.claimStatementNo) {
-      return 'Missing or invalid claim statement No.';
-    }
+    // claimStatementNo is optional, so no validation needed
     return null;
   };
 
@@ -122,7 +120,7 @@ const MarketDeployButton: React.FC<MarketDeployButtonProps> = ({
 
     try {
       const claimStatementYesOrNumeric = market.claimStatementYesOrNumeric;
-      const claimStatementNo = market.claimStatementNo;
+      const claimStatementNo = market.claimStatementNo || ''; // Default to empty string if undefined
       const claimStatementBytesYesOrNumeric = toBytes(
         claimStatementYesOrNumeric as string
       );
