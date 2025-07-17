@@ -218,22 +218,6 @@ const Header = () => {
         <SidebarFooter>
           <div className="flex flex-col gap-2 text-xs w-full ml-2 rounded-lg">
             <div className="flex flex-col items-start gap-2 mb-2">
-              <span>Powered by</span>
-              <a
-                href="https://ethena.fi"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Image
-                  src="/ethena.svg"
-                  alt="Ethena"
-                  width={80}
-                  height={24}
-                  className="dark:invert opacity-90 hover:opacity-100 transition-opacity duration-200"
-                />
-              </a>
-            </div>
-            <div className="flex flex-col items-start gap-2 mb-0.5">
               <span>Built on</span>
               <a
                 href="https://convergeonchain.xyz"
@@ -246,6 +230,22 @@ const Header = () => {
                   width={80}
                   height={24}
                   className="dark:invert opacity-80 hover:opacity-100 transition-opacity duration-200"
+                />
+              </a>
+            </div>
+            <div className="flex flex-col items-start gap-2 mb-0.5">
+              <span>Powered by</span>
+              <a
+                href="https://ethena.fi"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src="/ethena.svg"
+                  alt="Ethena"
+                  width={80}
+                  height={24}
+                  className="dark:invert opacity-90 hover:opacity-100 transition-opacity duration-200"
                 />
               </a>
             </div>
