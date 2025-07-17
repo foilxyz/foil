@@ -56,7 +56,7 @@ sitemap*.xml
 .env.sentry-build-plugin
 
 # Playwright
-/test-results/
-/playwright-report/
+e2e/test-results/
+e2e/playwright-report/
 
 /.next/
