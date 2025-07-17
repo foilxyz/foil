@@ -63,7 +63,7 @@ const NavLinks = ({
   };
 
   return (
-    <nav className="flex flex-col gap-3 w-full mt-32 lg:mt-60 pl-4">
+    <nav className="flex flex-col gap-3 w-full mt-32 lg:mt-48 pl-4">
       <Link href="/forecasting" passHref className="flex w-fit">
         <Button
           variant="ghost"
@@ -216,28 +216,38 @@ const Header = () => {
           <NavLinks />
         </SidebarContent>
         <SidebarFooter>
-          <div className="flex items-start gap-2 text-xs w-full ml-2 rounded-lg max-w-[160px]">
-            <span>🏗️</span>
-            <div>
-              We&apos;re{' '}
+          <div className="flex flex-col gap-2 text-xs w-full ml-2 rounded-lg">
+            <div className="flex flex-col items-start gap-2 mb-2">
+              <span>Powered by</span>
               <a
-                href="https://github.com/sapiencexyz/sapience/tree/main/packages/sapience"
+                href="https://ethena.fi"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline-offset-2 underline"
               >
-                building in public
-              </a>{' '}
-              and{' '}
-              <a
-                href="https://discord.gg/sapience"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline-offset-2 underline"
-              >
-                want your feedback
+                <Image
+                  src="/ethena.svg"
+                  alt="Ethena"
+                  width={80}
+                  height={24}
+                  className="dark:invert opacity-90 hover:opacity-100 transition-opacity duration-200"
+                />
               </a>
-              .
+            </div>
+            <div className="flex flex-col items-start gap-2 mb-0.5">
+              <span>Built on</span>
+              <a
+                href="https://convergeonchain.xyz"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src="/converge.svg"
+                  alt="Converge"
+                  width={80}
+                  height={24}
+                  className="dark:invert opacity-80 hover:opacity-100 transition-opacity duration-200"
+                />
+              </a>
             </div>
           </div>
           <div className="flex items-center gap-2 p-2">
