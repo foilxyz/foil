@@ -26,7 +26,7 @@ export default function SusdeCollateralSection() {
                 >
                   Ethena
                 </Link>
-                &apos;s staked USDe removes opportunity cost for participating
+                &apos;s staked USDe removes opportunity cost from participating
                 in prediction markets, increasing their accuracy.
               </p>
 
