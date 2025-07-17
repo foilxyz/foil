@@ -61,7 +61,7 @@ const MarketHeader: React.FC<MarketHeaderProps> = ({
   chainId,
   marketAddress,
   collateralAssetAddress,
-  quoteTokenName,
+  baseTokenName,
   collateralSymbol,
   minTick,
   maxTick,
@@ -123,12 +123,12 @@ const MarketHeader: React.FC<MarketHeaderProps> = ({
   const minPrice = minTick ? tickToPrice(minTick) : undefined;
   const maxPrice = maxTick ? tickToPrice(maxTick) : undefined;
 
-  // Use collateral symbol for volume/open interest, quote token for price ranges
+  // Use collateral symbol for volume/open interest, base token for price ranges
   const collateralUnitDisplay = collateralSymbol || 'USD';
-  const priceUnitDisplay = quoteTokenName || 'USD';
+  const priceUnitDisplay = baseTokenName || 'USD';
 
   const links = (
-    <>
+    <div className="flex flex-wrap gap-y-4 gap-x-4 items-center">
       <a
         className="hover:no-underline inline-flex items-center"
         target="_blank"
@@ -172,7 +172,7 @@ const MarketHeader: React.FC<MarketHeaderProps> = ({
 
       {openInterest !== null && openInterest !== undefined && (
         <div className="inline-flex items-center">
-          <span className="inline-block mr-1.5">
+          <span className="inline-block mr-1">
             <DollarSign className="w-4 h-4 opacity-80" />
           </span>
           <span className="font-medium mr-1">Open Interest:</span>
@@ -208,14 +208,14 @@ const MarketHeader: React.FC<MarketHeaderProps> = ({
           <span className="inline-block mr-1">
             <LiaRulerVerticalSolid />
           </span>
-          <span className="font-medium mr-1">Market Price Range:</span>
+          <span className="font-medium mr-1">Range:</span>
           <NumberDisplay value={minPrice} />
           <MoveHorizontal className="w-3 h-3 mx-1" />
           <NumberDisplay value={maxPrice} />
           <span className="ml-1">{priceUnitDisplay}</span>
         </div>
       )}
-    </>
+    </div>
   );
 
   const displayQuestion =

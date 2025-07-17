@@ -20,6 +20,7 @@ interface UseSubmitPredictionProps {
   submissionValue: string; // Value from the form (e.g. "1.23" for numeric, "marketId" for MCQ, pre-calc sqrtPriceX96 for Yes/No)
   marketId: number; // Specific market ID for the attestation (for MCQ, this is the ID of the chosen option)
   targetChainId: number; // Added targetChainId prop
+  comment?: string; // Optional comment field
 }
 
 export function useSubmitPrediction({
@@ -28,6 +29,7 @@ export function useSubmitPrediction({
   submissionValue,
   marketId,
   targetChainId,
+  comment = '',
 }: UseSubmitPredictionProps) {
   const { address, chainId: currentChainId } = useAccount();
   const { toast } = useToast();
@@ -57,7 +59,8 @@ export function useSubmitPrediction({
       _marketAddress: string,
       _marketId: string,
       predictionInput: string,
-      classification: MarketGroupClassification
+      classification: MarketGroupClassification,
+      _comment: string
     ) => {
       try {
         let finalPredictionBigInt: bigint;
@@ -94,12 +97,13 @@ export function useSubmitPrediction({
 
         return encodeAbiParameters(
           parseAbiParameters(
-            'address marketAddress, uint256 marketId, uint160 prediction'
+            'address marketAddress, uint256 marketId, uint160 prediction, string comment'
           ),
           [
             _marketAddress as `0x${string}`,
             BigInt(_marketId),
             finalPredictionBigInt,
+            _comment,
           ]
         );
       } catch (error) {
@@ -165,7 +169,8 @@ export function useSubmitPrediction({
         marketAddress,
         marketId.toString(),
         submissionValue,
-        marketClassification
+        marketClassification,
+        comment
       );
 
       writeContract({
@@ -229,6 +234,7 @@ export function useSubmitPrediction({
     marketClassification,
     submissionValue,
     marketId,
+    comment,
     encodeSchemaData,
     writeContract,
     reset,
