@@ -118,3 +118,57 @@ jobs:
       - name: Compile API
         run: pnpm run compile
         working-directory: packages/api
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install pnpm
+        run: npm install -g pnpm@9.15.4
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install wait-on globally
+        run: npm install -g wait-on
+
+      - name: Build the application
+        run: pnpm build
+        working-directory: packages/sapience
+        env:
+          NEXT_PUBLIC_FOIL_API_URL: https://api.foil.xyz
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+        working-directory: packages/sapience
+
+      - name: Start server in background
+        run: pnpm start &
+        working-directory: packages/sapience
+
+      - name: Wait for server to be ready
+        run: npx wait-on http://localhost:3000 --timeout 30000
+        working-directory: packages/sapience
+
+      - name: Run E2E tests
+        run: pnpm test:e2e
+        working-directory: packages/sapience
+        env:
+          CI: true
+          NEXT_PUBLIC_FOIL_API_URL: https://api.foil.xyz
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: packages/sapience/playwright-report/
+          retention-days: 7

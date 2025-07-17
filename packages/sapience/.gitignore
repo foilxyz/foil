@@ -55,4 +55,8 @@ sitemap*.xml
 # Sentry Config File
 .env.sentry-build-plugin
 
+# Playwright
+e2e/test-results/
+e2e/playwright-report/
+
 /.next/
