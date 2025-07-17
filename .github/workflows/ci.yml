@@ -143,6 +143,8 @@ jobs:
       - name: Build the application
         run: pnpm build
         working-directory: packages/sapience
+        env:
+          NEXT_PUBLIC_FOIL_API_URL: https://api.foil.xyz
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
@@ -161,6 +163,7 @@ jobs:
         working-directory: packages/sapience
         env:
           CI: true
+          NEXT_PUBLIC_FOIL_API_URL: https://api.foil.xyz
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
